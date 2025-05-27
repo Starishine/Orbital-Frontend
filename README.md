@@ -1,3 +1,3 @@
 # Orbital-Frontend
 
-React FrontEnd Web Application for Expense Tracker
+React FrontEnd Web Application for Expense Tracker by FinFluencers 
