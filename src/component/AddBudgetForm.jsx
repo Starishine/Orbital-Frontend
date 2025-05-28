@@ -30,9 +30,11 @@ export default function AddBudgetForm() {
         e.preventDefault();
         const finalCategory = category === "Others" ? customCategory : category;
         const currency = localStorage.getItem('currency') || 'SGD'; // Default to SGD if no currency is set
+        const username = localStorage.getItem('username'); // Get username from localStorage
         alert(`Category: ${finalCategory}\nAmount: ${currency} ${amount}`);
 
         axios.post('http://localhost:8080/budget/create', {
+            username: username,
             category: finalCategory,
             currency: currency || 'SGD', // Default to SGD if no currency is set
             amount: parseFloat(amount)
@@ -42,7 +44,7 @@ export default function AddBudgetForm() {
                 const data = response.data;
                 console.log(data);
                 if (data.status === "SUCCESS" && data.code === 200) {
-                    alert('Budget added successfully!');
+                    // alert('Budget added successfully!');
                     // Reset form fields
                     setCategory('');
                     setCustomCategory('');
