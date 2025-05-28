@@ -7,7 +7,6 @@ export default function SignupForm({ onSuccess }) {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [email, setEmail] = useState('');
     const [error, setError] = useState('');
-    const [userId, setUserId] = useState(100);
 
     const handleSignup = () => {
         setError('');
@@ -154,6 +153,15 @@ export default function SignupForm({ onSuccess }) {
             {error && (
                 <p style={{ color: 'red', marginTop: '16px', textAlign: 'center' }}>{error}</p>
             )}
+            <p style={{ marginTop: '16px', textAlign: 'center' }}>
+                Already have an account?{' '}
+                <span
+                    style={{ color: '#1976d2', cursor: 'pointer', textDecoration: 'underline' }}
+                    onClick={() => window.location.href = '/home'} // Redirect to sign-in page
+                >
+                    Sign In
+                </span>
+            </p>
         </form>
     );
 }
