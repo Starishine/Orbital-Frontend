@@ -18,6 +18,9 @@ export default function AddBudgetForm() {
     const [category, setCategory] = useState('');
     const [customCategory, setCustomCategory] = useState(''); // if "Others" is selected, this will be used to enter a custom category
     const [amount, setAmount] = useState('');
+    const [currency, setCurrency] = useState(localStorage.getItem('currency')); // Default to SGD if no currency is set
+
+
 
     const handleCategoryChange = (e) => {
         setCategory(e.target.value);
@@ -103,7 +106,7 @@ export default function AddBudgetForm() {
                         </div>
                     )}
                     <div style={{ flex: 1 }}>
-                        <CurrencyDropdown />
+                        <CurrencyDropdown currency={currency} setCurrency={setCurrency} />
                     </div>
                     <div style={{ marginBottom: '16px' }}>
                         <label htmlFor="amount" style={{ display: 'block', marginBottom: 6, fontWeight: 500 }}>
