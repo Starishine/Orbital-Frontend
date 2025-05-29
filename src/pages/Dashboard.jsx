@@ -1,5 +1,6 @@
 import { useLocation } from "react-router-dom";
 import AddBudgetForm from "../component/AddBudgetForm";
+import ExistingBudget from "../component/ExistingBudget";
 
 
 export default function Dashboard() {
@@ -14,6 +15,9 @@ export default function Dashboard() {
                 <h1>Welcome back, {username} </h1>
                 <p>Welcome to your dashboard! Here you can set your budget!!</p>
                 <AddBudgetForm> </AddBudgetForm>
+                <ExistingBudget> </ExistingBudget>
+
+
             </div>
         </>
     );

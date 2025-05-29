@@ -29,14 +29,14 @@ export default function AddBudgetForm() {
     const handleSubmit = (e) => {
         e.preventDefault();
         const finalCategory = category === "Others" ? customCategory : category;
-        const currency = localStorage.getItem('currency') || 'SGD'; // Default to SGD if no currency is set
+        const currency = localStorage.getItem('currency'); // Default to SGD if no currency is set
         const username = localStorage.getItem('username'); // Get username from localStorage
         alert(`Category: ${finalCategory}\nAmount: ${currency} ${amount}`);
 
         axios.post('http://localhost:8080/budget/create', {
             username: username,
             category: finalCategory,
-            currency: currency || 'SGD', // Default to SGD if no currency is set
+            currency: currency,
             amount: parseFloat(amount)
         })
             .then((response) => {
@@ -49,6 +49,7 @@ export default function AddBudgetForm() {
                     setCategory('');
                     setCustomCategory('');
                     setAmount('');
+                    window.location.reload(); // Reload the page to reflect the new budget
                 } else {
                     alert(data.message);
                 }
@@ -59,6 +60,8 @@ export default function AddBudgetForm() {
             });
 
     };
+
+
 
     return (
         <>

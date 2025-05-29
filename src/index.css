@@ -107,6 +107,9 @@ button:focus-visible {
 }
 
 .budget-dotted-container {
+  float: left;
+  width: 100%;
+  max-width: var(--content);
   border: 3px dotted #1976d2;
   border-radius: var(--round-lg);
   background: #dbd4d4;

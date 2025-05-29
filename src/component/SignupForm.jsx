@@ -157,7 +157,7 @@ export default function SignupForm({ onSuccess }) {
                 Already have an account?{' '}
                 <span
                     style={{ color: '#1976d2', cursor: 'pointer', textDecoration: 'underline' }}
-                    onClick={() => window.location.href = '/home'} // Redirect to sign-in page
+                    onClick={() => window.location.href = '/'} // Redirect to sign-in page
                 >
                     Sign In
                 </span>

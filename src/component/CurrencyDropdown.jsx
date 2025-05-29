@@ -2,11 +2,15 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 export default function CurrencyDropdown() {
-    const [currency, setCurrency] = useState('SGD');
+    const [currency, setCurrency] = useState(localStorage.getItem('currency'));
     const [rates, setRates] = useState({});
 
 
     useEffect(() => {
+        if (localStorage.getItem('currency')) {
+            localStorage.setItem('currency', 'SGD'); // Default to SGD if no currency is set
+        }
+
         // Fetch exchange rates from a public API 
         axios
             .get('https://api.exchangerate-api.com/v4/latest/USD') // gets the latest exchange rates
