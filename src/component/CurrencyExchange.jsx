@@ -69,11 +69,7 @@ export default function CurrencyExchange() {
             ))}
           </select>
         </label >
-        // Sample options for testing
-        <select>
-            <option>Test</option>
-            <option>Test2</option>
-        </select>
+
         <button onClick={handleConvert} style={{ marginLeft: '10px' }}>
           Convert
         </button>

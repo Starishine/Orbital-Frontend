@@ -10,9 +10,9 @@ export default function App() {
     <Router>
       <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
         <nav style={{ marginBottom: '20px' }}>
-          <Link to="/" style={{ marginLeft: '20px' }}>Home</Link>
-          <Link to="/exchange" style={{ marginLeft: '10px' }}>Exchange</Link>
-          <Link to="/dashboard" style={{ marginLeft: '10px' }}>Dashboard</Link>
+          {/* <Link to="/" style={{ marginLeft: '20px' }}>Home</Link> */}
+          {/* <Link to="/exchange" style={{ marginLeft: '10px' }}>Exchange</Link>
+          <Link to="/dashboard" style={{ marginLeft: '10px' }}>Dashboard</Link> */}
 
         </nav>
         <Routes>
