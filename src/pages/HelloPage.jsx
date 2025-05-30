@@ -10,20 +10,32 @@ export default function HelloPage() {
 
   const handleAuthSuccess = (user) => {
     alert(`Login Successful! Welcome ${user.username}`);
-    navigate('/exchange');
+    localStorage.setItem('username', user.username); // Store username in local storage
+    navigate('/dashboard', { state: { username: user.username } });
   };
 
   const handleSignupSuccess = (user) => {
     alert(`Signup Successful! Welcome ${user.username}`);
     setShowSignUp(false);
-    navigate('/home');
+    navigate('/');
   };
 
   return (
     <>
       <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-        <img src={logo} alt="Money Tree" style={{ maxWidth: '120px', marginBottom: '16px' }} />
+        <img src={logo} alt="Money Tree" style={{ maxWidth: '200px', marginBottom: '16px' }} />
         <h1>BudgetBuddy</h1>
+        <h2 style={{
+          fontSize: '1.1rem',
+          color: '#666',
+          fontWeight: 400,
+          marginTop: '-10px',
+          marginBottom: '24px',
+          letterSpacing: '0.5px',
+          fontStyle: 'italic'
+        }}>
+          Your university finance planner
+        </h2>
         <h2>{showSignUp ? 'Signup' : 'Sign In'}</h2>
         {showSignUp ? (
           <SignupForm onSuccess={handleSignupSuccess} />

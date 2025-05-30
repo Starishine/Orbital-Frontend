@@ -11,6 +11,40 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* fonts */
+  --fs-200: clamp(0.78rem, calc(0.71rem + 0.35vw), 0.96rem);
+  --fs-300: clamp(0.94rem, calc(0.84rem + 0.51vw), 1.2rem);
+  --fs-400: clamp(1.13rem, calc(0.98rem + 0.73vw), 1.5rem);
+  --fs-500: clamp(1.94rem, calc(1.56rem + 1.92vw), 2.93rem);
+  --fs-600: clamp(2.8rem, calc(2.11rem + 3.47vw), 4.58rem);
+  --lh-1: 1;
+  --lh-1-1: 1.1;
+  --lh-1-4: 1.4;
+
+  /* colors */
+  --accent: 183 74% 44%;
+  --bkg: 190 60% 98%;
+  --text: 185 26% 9%;
+  --muted: 183 8% 55%;
+  --light: 180 14% 85%;
+  --warning: 4 66% 63%;
+
+  /* utils */
+  --space-xs: 8px;
+  --space-sm: 16px;
+  --space-md: 24px;
+  --space-lg: 32px;
+  --space-xl: 40px;
+  --content-sm: 40ch;
+  --content: 60ch;
+  --round-sm: 4px;
+  --round-md: 10px;
+  --round-lg: 25px;
+  --round-full: 100vmax;
+
+  /* toast customizations */
+  --toastify-color-success: hsl(var(--accent));
 }
 
 a {
@@ -18,6 +52,7 @@ a {
   color: #646cff;
   text-decoration: inherit;
 }
+
 a:hover {
   color: #535bf2;
 }
@@ -46,9 +81,11 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
 button:hover {
   border-color: #646cff;
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
@@ -59,10 +96,24 @@ button:focus-visible {
     color: #213547;
     background-color: #ffffff;
   }
+
   a:hover {
     color: #747bff;
   }
+
   button {
     background-color: #f9f9f9;
   }
+}
+
+.budget-dotted-container {
+  float: left;
+  width: 100%;
+  max-width: var(--content);
+  border: 3px dotted #1976d2;
+  border-radius: var(--round-lg);
+  background: #dbd4d4;
+  padding: var(--space-lg);
+  margin: var(--space-md) 0;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.04);
 }
