@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import EditBudget from './EditBudget';
 
 export default function ExistingBudget() {
     const [budgets, setBudgets] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [editIdx, setEditIdx] = useState(null); // State to track which budget is being edited
 
     useEffect(() => {
         const username = localStorage.getItem('username');
@@ -29,9 +31,18 @@ export default function ExistingBudget() {
     if (loading) return <div>Loading budgets...</div>;
     if (error) return <div style={{ color: 'red' }}>{error}</div>;
 
+    // Function to refresh budgets after editing
+    const refreshBudgets = () => {
+        // re-fetch budgets after edit so that the UI reflects the latest data
+        const username = localStorage.getItem('username');
+        axios.get(`http://localhost:8080/budget/get?username=${username}`)
+            .then(response => setBudgets(response.data));
+        setEditIdx(null);
+    };
+
     return (
         <div>
-            <h3 style={{ textAlign: 'right', marginBottom: '20px' }}>Exisiting Budgets</h3>
+            <h3 style={{ textAlign: 'right', marginBottom: '20px' }}>Existing Budgets</h3>
             {budgets.length === 0 ? (
                 <p>No budgets found.</p>
             ) : (
@@ -60,7 +71,26 @@ export default function ExistingBudget() {
                                 <span style={{ color: '#1976d2', fontWeight: 500 }}>
                                     {budget.currency}
                                 </span>{' '}
-                                {Number(budget.amount).toFixed(2)}
+                                {editIdx === idx ? (
+                                    <EditBudget
+                                        budget={budget}
+                                        onSave={refreshBudgets}
+                                        onCancel={() => setEditIdx(null)}
+                                    />
+                                ) : (
+                                    <>
+                                        {Number(budget.amount).toFixed(2)}
+                                        <button
+                                            style={{
+                                                marginLeft: '12px',
+                                                borderColor: 'black'
+                                            }}
+                                            onClick={() => setEditIdx(idx)}
+                                        >
+                                            Edit
+                                        </button>
+                                    </>
+                                )}
                             </div>
                         </div>
                     ))}
