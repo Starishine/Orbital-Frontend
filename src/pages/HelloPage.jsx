@@ -15,7 +15,7 @@ export default function HelloPage() {
   };
 
   const handleSignupSuccess = (user) => {
-    alert(`Signup Successful! Welcome ${user.username}`);
+    alert(`Signup Successful! Please log in, ${user.username}`);
     setShowSignUp(false);
     navigate('/');
   };
