@@ -39,8 +39,14 @@ export default function Dashboard() {
             <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
                 <h1>Welcome back, {username} </h1>
                 <p>Welcome to your dashboard! Here you can set your budget!!</p>
-                <AddBudgetForm> </AddBudgetForm>
-                <ExistingBudget> </ExistingBudget>
+                <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+                    <div style={{ marginRight: '40px', width: '500px' }}>
+                        <AddBudgetForm />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                        <ExistingBudget />
+                    </div>
+                </div>
 
 
             </div>

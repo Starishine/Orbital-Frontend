@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import EditBudget from './EditBudget';
+import DeleteBudget from './DeleteBudget';
 
 export default function ExistingBudget() {
     const [budgets, setBudgets] = useState([]);
@@ -42,7 +43,7 @@ export default function ExistingBudget() {
 
     return (
         <div>
-            <h3 style={{ textAlign: 'right', marginBottom: '20px' }}>Existing Budgets</h3>
+            <h3 style={{ marginBottom: '20px' }}>Existing Budgets</h3>
             {budgets.length === 0 ? (
                 <p>No budgets found.</p>
             ) : (
@@ -58,7 +59,7 @@ export default function ExistingBudget() {
                                 background: '#f5faff',
                                 padding: '16px',
                                 borderRadius: '12px',
-                                border: '2px dottedrgb(0, 0, 0)',
+                                border: '2px dotted rgb(0, 0, 0)',
                                 boxShadow: '0 2px 8px rgba(25, 118, 210, 0.04)',
 
                             }}
@@ -89,6 +90,9 @@ export default function ExistingBudget() {
                                         >
                                             Edit
                                         </button>
+                                        <DeleteBudget
+                                            budgetId={budget.id}
+                                            onDeleteSuccess={refreshBudgets} />
                                     </>
                                 )}
                             </div>
