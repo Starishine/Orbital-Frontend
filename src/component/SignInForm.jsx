@@ -14,12 +14,12 @@ export default function SignInForm({ onSuccess, onSwitchToSignUp }) {
         axios.post('http://localhost:8080/signup/login', {
             username: username,
             password: password
-        })
+        }, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
             .then(res => {
                 const data = res.data;
                 console.log(data);
                 if (data.status === "SUCCESS" && data.code === 200) {
-                    onSuccess(data.data);
+                    onSuccess(data.data, data.token);
                 } else {
                     setError(data.message);
                 }

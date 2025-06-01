@@ -1,20 +1,31 @@
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import AddBudgetForm from "../component/AddBudgetForm";
+import { useEffect, useState } from "react";
+import { jwtDecode } from 'jwt-decode';
 import ExistingBudget from "../component/ExistingBudget";
 
 
 export default function Dashboard() {
     const location = useLocation();
     const navigate = useNavigate();
-    console.log("location.state:", location.state);
-    console.log("localStorage username:", localStorage.getItem('username'));
-    const username = location.state?.user?.username || localStorage.getItem('username') || "User";
-    console.log("Dashboard username:", username);
+    const [username, setUserName] = useState(false);
 
     const handleLogout = () => {
-        localStorage.removeItem('username'); // Clear username from local storage
+        localStorage.removeItem('token')
         navigate('/'); // Redirect to the home page
     }
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/'); // Redirect to login/signin page if token is missing
+        }
+        else {
+            const decoded = jwtDecode(token);
+            setUserName(decoded.sub); // Extract username from token
+        }
+    });
+
     return (
         <>
             <nav style={{ marginBottom: '24px', display: 'flex', gap: '16px' }}>
@@ -37,7 +48,7 @@ export default function Dashboard() {
                 </button>
             </nav>
             <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-                <h1>Welcome back, {username} </h1>
+                <h1>Welcome, {username} </h1>
                 <p>Welcome to your dashboard! Here you can set your budget!!</p>
                 <div style={{ display: 'flex', alignItems: 'flex-start' }}>
                     <div style={{ marginRight: '40px', width: '500px' }}>

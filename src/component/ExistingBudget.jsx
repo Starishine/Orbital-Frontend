@@ -10,14 +10,15 @@ export default function ExistingBudget() {
     const [editIdx, setEditIdx] = useState(null); // State to track which budget is being edited
 
     useEffect(() => {
-        const username = localStorage.getItem('username');
-        if (!username) {
+        const token = localStorage.getItem('token');
+        if (!token) {
             setError('User not logged in.');
             setLoading(false);
             return;
         }
 
-        axios.get(`http://localhost:8080/budget/get?username=${username}`)
+        axios.get(`http://localhost:8080/budget/get`,
+            { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
             .then(response => {
                 console.log('Fetched budgets:', response.data);
                 setBudgets(response.data);
@@ -35,8 +36,9 @@ export default function ExistingBudget() {
     // Function to refresh budgets after editing
     const refreshBudgets = () => {
         // re-fetch budgets after edit so that the UI reflects the latest data
-        const username = localStorage.getItem('username');
-        axios.get(`http://localhost:8080/budget/get?username=${username}`)
+        axios.get(`http://localhost:8080/budget/get`,
+            { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+        )
             .then(response => setBudgets(response.data));
         setEditIdx(null);
     };

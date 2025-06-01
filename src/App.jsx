@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Home from './pages/Home';
 import Exchange from './pages/Exchange';
 import Contact from './pages/Contact';
-import HelloPage from './pages/HelloPage';
+import MainApp from './pages/MainApp';
 import Dashboard from './pages/Dashboard';
 
 export default function App() {
@@ -16,7 +16,7 @@ export default function App() {
 
         </nav>
         <Routes>
-          <Route path="/" element={<HelloPage />} />
+          <Route path="/" element={<MainApp />} />
           <Route path="/exchange" element={<Exchange />} />
           <Route path="/dashboard" element={<Dashboard />} />
 

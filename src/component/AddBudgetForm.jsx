@@ -33,15 +33,12 @@ export default function AddBudgetForm() {
         e.preventDefault();
         const finalCategory = category === "Others" ? customCategory : category;
         const currency = localStorage.getItem('currency'); // Default to SGD if no currency is set
-        const username = localStorage.getItem('username'); // Get username from localStorage
-        alert(`Category: ${finalCategory}\nAmount: ${currency} ${amount}`);
 
         axios.post('http://localhost:8080/budget/create', {
-            username: username,
             category: finalCategory,
             currency: currency,
             amount: parseFloat(amount)
-        })
+        }, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
             .then((response) => {
                 console.log(response);
                 const data = response.data;

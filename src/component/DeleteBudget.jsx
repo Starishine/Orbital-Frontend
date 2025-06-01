@@ -5,7 +5,8 @@ export default function DeleteBudget({ budgetId, onDeleteSuccess }) {
             return; // User cancelled the deletion
         }
 
-        axios.delete(`http://localhost:8080/budget/delete/${budgetId}`)
+        axios.delete(`http://localhost:8080/budget/delete/${budgetId}`,
+            { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
             .then((response) => {
                 const data = response.data;
                 console.log(data);

@@ -10,7 +10,7 @@ export default function EditBudget({ budget, onSave, onCancel }) {
             id: budget.id,
             currency: currency,
             amount: parseFloat(amount)
-        })
+        }, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
             .then(() => {
                 onSave(); // callback to refresh budgets in parent
             })
