@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import Home from './pages/Home';
 import Exchange from './pages/Exchange';
 import Contact from './pages/Contact';
 import MainApp from './pages/MainApp';
 import Dashboard from './pages/Dashboard';
+import Expenses from './pages/Expenses';
 
 export default function App() {
   return (
@@ -19,6 +19,7 @@ export default function App() {
           <Route path="/" element={<MainApp />} />
           <Route path="/exchange" element={<Exchange />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/expenses" element={<Expenses />} />
 
 
         </Routes>

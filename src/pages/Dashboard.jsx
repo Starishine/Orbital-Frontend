@@ -31,6 +31,7 @@ export default function Dashboard() {
             <nav style={{ marginBottom: '24px', display: 'flex', gap: '16px' }}>
                 <Link to="/dashboard">Dashboard</Link>
                 <Link to="/exchange">Exchange</Link>
+                <Link to="/expenses">Expenses</Link>
                 <button
                     onClick={handleLogout}
                     style={{
@@ -46,7 +47,7 @@ export default function Dashboard() {
                 >
                     Logout
                 </button>
-            </nav>
+            </nav >
             <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
                 <h1>Welcome, {username} </h1>
                 <p>Welcome to your dashboard! Here you can set your budget!!</p>
