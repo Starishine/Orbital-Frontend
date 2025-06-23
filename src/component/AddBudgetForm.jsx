@@ -37,6 +37,7 @@ export default function AddBudgetForm() {
         axios.post('http://localhost:8080/budget/create', {
             category: finalCategory,
             currency: currency,
+            amountAllocated: parseFloat(amount),
             amount: parseFloat(amount)
         }, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
             .then((response) => {

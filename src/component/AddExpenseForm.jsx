@@ -1,12 +1,15 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import CurrencyDropdown from "./CurrencyDropdown";
+import CategoryFeedback from "./CategoryFeedback";
 
 export default function AddExpenseForm() {
     const [categories, setCategories] = useState([]);
     const [currency, setCurrency] = useState(localStorage.getItem('currency'));
     const [description, setDescription] = useState('');
     const [category, setCategory] = useState('');
+    const [showFeedback, setShowFeedback] = useState(false);
+    const [correctCategory, setCorrectCategory] = useState('');
     const [date, setDate] = useState(() => {
         const today = new Date();
         return today.toISOString().split('T')[0]; // YYYY-MM-DD
@@ -69,6 +72,7 @@ export default function AddExpenseForm() {
                     console.log(res.data);
                     if (res.data && res.data.suggested) {
                         setCategory(res.data.suggested);
+                        setShowFeedback(true);
                         // If the suggested category is not in the list, add it
                         if (!categories.includes(res.data.suggested)) {
                             setCategories(prevCategories => [...prevCategories, res.data.suggested]);
@@ -96,6 +100,25 @@ export default function AddExpenseForm() {
                                 <option key={index} value={category}>{category}</option>
                             ))}
                         </select>
+                        {showFeedback && category && (
+                            <CategoryFeedback
+                                description={description}
+                                suggestedCategory={category}
+                                categories={categories}
+                                onAccept={() => setShowFeedback(false)}
+                                onCorrection={(correctCat) => {
+                                    setCategory(correctCat);
+                                    setShowFeedback(false);
+                                    // Add to dropdown if not already present and not empty
+                                    if (
+                                        correctCat &&
+                                        !categories.includes(correctCat)
+                                    ) {
+                                        setCategories(prev => [...prev, correctCat]);
+                                    }
+                                }}
+                            />
+                        )}
                     </div>
                     <div style={{ marginBottom: '16px' }}>
                         <CurrencyDropdown currency={currency} setCurrency={setCurrency} />

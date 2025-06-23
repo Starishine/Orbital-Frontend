@@ -14,10 +14,8 @@ export default function Expenses() {
                 <p>This is the expenses page where you can manage your expenses.</p>
                 {<AddExpenseForm />}
                 <div style={{ marginTop: '24px' }}>
-                    <h2>Existing Expenses</h2>
                     <ExistingExpenses />
                 </div>
-
 
             </div>
         </>

@@ -46,44 +46,35 @@ export default function ExistingExpenses() {
 
     return (
         <div>
+            <h3 style={{ marginBottom: '20px' }}>Existing Expenses</h3>
             {expenses.length === 0 ? (
                 <p>No Expenses found.</p>
             ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                    {expenses
-                        .map((expenses, idx) => (
-                            <div
-                                key={expenses._id || idx}
-                                className="budget-dotted-container"
-                                style={{
-                                    float: 'right',
-                                    width: '300px',
-                                    margin: '12px',
-                                    background: '#f5faff',
-                                    padding: '16px',
-                                    borderRadius: '12px',
-                                    border: '2px dotted rgb(0, 0, 0)',
-                                    boxShadow: '0 2px 8px rgba(25, 118, 210, 0.04)',
-
-                                }}
-                            >
-                                <div style={{ fontWeight: 600, fontSize: '1.1em', marginBottom: 4 }}>
-                                    Category : {expenses.category}
-                                </div>
-                                <div>
-                                    <span>Amount spent: </span>
-                                    <span style={{ color: '#1976d2', fontWeight: 500 }}>
-                                        {expenses.currency} {Number(expenses.amount).toFixed(2)}
-                                    </span>{' '}
-                                    <p>Notes: {expenses.notes} </p>
-                                    <p> Date: {expenses.date} </p>
-
-                                </div>
-                            </div>
+                <table style={{ width: '100%', borderCollapse: 'collapse', background: '#f5faff' }}>
+                    <thead>
+                        <tr>
+                            <th style={{ border: '1px solid #ccc', padding: '8px' }}>Category</th>
+                            <th style={{ border: '1px solid #ccc', padding: '8px' }}>Name</th>
+                            <th style={{ border: '1px solid #ccc', padding: '8px' }}>Amount</th>
+                            <th style={{ border: '1px solid #ccc', padding: '8px' }}>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {expenses.map((expense, idx) => (
+                            <tr key={expense._id || idx}>
+                                <td style={{ border: '1px solid #ccc', padding: '8px' }}>{expense.category}</td>
+                                <td style={{ border: '1px solid #ccc', padding: '8px' }}>{expense.notes || '-'}</td>
+                                <td style={{ border: '1px solid #ccc', padding: '8px' }}>
+                                    {expense.currency} {Number(expense.amount).toFixed(2)}
+                                </td>
+                                <td style={{ border: '1px solid #ccc', padding: '8px' }}>
+                                    {expense.date ? new Date(expense.date).toLocaleDateString() : '-'}
+                                </td>
+                            </tr>
                         ))}
-                </div>
-            )
-            }
-        </div >
+                    </tbody>
+                </table>
+            )}
+        </div>
     );
 }
