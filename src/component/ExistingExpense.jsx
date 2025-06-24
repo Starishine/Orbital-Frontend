@@ -6,6 +6,12 @@ export default function ExistingExpenses() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [editIdx, setEditIdx] = useState(null); // State to track which budget is being edited
+    const [filters, setFilters] = useState({
+        category: '',
+        name: '',
+        amount: '',
+        date: ''
+    });
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -44,6 +50,14 @@ export default function ExistingExpenses() {
         setEditIdx(null);
     };
 
+    // Filtering logic
+    const filteredExpenses = expenses.filter(expense =>
+        (filters.category === '' || expense.category.toLowerCase().includes(filters.category.toLowerCase())) &&
+        (filters.name === '' || (expense.notes || '').toLowerCase().includes(filters.name.toLowerCase())) &&
+        (filters.amount === '' || String(expense.amount).includes(filters.amount)) &&
+        (filters.date === '' || (expense.date && new Date(expense.date).toLocaleDateString().includes(filters.date)))
+    );
+
     return (
         <div>
             <h3 style={{ marginBottom: '20px' }}>Existing Expenses</h3>
@@ -53,14 +67,50 @@ export default function ExistingExpenses() {
                 <table style={{ width: '100%', borderCollapse: 'collapse', background: '#f5faff' }}>
                     <thead>
                         <tr>
-                            <th style={{ border: '1px solid #ccc', padding: '8px' }}>Category</th>
-                            <th style={{ border: '1px solid #ccc', padding: '8px' }}>Name</th>
-                            <th style={{ border: '1px solid #ccc', padding: '8px' }}>Amount</th>
-                            <th style={{ border: '1px solid #ccc', padding: '8px' }}>Date</th>
+                            <th style={{ border: '1px solid #ccc', padding: '8px' }}>
+                                Category<br />
+                                <input
+                                    type="text"
+                                    value={filters.category}
+                                    onChange={e => setFilters(f => ({ ...f, category: e.target.value }))}
+                                    style={{ width: '90%' }}
+                                    placeholder="Filter"
+                                />
+                            </th>
+                            <th style={{ border: '1px solid #ccc', padding: '8px' }}>
+                                Name<br />
+                                <input
+                                    type="text"
+                                    value={filters.name}
+                                    onChange={e => setFilters(f => ({ ...f, name: e.target.value }))}
+                                    style={{ width: '90%' }}
+                                    placeholder="Filter"
+                                />
+                            </th>
+                            <th style={{ border: '1px solid #ccc', padding: '8px' }}>
+                                Amount<br />
+                                <input
+                                    type="text"
+                                    value={filters.amount}
+                                    onChange={e => setFilters(f => ({ ...f, amount: e.target.value }))}
+                                    style={{ width: '90%' }}
+                                    placeholder="Filter"
+                                />
+                            </th>
+                            <th style={{ border: '1px solid #ccc', padding: '8px' }}>
+                                Date<br />
+                                <input
+                                    type="text"
+                                    value={filters.date}
+                                    onChange={e => setFilters(f => ({ ...f, date: e.target.value }))}
+                                    style={{ width: '90%' }}
+                                    placeholder="Filter"
+                                />
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
-                        {expenses.map((expense, idx) => (
+                        {filteredExpenses.map((expense, idx) => (
                             <tr key={expense._id || idx}>
                                 <td style={{ border: '1px solid #ccc', padding: '8px' }}>{expense.category}</td>
                                 <td style={{ border: '1px solid #ccc', padding: '8px' }}>{expense.notes || '-'}</td>

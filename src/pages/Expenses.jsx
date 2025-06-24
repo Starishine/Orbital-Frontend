@@ -9,7 +9,7 @@ export default function Expenses() {
                 <Link to="/exchange">Exchange</Link>
                 <Link to="/expenses">Expenses</Link>
             </nav>
-            <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
+            <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif', textAlign: 'center' }}>
                 <h1>Set your expenses</h1>
                 <p>This is the expenses page where you can manage your expenses.</p>
                 {<AddExpenseForm />}
