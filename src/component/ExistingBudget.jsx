@@ -70,10 +70,12 @@ export default function ExistingBudget() {
                                 {budget.category}
                             </div>
                             <div>
-                                <span>Amount remaining: </span>
-                                <span style={{ color: '#1976d2', fontWeight: 500 }}>
-                                    {budget.currency}
-                                </span>{' '}
+                                <div>
+                                    Allocated: {budget.currency} {Number(budget.amountAllocated).toFixed(2)}
+                                </div>
+                                <div>
+                                    Remaining: {budget.currency} {Number(budget.amount).toFixed(2)}
+                                </div>
                                 {editIdx === idx ? (
                                     <EditBudget
                                         budget={budget}
@@ -82,7 +84,6 @@ export default function ExistingBudget() {
                                     />
                                 ) : (
                                     <>
-                                        {Number(budget.amount).toFixed(2)}
                                         <button
                                             style={{
                                                 marginLeft: '12px',
