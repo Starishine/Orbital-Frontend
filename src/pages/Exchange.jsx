@@ -7,6 +7,8 @@ export default function Exchange() {
       <nav style={{ marginTop: '24px', display: 'flex', gap: '16px' }}>
         <Link to="/dashboard">Dashboard</Link>
         <Link to="/exchange">Exchange</Link>
+        <Link to="/expenses">Expenses</Link>
+        <Link to="/visualisation">Visualisation</Link>
       </nav>
       <CurrencyExchange />
 

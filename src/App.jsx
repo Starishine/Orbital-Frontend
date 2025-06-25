@@ -4,6 +4,7 @@ import Contact from './pages/Contact';
 import MainApp from './pages/MainApp';
 import Dashboard from './pages/Dashboard';
 import Expenses from './pages/Expenses';
+import Visualisation from './pages/Visualisation';
 
 export default function App() {
   return (
@@ -20,6 +21,7 @@ export default function App() {
           <Route path="/exchange" element={<Exchange />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/expenses" element={<Expenses />} />
+          <Route path="visualisation" element={<Visualisation />} />
 
 
         </Routes>

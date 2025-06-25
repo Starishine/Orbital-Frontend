@@ -50,7 +50,7 @@ export default function ExistingBudget() {
 
     return (
         <div>
-            <h3 style={{ marginBottom: '20px' }}>Existing Budgets</h3>
+            <h3 style={{ marginBottom: '20px' }}>Existing Budgets (Set in home currency)</h3>
             {budgets.map((budget, idx) => {
                 const spent = budget.amountAllocated - budget.amount;
                 const data = {
@@ -59,7 +59,7 @@ export default function ExistingBudget() {
                         {
                             label: 'Spent',
                             data: [spent],
-                            backgroundColor: '#1976d2',
+                            backgroundColor: '#d32f2f',
                         },
                         {
                             label: 'Remaining',

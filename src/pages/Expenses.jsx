@@ -8,6 +8,7 @@ export default function Expenses() {
                 <Link to="/dashboard">Dashboard</Link>
                 <Link to="/exchange">Exchange</Link>
                 <Link to="/expenses">Expenses</Link>
+                <Link to="/visualisation">Visualisation</Link>
             </nav>
             <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif', textAlign: 'center' }}>
                 <h1>Set your expenses</h1>

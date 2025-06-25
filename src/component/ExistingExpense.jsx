@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import ConvertExpensesToHomeCurrency from './ConvertExpensesToHomeCurrency';
+import CurrencyDropdown from './CurrencyDropdown';
 
 export default function ExistingExpenses() {
     const [expenses, setExpenses] = useState([]);
+    const [homeCurrency, setHomeCurrency] = useState('SGD'); // Default home currency
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [editIdx, setEditIdx] = useState(null); // State to track which budget is being edited
@@ -124,7 +127,12 @@ export default function ExistingExpenses() {
                         ))}
                     </tbody>
                 </table>
+
             )}
+            <div style={{ marginBottom: 20, marginTop: 20 }}>
+                <CurrencyDropdown currency={homeCurrency} setCurrency={setHomeCurrency} />
+            </div>
+            <ConvertExpensesToHomeCurrency homeCurrency={homeCurrency} />
         </div>
     );
 }

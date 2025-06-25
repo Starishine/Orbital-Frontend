@@ -3,6 +3,8 @@ import AddBudgetForm from "../component/AddBudgetForm";
 import { useEffect, useState } from "react";
 import { jwtDecode } from 'jwt-decode';
 import ExistingBudget from "../component/ExistingBudget";
+import ExistingExpenses from "../component/ExistingExpense";
+import BudgetForecast from "../component/BudgetForecast";
 
 
 export default function Dashboard() {
@@ -32,6 +34,7 @@ export default function Dashboard() {
                 <Link to="/dashboard">Dashboard</Link>
                 <Link to="/exchange">Exchange</Link>
                 <Link to="/expenses">Expenses</Link>
+                <Link to="/visualisation">Visualisation</Link>
                 <button
                     onClick={handleLogout}
                     style={{
