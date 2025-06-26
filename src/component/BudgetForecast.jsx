@@ -39,6 +39,7 @@ export default function BudgetForecast() {
     if (loading) return <div>Loading forecast...</div>;
     if (error) return <div style={{ color: 'red' }}>{error}</div>;
 
+
     // Pie chart: spent per category from budget repo (allocated - remaining)
     const pieLabels = budgets.map(b => b.category);
     const pieDataValues = budgets.map(b => Number(b.amountAllocated) - Number(b.amount));

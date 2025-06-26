@@ -66,7 +66,10 @@ export default function AddBudgetForm() {
 
     return (
         <>
-            <div className="budget-dotted-container" style={{ padding: '20px', fontFamily: 'Arial, sans-serif', maxWidth: 400 }}>
+            <div className="budget-dotted-container" style={{
+                padding: '20px', fontFamily: 'Arial, sans-serif', maxWidth: 400, background: 'var(--card)',
+                color: 'var(--text)'
+            }}>
                 <h2>Create budget</h2>
                 <form onSubmit={handleSubmit}>
                     <div style={{ marginBottom: '16px' }}>
@@ -77,7 +80,7 @@ export default function AddBudgetForm() {
                             id="category"
                             value={category}
                             onChange={handleCategoryChange}
-                            style={{ width: '100%', padding: 8, borderRadius: 4, border: '1px solid #ccc' }}
+                            style={{ width: '100%', padding: 8, borderRadius: 4, border: '1px solid #ccc', background: 'var(--bg)', color: 'var(--text)' }}
                             required
                         >
                             <option value="" disabled>Select category</option>
@@ -98,7 +101,10 @@ export default function AddBudgetForm() {
                                 autoComplete='on'
                                 value={customCategory}
                                 onChange={e => setCustomCategory(e.target.value)}
-                                style={{ width: '100%', padding: 8, borderRadius: 4, border: '1px solid #ccc' }}
+                                style={{
+                                    width: '100%', padding: 8, borderRadius: 4, border: '1px solid var(--primary)', background: 'var(--bg)',
+                                    color: 'var(--text)'
+                                }}
                                 required
                             />
                         </div>
@@ -119,7 +125,10 @@ export default function AddBudgetForm() {
                             autoComplete='on'
                             value={amount}
                             onChange={e => setAmount(e.target.value)}
-                            style={{ width: '100%', padding: 8, borderRadius: 4, border: '1px solid #ccc', boxSizing: 'border-box' }}
+                            style={{
+                                width: '100%', padding: 8, borderRadius: 4, border: '1px solid var(--primary)', background: 'var(--bg)',
+                                color: 'var(--text)', boxSizing: 'border-box'
+                            }}
                             required
                         />
                     </div>
@@ -129,8 +138,8 @@ export default function AddBudgetForm() {
                         style={{
                             width: '100%',
                             padding: '10px',
-                            background: '#1976d2',
-                            color: '#fff',
+                            background: 'var(--primary)',
+                            color: 'var(--card)',
                             border: 'none',
                             borderRadius: '4px',
                             fontWeight: 600,

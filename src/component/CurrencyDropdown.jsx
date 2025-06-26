@@ -23,7 +23,10 @@ export default function CurrencyDropdown({ currency, setCurrency }) {
 
     return (
         <div>
-            <label style={{ display: 'block', marginBottom: 6, fontWeight: 500 }}>
+            <label style={{
+                display: 'block', marginBottom: 6, fontWeight: 500,
+                color: 'var(--text)', fontSize: '16px', marginTop: '10px'
+            }}>
                 Select Currency:
                 <select
                     value={currency}

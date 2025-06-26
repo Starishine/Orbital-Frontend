@@ -67,46 +67,82 @@ export default function ExistingExpenses() {
             {expenses.length === 0 ? (
                 <p>No Expenses found.</p>
             ) : (
-                <table style={{ width: '100%', borderCollapse: 'collapse', background: '#f5faff' }}>
+                <table
+                    style={{
+                        width: '100%',
+                        borderCollapse: 'collapse',
+                        background: 'var(--card)',
+                        color: 'var(--text)',
+                        boxShadow: '0 2px 8px rgba(25, 118, 210, 0.04)'
+                    }}
+                >
                     <thead>
                         <tr>
-                            <th style={{ border: '1px solid #ccc', padding: '8px' }}>
+                            <th style={{ border: '1px solid var(--primary)', padding: '8px', background: 'var(--bg)' }}>
                                 Category<br />
                                 <input
                                     type="text"
                                     value={filters.category}
                                     onChange={e => setFilters(f => ({ ...f, category: e.target.value }))}
-                                    style={{ width: '90%' }}
+                                    style={{
+                                        width: '90%',
+                                        background: 'var(--bg)',
+                                        color: 'var(--text)',
+                                        border: '1px solid var(--primary)',
+                                        borderRadius: 4,
+                                        padding: 4
+                                    }}
                                     placeholder="Filter"
                                 />
                             </th>
-                            <th style={{ border: '1px solid #ccc', padding: '8px' }}>
+                            <th style={{ border: '1px solid var(--primary)', padding: '8px', background: 'var(--bg)' }}>
                                 Name<br />
                                 <input
                                     type="text"
                                     value={filters.name}
                                     onChange={e => setFilters(f => ({ ...f, name: e.target.value }))}
-                                    style={{ width: '90%' }}
+                                    style={{
+                                        width: '90%',
+                                        background: 'var(--bg)',
+                                        color: 'var(--text)',
+                                        border: '1px solid var(--primary)',
+                                        borderRadius: 4,
+                                        padding: 4
+                                    }}
                                     placeholder="Filter"
                                 />
                             </th>
-                            <th style={{ border: '1px solid #ccc', padding: '8px' }}>
+                            <th style={{ border: '1px solid var(--primary)', padding: '8px', background: 'var(--bg)' }}>
                                 Amount<br />
                                 <input
                                     type="text"
                                     value={filters.amount}
                                     onChange={e => setFilters(f => ({ ...f, amount: e.target.value }))}
-                                    style={{ width: '90%' }}
+                                    style={{
+                                        width: '90%',
+                                        background: 'var(--bg)',
+                                        color: 'var(--text)',
+                                        border: '1px solid var(--primary)',
+                                        borderRadius: 4,
+                                        padding: 4
+                                    }}
                                     placeholder="Filter"
                                 />
                             </th>
-                            <th style={{ border: '1px solid #ccc', padding: '8px' }}>
+                            <th style={{ border: '1px solid var(--primary)', padding: '8px', background: 'var(--bg)' }}>
                                 Date<br />
                                 <input
                                     type="text"
                                     value={filters.date}
                                     onChange={e => setFilters(f => ({ ...f, date: e.target.value }))}
-                                    style={{ width: '90%' }}
+                                    style={{
+                                        width: '90%',
+                                        background: 'var(--bg)',
+                                        color: 'var(--text)',
+                                        border: '1px solid var(--primary)',
+                                        borderRadius: 4,
+                                        padding: 4
+                                    }}
                                     placeholder="Filter"
                                 />
                             </th>
@@ -115,19 +151,18 @@ export default function ExistingExpenses() {
                     <tbody>
                         {filteredExpenses.map((expense, idx) => (
                             <tr key={expense._id || idx}>
-                                <td style={{ border: '1px solid #ccc', padding: '8px' }}>{expense.category}</td>
-                                <td style={{ border: '1px solid #ccc', padding: '8px' }}>{expense.notes || '-'}</td>
-                                <td style={{ border: '1px solid #ccc', padding: '8px' }}>
+                                <td style={{ border: '1px solid var(--primary)', padding: '8px' }}>{expense.category}</td>
+                                <td style={{ border: '1px solid var(--primary)', padding: '8px' }}>{expense.notes || '-'}</td>
+                                <td style={{ border: '1px solid var(--primary)', padding: '8px' }}>
                                     {expense.currency} {Number(expense.amount).toFixed(2)}
                                 </td>
-                                <td style={{ border: '1px solid #ccc', padding: '8px' }}>
+                                <td style={{ border: '1px solid var(--primary)', padding: '8px' }}>
                                     {expense.date ? new Date(expense.date).toLocaleDateString() : '-'}
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
-
             )}
             <div style={{ marginBottom: 20, marginTop: 20 }}>
                 <CurrencyDropdown currency={homeCurrency} setCurrency={setHomeCurrency} />

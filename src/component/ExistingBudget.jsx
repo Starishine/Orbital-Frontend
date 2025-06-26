@@ -95,10 +95,10 @@ export default function ExistingBudget() {
                             width: '100%',
                             maxWidth: 400,
                             margin: '24px auto',
-                            background: '#f5faff',
+                            background: 'var(--card)',
                             padding: '16px',
                             borderRadius: '12px',
-                            border: '2px dotted rgb(0, 0, 0)',
+                            border: '2px dotted rgb(117, 124, 224)',
                             boxShadow: '0 2px 8px rgba(25, 118, 210, 0.04)',
                         }}
                     >
@@ -117,7 +117,7 @@ export default function ExistingBudget() {
                             }}
                             height={60} // Increase height for a thicker appearance
                         />
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8, color: 'var(--text)' }}>
                             <span>Allocated: {budget.currency} {Number(budget.amountAllocated).toFixed(2)}</span>
                             <span>Remaining: {budget.currency} {Number(budget.amount).toFixed(2)}</span>
                         </div>
@@ -128,11 +128,15 @@ export default function ExistingBudget() {
                                 onCancel={() => setEditIdx(null)}
                             />
                         ) : (
-                            <>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 12 }}>
                                 <button
                                     style={{
-                                        marginLeft: '12px',
-                                        borderColor: 'black'
+                                        borderColor: 'var(--primary)',
+                                        borderRadius: 4,
+                                        padding: '6px 12px',
+                                        borderWidth: 1,
+                                        borderStyle: 'solid',
+                                        cursor: 'pointer'
                                     }}
                                     onClick={() => setEditIdx(idx)}
                                 >
@@ -142,7 +146,7 @@ export default function ExistingBudget() {
                                     budgetId={budget.id}
                                     onDeleteSuccess={refreshBudgets}
                                 />
-                            </>
+                            </div>
                         )}
                     </div>
                 );

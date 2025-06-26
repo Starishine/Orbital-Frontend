@@ -111,14 +111,16 @@ export default function ForecastConvertedExpenses({ converted }) {
                 gap: 32,
                 justifyContent: 'center',
                 alignItems: 'stretch'
+
             }}>
                 {forecastInfo.map(info => (
                     <div
                         key={info.category}
                         style={{
-                            minWidth: 320,
+                            minWidth: 380,
                             maxWidth: 380,
                             background: '#fff',
+                            color: '#333',
                             boxShadow: '0 2px 12px rgba(0,0,0,0.10)',
                             borderRadius: 14,
                             padding: 24,

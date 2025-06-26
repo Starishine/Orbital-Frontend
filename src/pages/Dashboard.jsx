@@ -6,11 +6,20 @@ import ExistingBudget from "../component/ExistingBudget";
 import ExistingExpenses from "../component/ExistingExpense";
 import BudgetForecast from "../component/BudgetForecast";
 
-
 export default function Dashboard() {
     const location = useLocation();
     const navigate = useNavigate();
     const [username, setUserName] = useState(false);
+    const [darkMode, setDarkMode] = useState(() => localStorage.getItem('darkMode') === 'true');
+
+    useEffect(() => {
+        if (darkMode) {
+            document.body.classList.add('dark-mode');
+        } else {
+            document.body.classList.remove('dark-mode');
+        }
+        localStorage.setItem('darkMode', darkMode);
+    }, [darkMode]);
 
     const handleLogout = () => {
         localStorage.removeItem('token')
@@ -26,23 +35,32 @@ export default function Dashboard() {
             const decoded = jwtDecode(token);
             setUserName(decoded.sub); // Extract username from token
         }
-    });
+    }, [navigate]);
 
     return (
         <>
-            <nav style={{ marginBottom: '24px', display: 'flex', gap: '16px' }}>
-                <Link to="/dashboard">Dashboard</Link>
-                <Link to="/exchange">Exchange</Link>
-                <Link to="/expenses">Expenses</Link>
-                <Link to="/visualisation">Visualisation</Link>
+            <nav style={{
+                marginBottom: '24px',
+                display: 'flex',
+                gap: '16px',
+                background: 'var(--card)',
+                color: 'var(--text)',
+                padding: '12px 24px',
+                borderRadius: 'var(--round-md)',
+                boxShadow: '0 2px 8px rgba(25, 118, 210, 0.04)'
+            }}>
+                <Link to="/dashboard" style={{ color: 'var(--primary)' }}>Dashboard</Link>
+                <Link to="/exchange" style={{ color: 'var(--primary)' }}>Exchange</Link>
+                <Link to="/expenses" style={{ color: 'var(--primary)' }}>Expenses</Link>
+                <Link to="/visualisation" style={{ color: 'var(--primary)' }}>Visualisation</Link>
                 <button
                     onClick={handleLogout}
                     style={{
                         marginLeft: 'auto',
-                        backgroundColor: '#1976d2',
-                        color: 'white',
+                        background: 'var(--primary)',
+                        color: 'var(--card)',
                         border: 'none',
-                        borderRadius: '4px',
+                        borderRadius: 'var(--round-sm)',
                         padding: '6px 16px',
                         fontWeight: 500,
                         cursor: 'pointer'
@@ -50,20 +68,57 @@ export default function Dashboard() {
                 >
                     Logout
                 </button>
-            </nav >
-            <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
+            </nav>
+            <div style={{
+                padding: '20px',
+                fontFamily: 'Arial, sans-serif',
+                background: 'var(--bg)',
+                color: 'var(--text)',
+                minHeight: '100vh'
+            }}>
                 <h1>Welcome, {username} </h1>
                 <p>Welcome to your dashboard! Here you can set your budget!!</p>
                 <div style={{ display: 'flex', alignItems: 'flex-start' }}>
-                    <div style={{ marginRight: '40px', width: '500px' }}>
+                    <div style={{
+                        marginRight: '40px',
+                        width: '500px',
+                        background: 'var(--card)',
+                        borderRadius: 'var(--round-md)',
+                        boxShadow: '0 2px 8px rgba(25, 118, 210, 0.04)',
+                        padding: '24px'
+                    }}>
                         <AddBudgetForm />
                     </div>
-                    <div style={{ flex: 1 }}>
+                    <div style={{
+                        flex: 1,
+                        background: 'var(--card)',
+                        borderRadius: 'var(--round-md)',
+                        boxShadow: '0 2px 8px rgba(25, 118, 210, 0.04)',
+                        padding: '24px'
+                    }}>
                         <ExistingBudget />
                     </div>
                 </div>
-
-
+                <button
+                    onClick={() => setDarkMode(dm => !dm)}
+                    style={{
+                        position: 'fixed',
+                        bottom: 24,
+                        right: 24,
+                        background: 'var(--primary)',
+                        color: 'var(--card)',
+                        border: 'none',
+                        borderRadius: 24,
+                        padding: '12px 28px',
+                        fontWeight: 600,
+                        fontSize: 16,
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                        cursor: 'pointer',
+                        zIndex: 1000
+                    }}
+                >
+                    {darkMode ? '🌙 Dark Mode' : '☀️ Light Mode'}
+                </button>
             </div>
         </>
     );
