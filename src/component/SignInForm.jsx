@@ -35,6 +35,7 @@ export default function SignInForm({ onSuccess, onSwitchToSignUp }) {
                 }
             })
     };
+    
 
     return (
         <>
@@ -72,4 +73,5 @@ export default function SignInForm({ onSuccess, onSwitchToSignUp }) {
             </form>
         </>
     );
+    
 }
