@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
+import React from 'react';
 
 export default function SignupForm({ onSuccess }) {
     const [username, setUsername] = useState('');
@@ -53,17 +54,19 @@ export default function SignupForm({ onSuccess }) {
                 handleSignup();
             }}
             style={{
-                maxWidth: '350px',
+                width: '350px',
                 margin: '0 auto',
                 padding: '24px',
-                border: '1px solid #ddd',
+                border: '1px solid var(--light)',
                 borderRadius: '8px',
-                background: '#fafbfc',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
+                background: 'var(--card)',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                color: 'var(--text)'
+
             }}
         >
             <div style={{ marginBottom: '16px' }}>
-                <label htmlFor="username" style={{ display: 'block', marginBottom: '6px', fontWeight: 500 }}>
+                <label htmlFor="username" style={{ display: 'block', marginBottom: '6px', fontWeight: 500, color: 'var(--text)' }}>
                     Username
                 </label>
                 <input
@@ -74,14 +77,16 @@ export default function SignupForm({ onSuccess }) {
                     style={{
                         width: '100%',
                         padding: '8px',
-                        border: '1px solid #ccc',
-                        borderRadius: '4px'
+                        border: '1px solid var(--primary)',
+                        borderRadius: '4px',
+                        background: 'var(--bg)',
+                        color: 'var(--text)'
                     }}
                     autoComplete="username"
                 />
             </div>
             <div style={{ marginBottom: '16px' }}>
-                <label htmlFor="password" style={{ display: 'block', marginBottom: '6px', fontWeight: 500 }}>
+                <label htmlFor="password" style={{ display: 'block', marginBottom: '6px', fontWeight: 500, color: 'var(--text)' }}>
                     Password
                 </label>
                 <input
@@ -92,14 +97,16 @@ export default function SignupForm({ onSuccess }) {
                     style={{
                         width: '100%',
                         padding: '8px',
-                        border: '1px solid #ccc',
-                        borderRadius: '4px'
+                        border: '1px solid var(--primary)',
+                        borderRadius: '4px',
+                        background: 'var(--bg)',
+                        color: 'var(--text)'
                     }}
                     autoComplete="new-password"
                 />
             </div>
             <div style={{ marginBottom: '16px' }}>
-                <label htmlFor="confirmPassword" style={{ display: 'block', marginBottom: '6px', fontWeight: 500 }}>
+                <label htmlFor="confirmPassword" style={{ display: 'block', marginBottom: '6px', fontWeight: 500, color: 'var(--text)' }}>
                     Confirm Password
                 </label>
                 <input
@@ -110,14 +117,16 @@ export default function SignupForm({ onSuccess }) {
                     style={{
                         width: '100%',
                         padding: '8px',
-                        border: '1px solid #ccc',
-                        borderRadius: '4px'
+                        border: '1px solid var(--primary)',
+                        borderRadius: '4px',
+                        background: 'var(--bg)',
+                        color: 'var(--text)'
                     }}
                     autoComplete="new-password"
                 />
             </div>
             <div style={{ marginBottom: '16px' }}>
-                <label htmlFor="email" style={{ display: 'block', marginBottom: '6px', fontWeight: 500 }}>
+                <label htmlFor="email" style={{ display: 'block', marginBottom: '6px', fontWeight: 500, color: 'var(--text)' }}>
                     Email
                 </label>
                 <input
@@ -128,8 +137,10 @@ export default function SignupForm({ onSuccess }) {
                     style={{
                         width: '100%',
                         padding: '8px',
-                        border: '1px solid #ccc',
-                        borderRadius: '4px'
+                        border: '1px solid var(--primary)',
+                        borderRadius: '4px',
+                        background: 'var(--bg)',
+                        color: 'var(--text)'
                     }}
                     autoComplete="email"
                 />
@@ -139,8 +150,8 @@ export default function SignupForm({ onSuccess }) {
                 style={{
                     width: '100%',
                     padding: '10px',
-                    background: '#1976d2',
-                    color: '#fff',
+                    background: 'var(--primary)',
+                    color: 'var(--card)',
                     border: 'none',
                     borderRadius: '4px',
                     fontWeight: 600,
@@ -151,12 +162,12 @@ export default function SignupForm({ onSuccess }) {
                 Sign Up
             </button>
             {error && (
-                <p style={{ color: 'red', marginTop: '16px', textAlign: 'center' }}>{error}</p>
+                <p style={{ color: 'var(--danger)', marginTop: '16px', textAlign: 'center' }}>{error}</p>
             )}
-            <p style={{ marginTop: '16px', textAlign: 'center' }}>
+            <p style={{ marginTop: '16px', textAlign: 'center', color: 'var(--text)' }}>
                 Already have an account?{' '}
                 <span
-                    style={{ color: '#1976d2', cursor: 'pointer', textDecoration: 'underline' }}
+                    style={{ color: 'var(--primary)', cursor: 'pointer', textDecoration: 'underline' }}
                     onClick={() => window.location.href = '/'} // Redirect to sign-in page
                 >
                     Sign In

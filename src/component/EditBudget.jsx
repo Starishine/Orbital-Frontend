@@ -1,19 +1,50 @@
 import { useState } from "react";
 import axios from "axios";
 import CurrencyDropdown from "./CurrencyDropdown";
+import React from "react";
 
 export default function EditBudget({ budget, onSave, onCancel }) {
     const [amount, setAmount] = useState(0.00);
     const [currency, setCurrency] = useState(budget.currency);
-    const handleSave = () => {
+
+    // Function to convert currency using an API
+    async function convertCurrency(amount, fromCurrency, toCurrency) {
+        if (fromCurrency === toCurrency) return amount;
+
+        const res = await fetch(`https://api.exchangerate-api.com/v4/latest/${fromCurrency}`);
+        const data = await res.json();
+        const rate = data.rates[toCurrency];
+        if (!rate) throw new Error('Conversion rate not found');
+        return amount * rate;
+    }
+
+    const handleSave = async () => {
+        let topUpAmount = parseFloat(amount);
+        let newAmountAllocated = budget.amountAllocated;
+        let newAmount = budget.amount;
+
+        // If currency changed, convert the top-up amount to the budget's original currency
+        if (currency !== budget.currency) {
+            try {
+                newAmountAllocated = await convertCurrency(budget.amountAllocated, budget.currency, currency);
+                newAmount = await convertCurrency(budget.amount, budget.currency, currency);
+            } catch (e) {
+                alert('Currency conversion failed.');
+                return;
+            }
+        }
+
+        newAmountAllocated += topUpAmount;
+        newAmount += topUpAmount;
+
         axios.put('http://localhost:8080/budget/update', {
             id: budget.id,
             currency: currency,
-            amountAllocated: parseFloat(amount) + budget.amountAllocated, // Add the new amount to the existing allocated amount
-            amount: parseFloat(amount) + budget.amount
+            amountAllocated: newAmountAllocated,
+            amount: newAmount
         }, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
             .then(() => {
-                onSave(); // callback to refresh budgets in parent
+                onSave();
             })
             .catch(() => alert('Failed to update budget.'));
     };

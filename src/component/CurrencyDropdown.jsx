@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import React from "react";
 
 export default function CurrencyDropdown({ currency, setCurrency }) {
     const [rates, setRates] = useState({});
@@ -23,7 +24,10 @@ export default function CurrencyDropdown({ currency, setCurrency }) {
 
     return (
         <div>
-            <label style={{ display: 'block', marginBottom: 6, fontWeight: 500 }}>
+            <label style={{
+                display: 'block', marginBottom: 6, fontWeight: 500,
+                color: 'var(--text)', fontSize: '16px', marginTop: '10px'
+            }}>
                 Select Currency:
                 <select
                     value={currency}

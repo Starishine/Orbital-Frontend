@@ -1,4 +1,7 @@
 import axios from 'axios';
+import ExistingExpenses from './ExistingExpense';
+import React from "react";
+
 export default function DeleteBudget({ budgetId, onDeleteSuccess }) {
     const handleDelete = () => {
         if (!window.confirm('Are you sure you want to delete this budget?')) {

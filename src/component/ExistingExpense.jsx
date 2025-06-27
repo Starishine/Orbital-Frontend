@@ -1,11 +1,21 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import ConvertExpensesToHomeCurrency from './ConvertExpensesToHomeCurrency';
+import CurrencyDropdown from './CurrencyDropdown';
+import React from 'react';
 
 export default function ExistingExpenses() {
     const [expenses, setExpenses] = useState([]);
+    const [homeCurrency, setHomeCurrency] = useState('SGD'); // Default home currency
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [editIdx, setEditIdx] = useState(null); // State to track which budget is being edited
+    const [filters, setFilters] = useState({
+        category: '',
+        name: '',
+        amount: '',
+        date: ''
+    });
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -44,30 +54,110 @@ export default function ExistingExpenses() {
         setEditIdx(null);
     };
 
+    // Filtering logic
+    const filteredExpenses = expenses.filter(expense =>
+        (filters.category === '' || expense.category.toLowerCase().includes(filters.category.toLowerCase())) &&
+        (filters.name === '' || (expense.notes || '').toLowerCase().includes(filters.name.toLowerCase())) &&
+        (filters.amount === '' || String(expense.amount).includes(filters.amount)) &&
+        (filters.date === '' || (expense.date && new Date(expense.date).toLocaleDateString().includes(filters.date)))
+    );
+
     return (
         <div>
             <h3 style={{ marginBottom: '20px' }}>Existing Expenses</h3>
             {expenses.length === 0 ? (
                 <p>No Expenses found.</p>
             ) : (
-                <table style={{ width: '100%', borderCollapse: 'collapse', background: '#f5faff' }}>
+                <table
+                    style={{
+                        width: '100%',
+                        borderCollapse: 'collapse',
+                        background: 'var(--card)',
+                        color: 'var(--text)',
+                        boxShadow: '0 2px 8px rgba(25, 118, 210, 0.04)'
+                    }}
+                >
                     <thead>
                         <tr>
-                            <th style={{ border: '1px solid #ccc', padding: '8px' }}>Category</th>
-                            <th style={{ border: '1px solid #ccc', padding: '8px' }}>Name</th>
-                            <th style={{ border: '1px solid #ccc', padding: '8px' }}>Amount</th>
-                            <th style={{ border: '1px solid #ccc', padding: '8px' }}>Date</th>
+                            <th style={{ border: '1px solid var(--primary)', padding: '8px', background: 'var(--bg)' }}>
+                                Category<br />
+                                <input
+                                    type="text"
+                                    value={filters.category}
+                                    onChange={e => setFilters(f => ({ ...f, category: e.target.value }))}
+                                    style={{
+                                        width: '90%',
+                                        background: 'var(--bg)',
+                                        color: 'var(--text)',
+                                        border: '1px solid var(--primary)',
+                                        borderRadius: 4,
+                                        padding: 4
+                                    }}
+                                    placeholder="Filter"
+                                />
+                            </th>
+                            <th style={{ border: '1px solid var(--primary)', padding: '8px', background: 'var(--bg)' }}>
+                                Name<br />
+                                <input
+                                    type="text"
+                                    value={filters.name}
+                                    onChange={e => setFilters(f => ({ ...f, name: e.target.value }))}
+                                    style={{
+                                        width: '90%',
+                                        background: 'var(--bg)',
+                                        color: 'var(--text)',
+                                        border: '1px solid var(--primary)',
+                                        borderRadius: 4,
+                                        padding: 4
+                                    }}
+                                    placeholder="Filter"
+                                />
+                            </th>
+                            <th style={{ border: '1px solid var(--primary)', padding: '8px', background: 'var(--bg)' }}>
+                                Amount<br />
+                                <input
+                                    type="text"
+                                    value={filters.amount}
+                                    onChange={e => setFilters(f => ({ ...f, amount: e.target.value }))}
+                                    style={{
+                                        width: '90%',
+                                        background: 'var(--bg)',
+                                        color: 'var(--text)',
+                                        border: '1px solid var(--primary)',
+                                        borderRadius: 4,
+                                        padding: 4
+                                    }}
+                                    placeholder="Filter"
+                                />
+                            </th>
+                            <th style={{ border: '1px solid var(--primary)', padding: '8px', background: 'var(--bg)' }}>
+                                Date<br />
+                                <input
+                                    type="text"
+                                    value={filters.date}
+                                    onChange={e => setFilters(f => ({ ...f, date: e.target.value }))}
+                                    style={{
+                                        width: '90%',
+                                        background: 'var(--bg)',
+                                        color: 'var(--text)',
+                                        border: '1px solid var(--primary)',
+                                        borderRadius: 4,
+                                        padding: 4
+                                    }}
+                                    placeholder="Filter"
+                                />
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
-                        {expenses.map((expense, idx) => (
+                        {filteredExpenses.map((expense, idx) => (
                             <tr key={expense._id || idx}>
-                                <td style={{ border: '1px solid #ccc', padding: '8px' }}>{expense.category}</td>
-                                <td style={{ border: '1px solid #ccc', padding: '8px' }}>{expense.notes || '-'}</td>
-                                <td style={{ border: '1px solid #ccc', padding: '8px' }}>
+                                <td style={{ border: '1px solid var(--primary)', padding: '8px' }}>{expense.category}</td>
+                                <td style={{ border: '1px solid var(--primary)', padding: '8px' }}>{expense.notes || '-'}</td>
+                                <td style={{ border: '1px solid var(--primary)', padding: '8px' }}>
                                     {expense.currency} {Number(expense.amount).toFixed(2)}
                                 </td>
-                                <td style={{ border: '1px solid #ccc', padding: '8px' }}>
+                                <td style={{ border: '1px solid var(--primary)', padding: '8px' }}>
                                     {expense.date ? new Date(expense.date).toLocaleDateString() : '-'}
                                 </td>
                             </tr>
@@ -75,6 +165,10 @@ export default function ExistingExpenses() {
                     </tbody>
                 </table>
             )}
+            <div style={{ marginBottom: 20, marginTop: 20 }}>
+                <CurrencyDropdown currency={homeCurrency} setCurrency={setHomeCurrency} />
+            </div>
+            <ConvertExpensesToHomeCurrency homeCurrency={homeCurrency} />
         </div>
     );
 }

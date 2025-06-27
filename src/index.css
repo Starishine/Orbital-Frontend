@@ -47,6 +47,36 @@
   --toastify-color-success: hsl(var(--accent));
 }
 
+
+:root {
+  /* ...existing variables... */
+  --bg: #ffffff;
+  --text: #213547;
+  --card: #fff;
+  --primary: #1976d2;
+  --danger: #d32f2f;
+  --success: #388e3c;
+}
+
+.dark-mode {
+  --bg: #181a1b;
+  --text: #f7f7f7;
+  --card: #23272a;
+  --primary: #90caf9;
+  --danger: #ef9a9a;
+  --success: #81c784;
+}
+
+body,
+html {
+  background: var(--bg);
+  color: var(--text);
+  transition: background 0.3s, color 0.3s;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
 a {
   font-weight: 500;
   color: #646cff;
