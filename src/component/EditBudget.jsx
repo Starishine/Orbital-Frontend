@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import CurrencyDropdown from "./CurrencyDropdown";
+import React from "react";
 
 export default function EditBudget({ budget, onSave, onCancel }) {
     const [amount, setAmount] = useState(0.00);

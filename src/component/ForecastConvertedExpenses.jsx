@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import React from 'react';
 
 export default function ForecastConvertedExpenses({ converted }) {
     const [budgets, setBudgets] = useState([]);
@@ -33,6 +34,31 @@ export default function ForecastConvertedExpenses({ converted }) {
 
     const today = new Date();
 
+    // Helper to group expenses by interval
+    function groupByInterval(expenses, interval) {
+        const groups = {};
+        expenses.forEach(e => {
+            let key = '';
+            const date = new Date(e.date);
+            if (interval === 'yearly') {
+                key = date.getFullYear();
+            } else if (interval === 'monthly') {
+                key = `${date.getFullYear()}-${date.getMonth() + 1}`;
+            } else if (interval === 'weekly') {
+                // Week number of year
+                const firstDay = new Date(date.getFullYear(), 0, 1);
+                const days = Math.floor((date - firstDay) / (24 * 60 * 60 * 1000));
+                key = `${date.getFullYear()}-W${Math.ceil((days + firstDay.getDay() + 1) / 7)}`;
+            } else {
+                // daily
+                key = date.toISOString().slice(0, 10);
+            }
+            if (!groups[key]) groups[key] = 0;
+            groups[key] += Number(e.convertedAmount ?? e.spent ?? e.amount ?? 0);
+        });
+        return Object.values(groups);
+    }
+
     // Forecast logic per category
     const forecastInfo = budgets.map(budget => {
         const catExpenses = converted.filter(e => e.category === budget.category && e.convertedAmount !== null);
@@ -52,48 +78,48 @@ export default function ForecastConvertedExpenses({ converted }) {
             else if (avgDiff > 6) interval = 'weekly';
         }
 
-        // Calculate rate based on interval
-        let rate = 0;
-        let intervalLabel = '';
-        const createdAt = budget.createdAt ? new Date(budget.createdAt) : (sortedDates[0] || today);
-        const daysElapsed = sortedDates.length > 0
-            ? Math.max(1, Math.ceil((today - sortedDates[0]) / (1000 * 60 * 60 * 24)))
-            : 1;
-        if (interval === 'daily') {
-            rate = spent / daysElapsed;
-            intervalLabel = 'day';
-        } else if (interval === 'weekly') {
-            rate = spent / (daysElapsed / 7);
-            intervalLabel = 'week';
-        } else if (interval === 'monthly') {
-            rate = spent / (daysElapsed / 30);
-            intervalLabel = 'month';
-        } else if (interval === 'yearly') {
-            rate = spent / (daysElapsed / 365);
-            intervalLabel = 'year';
+        // Calculate average spend per detected interval
+        const intervalGroups = groupByInterval(catExpenses, interval);
+        const avgPerInterval = intervalGroups.length
+            ? intervalGroups.reduce((a, b) => a + b, 0) / intervalGroups.length
+            : 0;
+
+        // Forecast intervals left
+        let intervalsLeft = Infinity;
+        if (avgPerInterval > 0) {
+            intervalsLeft = Number(budget.amount) / avgPerInterval;
         }
 
-        // Forecast days left
-        let daysLeft = Infinity;
-        if (rate > 0) {
-            if (interval === 'daily') daysLeft = Number(budget.amount) / rate;
-            else if (interval === 'weekly') daysLeft = Number(budget.amount) / (rate / 7);
-            else if (interval === 'monthly') daysLeft = Number(budget.amount) / (rate / 30);
-            else if (interval === 'yearly') daysLeft = Number(budget.amount) / (rate / 365);
+        // Forecast run out date
+        let runOutDate = null;
+        if (intervalsLeft !== Infinity && sortedDates.length > 0) {
+            let baseDate = today;
+            if (interval === 'yearly') {
+                runOutDate = new Date(baseDate.setFullYear(baseDate.getFullYear() + intervalsLeft));
+            } else if (interval === 'monthly') {
+                runOutDate = new Date(baseDate.setMonth(baseDate.getMonth() + intervalsLeft));
+            } else if (interval === 'weekly') {
+                runOutDate = new Date(baseDate.getTime() + intervalsLeft * 7 * 24 * 60 * 60 * 1000);
+            } else {
+                runOutDate = new Date(baseDate.getTime() + intervalsLeft * 24 * 60 * 60 * 1000);
+            }
         }
-        const runOutDate = daysLeft !== Infinity
-            ? new Date(today.getTime() + daysLeft * 24 * 60 * 60 * 1000)
-            : null;
 
         // Progress bar calculation
         const allocated = Number(budget.amountAllocated);
         const percentUsed = allocated > 0 ? Math.min(100, (spent / allocated) * 100) : 0;
 
+        // Interval label
+        let intervalLabel = interval === 'yearly' ? 'year'
+            : interval === 'monthly' ? 'month'
+                : interval === 'weekly' ? 'week'
+                    : 'day';
+
         return {
             category: budget.category,
             intervalLabel,
-            rate,
-            daysLeft,
+            avgPerInterval,
+            intervalsLeft,
             runOutDate,
             remaining: Number(budget.amount),
             spent,
@@ -111,7 +137,6 @@ export default function ForecastConvertedExpenses({ converted }) {
                 gap: 32,
                 justifyContent: 'center',
                 alignItems: 'stretch'
-
             }}>
                 {forecastInfo.map(info => (
                     <div
@@ -156,12 +181,12 @@ export default function ForecastConvertedExpenses({ converted }) {
                                 }}
                             />
                         </div>
-                        {info.rate > 0 && info.remaining > 0 ? (
+                        {info.avgPerInterval > 0 && info.remaining > 0 ? (
                             <div style={{ color: '#333', fontSize: 15, textAlign: 'left' }}>
                                 <span role="img" aria-label="forecast">⏳</span> Based on your <b>{info.intervalLabel}</b> spending pattern,
-                                if you keep spending at <b>{homeCurrency} {info.rate.toLocaleString(undefined, { minimumFractionDigits: 2 })}</b> per {info.intervalLabel},<br />
+                                if you keep spending at <b>{homeCurrency} {info.avgPerInterval.toLocaleString(undefined, { minimumFractionDigits: 2 })}</b> per {info.intervalLabel},<br />
                                 <span>
-                                    you’ll run out of budget in <b>{info.daysLeft.toFixed(0)}</b> days
+                                    you’ll run out of budget in <b>{info.intervalsLeft.toFixed(1)}</b> {info.intervalLabel}{info.intervalsLeft > 1 ? 's' : ''}
                                     {info.runOutDate && <> ({info.runOutDate.toLocaleDateString()})</>}
                                 </span>
                             </div>

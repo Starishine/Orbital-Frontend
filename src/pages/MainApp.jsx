@@ -3,6 +3,7 @@ import SignupForm from '../component/SignupForm';
 import SignInForm from '../component/SignInForm';
 import { useNavigate } from 'react-router-dom';
 import logo from '../assets/money-tree-logo.jpg';
+import React from 'react';
 
 export default function MainApp() {
   const [showSignUp, setShowSignUp] = useState(false);

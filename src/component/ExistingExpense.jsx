@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import ConvertExpensesToHomeCurrency from './ConvertExpensesToHomeCurrency';
 import CurrencyDropdown from './CurrencyDropdown';
+import React from 'react';
 
 export default function ExistingExpenses() {
     const [expenses, setExpenses] = useState([]);

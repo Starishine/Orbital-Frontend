@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import CurrencyDropdown from "./CurrencyDropdown";
 import CategoryFeedback from "./CategoryFeedback";
+import React from "react";
 
 export default function AddExpenseForm() {
     const [categories, setCategories] = useState([]);

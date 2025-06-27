@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from 'jwt-decode';
+import React from "react";
 
 export default function Visualisation() {
     const handleLogout = () => {

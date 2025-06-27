@@ -4,6 +4,7 @@ import { Pie } from 'react-chartjs-2';
 import { Chart, ArcElement, Tooltip, Legend } from 'chart.js';
 import ForecastConvertedExpenses from './ForecastConvertedExpenses';
 Chart.register(ArcElement, Tooltip, Legend);
+import React from "react";
 
 export default function BudgetForecast() {
     const [budgets, setBudgets] = useState([]);
@@ -40,9 +41,15 @@ export default function BudgetForecast() {
     if (error) return <div style={{ color: 'red' }}>{error}</div>;
 
 
-    // Pie chart: spent per category from budget repo (allocated - remaining)
-    const pieLabels = budgets.map(b => b.category);
-    const pieDataValues = budgets.map(b => Number(b.amountAllocated) - Number(b.amount));
+    // Pie chart : sum of converted expenses by category for visualisation 
+    const categoryTotals = {};
+    converted.forEach(item => {
+        if (!item.category) return;
+        if (!categoryTotals[item.category]) categoryTotals[item.category] = 0;
+        categoryTotals[item.category] += Number(item.convertedAmount);
+    });
+    const pieLabels = Object.keys(categoryTotals);
+    const pieDataValues = Object.values(categoryTotals)
     const pieColors = [
         '#1976d2', '#388e3c', '#fbc02d', '#d32f2f', '#7b1fa2', '#0288d1', '#c2185b', '#ffa000', '#388e3c', '#455a64',
         '#8d6e63', '#00bcd4', '#e91e63', '#ff5722', '#607d8b'

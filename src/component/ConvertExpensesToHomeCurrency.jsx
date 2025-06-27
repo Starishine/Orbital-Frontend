@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
+import React from "react";
 
 export default function ConvertExpensesToHomeCurrency({ homeCurrency }) {
     const [loading, setLoading] = useState(false);

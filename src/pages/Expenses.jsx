@@ -1,6 +1,7 @@
 import AddExpenseForm from "../component/AddExpenseForm";
 import ExistingExpenses from "../component/ExistingExpense";
 import { Link } from 'react-router-dom';
+import React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from 'jwt-decode';

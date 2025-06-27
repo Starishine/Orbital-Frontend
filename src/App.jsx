@@ -1,10 +1,10 @@
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Exchange from './pages/Exchange';
-import Contact from './pages/Contact';
 import MainApp from './pages/MainApp';
 import Dashboard from './pages/Dashboard';
 import Expenses from './pages/Expenses';
 import Visualisation from './pages/Visualisation';
+import React from 'react';
 
 export default function App() {
   return (

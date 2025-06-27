@@ -2,6 +2,7 @@ import { useState } from 'react';
 import '../index.css';
 import CurrencyDropdown from './CurrencyDropdown';
 import axios from 'axios';
+import React from "react";
 
 const categories = [
     "Food",

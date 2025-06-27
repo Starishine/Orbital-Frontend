@@ -5,6 +5,7 @@ import { jwtDecode } from 'jwt-decode';
 import ExistingBudget from "../component/ExistingBudget";
 import ExistingExpenses from "../component/ExistingExpense";
 import BudgetForecast from "../component/BudgetForecast";
+import React from "react";
 
 export default function Dashboard() {
     const location = useLocation();
