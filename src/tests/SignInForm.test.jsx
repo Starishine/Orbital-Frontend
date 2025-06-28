@@ -1,6 +1,6 @@
 import React from 'react'; // Import React to support JSX syntax (must do this for all files)
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import SignInForm from './SignInForm'; // Import the component to test
+import SignInForm from '../component/SignInForm'; // Import the component to test
 import axios from 'axios';
 import { vi } from 'vitest';
 import '@testing-library/jest-dom';

@@ -1,3 +1,4 @@
+import React from 'react';
 import axios from 'axios';
 export default function DeleteBudget({ budgetId, onDeleteSuccess }) {
     const handleDelete = () => {

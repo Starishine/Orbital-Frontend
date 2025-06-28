@@ -1,3 +1,4 @@
+import React from 'react';
 import CurrencyExchange from '../component/CurrencyExchange';
 import { Link } from 'react-router-dom';
 

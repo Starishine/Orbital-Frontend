@@ -1,3 +1,4 @@
+import React from 'react';
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import AddBudgetForm from "../component/AddBudgetForm";
 import { useEffect, useState } from "react";
@@ -30,7 +31,8 @@ export default function Dashboard() {
         <>
             <nav style={{ marginBottom: '24px', display: 'flex', gap: '16px' }}>
                 <Link to="/dashboard">Dashboard</Link>
-                <Link to="/exchange">Exchange</Link>
+                <button onClick={() => navigate('/exchange')}>Exchange</button>
+
                 <button
                     onClick={handleLogout}
                     style={{
