@@ -7,6 +7,7 @@ import React from "react";
 export default function AddExpenseForm() {
     const [categories, setCategories] = useState([]);
     const [currency, setCurrency] = useState(localStorage.getItem('currency'));
+    const [amount, setAmount] = useState('');
     const [description, setDescription] = useState('');
     const [category, setCategory] = useState('');
     const [showFeedback, setShowFeedback] = useState(false);
@@ -36,7 +37,7 @@ export default function AddExpenseForm() {
         axios.post('http://localhost:8080/expense/create', {
             category: category,
             currency: currency,
-            amount: parseFloat(e.target.amount.value),
+            amount: parseFloat(amount),
             name: description,
             date: date
         }, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
@@ -124,7 +125,7 @@ export default function AddExpenseForm() {
                     <div style={{ marginBottom: '16px' }}>
                         <CurrencyDropdown currency={currency} setCurrency={setCurrency} />
                         <label htmlFor="amount" style={{ display: 'block', marginBottom: '8px' }}>Amount</label>
-                        <input type="number" id="amount" name="amount" placeholder='e.g, 100.00' required style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }} />
+                        <input type="number" id="amount" name="amount" placeholder='e.g, 100.00' required style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }} value={amount} onChange={e => setAmount(e.target.value)} />
                         <label htmlFor="date" style={{ display: 'block', marginBottom: '8px', marginTop: '8px' }}>Date</label>
                         <input
                             type="date"

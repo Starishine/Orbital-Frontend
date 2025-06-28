@@ -65,7 +65,7 @@ export default function ForecastConvertedExpenses({ converted }) {
         const spent = catExpenses.reduce((sum, e) => sum + e.convertedAmount, 0);
         const sortedDates = catExpenses.map(e => new Date(e.date)).sort((a, b) => a - b);
 
-        // Heuristic: detect interval
+        // detect interval
         let interval = 'daily';
         if (sortedDates.length > 1) {
             const diffs = [];
