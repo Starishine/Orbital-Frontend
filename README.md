@@ -42,7 +42,7 @@ A web application to manage your university finances.
     ```bash
     npm run dev
     ```
-5. **Open your browser and visit:**
+5. **Open your browser and visit: (ensure backend setup is complete)**
    ```bash
     http://localhost:8081
     ```
