@@ -5,7 +5,7 @@ import axios from 'axios';
 import { vi } from 'vitest';
 import '@testing-library/jest-dom';
 
-vi.mock('axios');
+vi.mock('axios'); // sort of tells vitest to mock the entire axios module so that we can control its behavior in tests
 
 describe('SignupForm', () => {
     let onSuccess;
