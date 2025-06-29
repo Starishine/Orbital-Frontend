@@ -5,7 +5,7 @@ import axios from "axios";
 import * as jwt from 'jwt-decode';
 import '@testing-library/jest-dom';
 
-// Mock Bar chart, EditBudget, DeleteBudget
+// mock Bar chart, EditBudget, DeleteBudget
 vi.mock('react-chartjs-2', () => ({
     Bar: () => <div>BarChartMock</div>
 }));

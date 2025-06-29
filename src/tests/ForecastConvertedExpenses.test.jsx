@@ -35,7 +35,7 @@ describe('ForecastConvertedExpenses', () => {
     localStorage.clear();
   });
 
-  it('calls axios.get with correct URL and headers', async () => {
+  it('makes a budget API request with the correct token and URL', async () => {
     axios.get.mockResolvedValueOnce({
       data: [
         { category: 'Food', currency: 'SGD', amountAllocated: 100, amount: 20 },
@@ -55,7 +55,7 @@ describe('ForecastConvertedExpenses', () => {
     });
   });
 
-  it('renders forecast info for each budget category', async () => {
+  it('shows forecast data for each category like Food and Transport', async () => {
     axios.get.mockResolvedValueOnce({
       data: [
         { category: 'Food', currency: 'SGD', amountAllocated: 100, amount: 20 },
@@ -71,7 +71,7 @@ describe('ForecastConvertedExpenses', () => {
     });
   });
 
-  it('shows error if backend fails', async () => {
+  it('displays error if backend fails', async () => {
     axios.get.mockRejectedValueOnce(new Error('API error'));
     render(<ForecastConvertedExpenses converted={converted} />);
     await waitFor(() => {
@@ -79,7 +79,7 @@ describe('ForecastConvertedExpenses', () => {
     });
   });
 
-  it('shows not logged in error if no token', async () => {
+  it('shows login error when no token is found', async () => {
     localStorage.removeItem('token');
     render(<ForecastConvertedExpenses converted={converted} />);
     await waitFor(() => {
@@ -87,7 +87,7 @@ describe('ForecastConvertedExpenses', () => {
     });
   });
 
-  it('shows message if no converted expenses', async () => {
+  it('tells user there are no converted expenses to forecast', async () => {
     axios.get.mockResolvedValueOnce({
       data: [
         { category: 'Food', currency: 'SGD', amountAllocated: 100, amount: 20 }
@@ -101,7 +101,7 @@ describe('ForecastConvertedExpenses', () => {
 
   // Food: spent = 80 (50+30), allocated = 100, remaining = 20, 2 days of expenses (interval = daily)
   // avgPerInterval = 40, intervalsLeft = 20/40 = 0.5, so should show 0.5 days left, and a run out date
-  it('shows correct forecast calculation for category', async () => {
+  it('correctly calculates daily forecast, remaining budget, and run-out date', async () => {
     axios.get.mockResolvedValueOnce({
       data: [
         { category: 'Food', currency: 'SGD', amountAllocated: 100, amount: 20 }

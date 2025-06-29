@@ -14,7 +14,7 @@ describe('SignInForm', () => {
 
   // Reset mocks before each test so they don’t retain state
   beforeEach(() => {
-    onSuccess = vi.fn();
+    onSuccess = vi.fn(); // creates a fake function that remembers what happened to it
     onSwitchToSignUp = vi.fn();
   });
 
@@ -34,7 +34,7 @@ describe('SignInForm', () => {
   });
 
   // Test 2: should show error if fields are empty when form is submitted
-  it('shows error if fields are empty', async () => {
+  it('if fields are empty it will give an error', async () => {
     render(<SignInForm onSuccess={onSuccess} onSwitchToSignUp={onSwitchToSignUp} />);
     fireEvent.click(screen.getByRole('button', { name: /sign in/i })); // simulate click on "sign in" button without typing anything
     expect(await screen.findByText(/please enter your username/i)).toBeInTheDocument(); // expected error message to show up
@@ -42,7 +42,7 @@ describe('SignInForm', () => {
 
   // Test 3: should call onSuccess with data and token on successful login
   //mockResolvedValueOnce - mocks the axios.post method to return a resolved promise with specified data
-  it('calls onSuccess on successful login', async () => {
+  it('calls onSuccess if login is successful', async () => {
     axios.post.mockResolvedValueOnce({
       data: { status: "SUCCESS", code: 200, data: { user: 'test' }, token: 'abc' }
     }); // faking the correct output when login works
@@ -59,7 +59,7 @@ describe('SignInForm', () => {
   });
 
   // Test 4: should display error when API returns "FAIL"
-  it('shows error on failed login', async () => { //async function to handle the API call
+  it('if login fail, will show error', async () => { //async function to handle the API call
     axios.post.mockResolvedValueOnce({
       data: { status: "FAIL", code: 401, message: "Invalid credentials" }
     });
@@ -73,7 +73,7 @@ describe('SignInForm', () => {
   });
 
   // Test 5: clickin "Sign Up" button should call onswitchtosignup
-  it('switches to sign up form', () => {
+  it('changes to sign up form when signup button is clicked', () => {
     render(<SignInForm onSuccess={onSuccess} onSwitchToSignUp={onSwitchToSignUp} />);
     fireEvent.click(screen.getByText(/sign up/i));
     expect(onSwitchToSignUp).toHaveBeenCalled();
@@ -95,7 +95,7 @@ describe('SignInForm', () => {
   });
 
   // Test 7: password input should have `type="password"`
-  it('password input should have type password', () => {
+  it('password input should always have type password', () => {
     render(<SignInForm onSuccess={onSuccess} onSwitchToSignUp={onSwitchToSignUp} />);
     const passwordInput = screen.getByLabelText(/password/i);
     expect(passwordInput).toHaveAttribute('type', 'password');
@@ -104,7 +104,7 @@ describe('SignInForm', () => {
   // Test 8: should NOT call API if both fields are empty
   // spyOn - Creates a mock func that tracks calls to the specified method
   // mockRestore - restores the original method aft the test
-  it('does not call axios if both fields are empty', async () => {
+  it('if both fields are empty axios is not called', async () => {
     const spy = vi.spyOn(axios, 'post'); // tracks calls to axios.post
     render(<SignInForm onSuccess={onSuccess} onSwitchToSignUp={onSwitchToSignUp} />); // imitate signin form
     fireEvent.click(screen.getByRole('button', { name: /sign in/i })); // simulate clicking button without filling in requird fields
@@ -113,7 +113,7 @@ describe('SignInForm', () => {
   });
 
   // Test 9: should NOT call API if password is missing
-  it('does not call axios if password is empty', async () => {
+  it('if password is empty axios is not called', async () => {
     const spy = vi.spyOn(axios, 'post');
     render(<SignInForm onSuccess={onSuccess} onSwitchToSignUp={onSwitchToSignUp} />);
     fireEvent.change(screen.getByLabelText(/username/i), { target: { value: 'user' } });
@@ -123,7 +123,7 @@ describe('SignInForm', () => {
   });
 
   // Test 10: should NOT call API if username is missing
-  it('does not call axios if username is empty', async () => {
+  it('if username is empty axios is not called', async () => {
     const spy = vi.spyOn(axios, 'post'); //monitors for call to axios.post
     render(<SignInForm onSuccess={onSuccess} onSwitchToSignUp={onSwitchToSignUp} />); // render the signinform component
     fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'pass' } }); // simulate user typing in password without proper fields 
