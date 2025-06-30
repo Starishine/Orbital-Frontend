@@ -24,6 +24,8 @@ export default function Dashboard() {
 
     const handleLogout = () => {
         localStorage.removeItem('token')
+        localStorage.removeItem('convertedExpenses')
+        localStorage.removeItem('homeCurrency')
         navigate('/'); // Redirect to the home page
     }
 
@@ -54,6 +56,7 @@ export default function Dashboard() {
                 <Link to="/exchange" style={{ color: 'var(--primary)' }}>Exchange</Link>
                 <Link to="/expenses" style={{ color: 'var(--primary)' }}>Expenses</Link>
                 <Link to="/visualisation" style={{ color: 'var(--primary)' }}>Visualisation</Link>
+                <Link to="/shared-budget" style={{ color: 'var(--primary)' }}>Shared Budget</Link>
                 <button
                     onClick={handleLogout}
                     style={{

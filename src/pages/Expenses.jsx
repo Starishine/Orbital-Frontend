@@ -8,7 +8,9 @@ import { jwtDecode } from 'jwt-decode';
 
 export default function Expenses() {
     const handleLogout = () => {
+        localStorage.removeItem('convertedExpenses')
         localStorage.removeItem('token')
+        localStorage.removeItem('homeCurrency')
         navigate('/'); // Redirect to the home page
     }
 
@@ -43,6 +45,7 @@ export default function Expenses() {
                 <Link to="/exchange" style={{ color: 'var(--primary)' }}>Exchange</Link>
                 <Link to="/expenses" style={{ color: 'var(--primary)' }}>Expenses</Link>
                 <Link to="/visualisation" style={{ color: 'var(--primary)' }}>Visualisation</Link>
+                <Link to="/shared-budget" style={{ color: 'var(--primary)' }}>Shared Budget</Link>
                 <button
                     onClick={handleLogout}
                     style={{
