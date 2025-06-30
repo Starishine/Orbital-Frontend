@@ -7,15 +7,15 @@ import axios from 'axios';
 vi.mock('axios');
 
 describe('DeleteBudget', () => {
-  const budgetId = 'budget123';
+  const budgetId = 'saniasbudget';
   const onDeleteSuccess = vi.fn();
 
   beforeEach(() => {
-    localStorage.setItem('token', 'test-token');
+    localStorage.setItem('token', 'test_token');
     vi.clearAllMocks();
   });
 
-  it('calls axios.delete with correct URL and headers when confirmed', async () => {
+  it('deletes the budget if the user confirms the action of deletion', async () => {
     // Mock confirm to return true
     vi.spyOn(window, 'confirm').mockReturnValue(true);
     axios.delete.mockResolvedValueOnce({
@@ -30,7 +30,7 @@ describe('DeleteBudget', () => {
         `http://localhost:8080/budget/delete/${budgetId}`,
         expect.objectContaining({
           headers: expect.objectContaining({
-            Authorization: 'Bearer test-token'
+            Authorization: 'Bearer test_token'
           })
         })
       );
@@ -38,7 +38,7 @@ describe('DeleteBudget', () => {
     });
   });
 
-  it('does not call axios.delete if user cancels', () => {
+  it('does nothing if the user cancels the delete confirmation', () => {
     vi.spyOn(window, 'confirm').mockReturnValue(false);
     render(<DeleteBudget budgetId={budgetId} onDeleteSuccess={onDeleteSuccess} />);
     fireEvent.click(screen.getByRole('button', { name: /delete budget/i }));
@@ -46,7 +46,7 @@ describe('DeleteBudget', () => {
     expect(onDeleteSuccess).not.toHaveBeenCalled();
   });
 
-  it('handles backend error ', async () => {
+  it('handles any error that arises if the delete request to the backend server fails', async () => {
     vi.spyOn(window, 'confirm').mockReturnValue(true);
     axios.delete.mockRejectedValueOnce(new Error('API error'));
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});

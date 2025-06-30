@@ -8,7 +8,7 @@ vi.mock('axios');
 vi.mock('../component/CurrencyDropdown', () => ({
   default: ({ currency, setCurrency }) => (
     <select
-      data-testid="currency-dropdown"
+      data-testid="currencydropdown"
       value={currency}
       onChange={e => setCurrency(e.target.value)}
     >
@@ -20,21 +20,21 @@ vi.mock('../component/CurrencyDropdown', () => ({
 
 describe('EditBudget', () => {
   const budget = {
-    id: 'budget123',
+    id: 'moushamisbudget',
     currency: 'SGD',
-    amountAllocated: 100,
-    amount: 80
+    amountAllocated: 100, // og total budget for category
+    amount: 80 //remianing money in category budget
   };
   const onSave = vi.fn();
   const onCancel = vi.fn();
 
   beforeEach(() => {
-    localStorage.setItem('token', 'test-token');
+    localStorage.setItem('token', 'testing_token');
     vi.clearAllMocks();
   });
 
-  it('calls axios.put with correct data when currency is unchanged', async () => {
-    axios.put.mockResolvedValueOnce({});
+  it('saves the updated budget correctly when currency stays the same', async () => {
+    axios.put.mockResolvedValueOnce({}); // fakes the successful update output
     render(<EditBudget budget={budget} onSave={onSave} onCancel={onCancel} />);
     fireEvent.change(screen.getByRole('spinbutton'), { target: { value: '20' } });
     fireEvent.click(screen.getByRole('button', { name: /save/i }));
@@ -43,14 +43,14 @@ describe('EditBudget', () => {
       expect(axios.put).toHaveBeenCalledWith(
         'http://localhost:8080/budget/update',
         expect.objectContaining({
-          id: 'budget123',
+          id: 'moushamisbudget',
           currency: 'SGD',
-          amountAllocated: 120,
-          amount: 100
+          amountAllocated: 120, // updated = 100 + 20
+          amount: 100 
         }),
-        expect.objectContaining({
+        expect.objectContaining({ 
           headers: expect.objectContaining({
-            Authorization: 'Bearer test-token'
+            Authorization: 'Bearer testing_token'
           })
         })
       );
@@ -58,19 +58,19 @@ describe('EditBudget', () => {
     });
   });
 
-  it('calls currency API and axios.put with converted values when currency is changed', async () => {
-    // Mock fetch for currency conversion
+  it('converts currency and saves the updated budget when currency is changed', async () => {
+    // mock fetch for currency conversion - allows you to request data from a server or API endpoint.
     global.fetch = vi.fn().mockResolvedValue({
-      json: async () => ({ rates: { USD: 0.75 } })
+      json: async () => ({ rates: { USD: 0.75 } }) // creating a fake function called json whihc will return a promise that resolves to {rates: {USD: 0.75}}
     });
     axios.put.mockResolvedValueOnce({});
     render(<EditBudget budget={budget} onSave={onSave} onCancel={onCancel} />);
-    fireEvent.change(screen.getByTestId('currency-dropdown'), { target: { value: 'USD' } });
+    fireEvent.change(screen.getByTestId('currencydropdown'), { target: { value: 'USD' } });
     fireEvent.change(screen.getByRole('spinbutton'), { target: { value: '10' } });
     fireEvent.click(screen.getByRole('button', { name: /save/i }));
 
     await waitFor(() => {
-      // call fetch for conversion
+      // call fetch for conversion - gets the exchange rate for SGD to USD
       expect(global.fetch).toHaveBeenCalledWith(
         expect.stringContaining('https://api.exchangerate-api.com/v4/latest/SGD')
       );
@@ -78,7 +78,7 @@ describe('EditBudget', () => {
       expect(axios.put).toHaveBeenCalledWith(
         'http://localhost:8080/budget/update',
         expect.objectContaining({
-          id: 'budget123',
+          id: 'moushamisbudget',
           currency: 'USD',
           // The converted values will depend on conversion logic
         }),
@@ -88,13 +88,13 @@ describe('EditBudget', () => {
     });
   });
 
-  it('shows alert if currency conversion fails', async () => {
+  it('alerts the user if currency conversion does not work', async () => {
     global.fetch = vi.fn().mockResolvedValue({
-      json: async () => ({ rates: {} }) // No rate for target currency
+      json: async () => ({ rates: {} }) // no rate for target currency
     });
     window.alert = vi.fn();
     render(<EditBudget budget={budget} onSave={onSave} onCancel={onCancel} />);
-    fireEvent.change(screen.getByTestId('currency-dropdown'), { target: { value: 'USD' } });
+    fireEvent.change(screen.getByTestId('currencydropdown'), { target: { value: 'USD' } });
     fireEvent.change(screen.getByRole('spinbutton'), { target: { value: '10' } });
     fireEvent.click(screen.getByRole('button', { name: /save/i }));
 
@@ -105,7 +105,7 @@ describe('EditBudget', () => {
     });
   });
 
-  it('shows alert if backend update fails', async () => {
+  it('alerts the user if saving the updated budget fails', async () => {
     axios.put.mockRejectedValueOnce(new Error('API error'));
     window.alert = vi.fn();
     render(<EditBudget budget={budget} onSave={onSave} onCancel={onCancel} />);
