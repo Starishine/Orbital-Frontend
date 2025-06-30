@@ -19,15 +19,15 @@ vi.mock('../component/CurrencyDropdown', () => ({
     )
 }));
 vi.mock('../component/CategoryFeedback', () => ({
-    default: () => <div data-testid="category-feedback">Feedback</div>
+    default: () => <div data-testid="category-feedback">Feedback</div> // data-testid - used for testing as it is not visible in the UI
 }));
 
 
 beforeEach(() => {
-    window.location.reload;
+    window.location.reload();
 });
 afterEach(() => {
-    window.location.reload;
+    window.location.reload();
 });
 
 describe('AddExpenseForm', () => {
@@ -58,7 +58,6 @@ describe('AddExpenseForm', () => {
 
     it('submits correct data to axios.post', async () => {
         axios.post.mockResolvedValueOnce({ data: { status: 'SUCCESS', code: 200 } });
-        // ...rest of your test
         fireEvent.click(screen.getByRole('button', { name: /Add Expense/i }));
         await waitFor(() => {
             expect(axios.post).toHaveBeenCalledWith(

@@ -5,24 +5,26 @@ import '@testing-library/jest-dom';
 import axios from 'axios';
 
 vi.mock('axios');
-const pieMock = vi.fn(() => <div data-testid="pie-chart" />);
+
+const pieMock = vi.fn(() => <div data-testid="pie-chart" />); // mocking the pie chart so it doesn't crash or try to render actual chart
 vi.mock('react-chartjs-2', () => ({
   Pie: (props) => pieMock(props)
 }));
+
 vi.mock('../component/ForecastConvertedExpenses', () => ({
   default: () => <div data-testid="forecast-converted-expenses" />
 }));
 
-
-
 describe('BudgetForecast', () => {
   beforeEach(() => {
+    // set up fake data in localStorage for each test
     localStorage.setItem('token', 'test-token');
     localStorage.setItem('homeCurrency', 'SGD');
     localStorage.setItem('convertedExpenses', JSON.stringify([
       { category: 'Food', convertedAmount: 50 },
       { category: 'Transport', convertedAmount: 30 }
     ]));
+
     axios.get = vi.fn(() =>
       Promise.resolve({
         data: []
@@ -31,7 +33,7 @@ describe('BudgetForecast', () => {
   });
 
   afterEach(() => {
-    vi.clearAllMocks();
+    vi.clearAllMocks(); // clear everything after each test so they don't mess with each other
     localStorage.clear();
   });
 
@@ -40,13 +42,13 @@ describe('BudgetForecast', () => {
     expect(screen.getByText(/Loading forecast/i)).toBeInTheDocument();
   });
 
-  it('shows error if user not logged in', () => {
+  it('shows error if user is not logged in', () => {
     localStorage.removeItem('token');
     render(<BudgetForecast />);
     expect(screen.getByText(/User not logged in/i)).toBeInTheDocument();
   });
 
-  it('shows error if API fails', async () => {
+  it('shows error when API fails', async () => {
     axios.get.mockRejectedValueOnce(new Error('API error'));
     render(<BudgetForecast />);
     await waitFor(() => {
@@ -54,8 +56,8 @@ describe('BudgetForecast', () => {
     });
   });
 
-  it('renders pie chart and forecast info on success', async () => {
-    axios.get.mockResolvedValueOnce({
+  it('shows pie chart and forecast info on success', async () => {
+    axios.get.mockResolvedValueOnce({ // fake API gives 1 budget category back
       data: [
         {
           category: 'Food',
@@ -66,29 +68,26 @@ describe('BudgetForecast', () => {
         }
       ]
     });
+
     render(<BudgetForecast />);
     await waitFor(() => {
       expect(screen.getByText(/Expense Distribution by Category/i)).toBeInTheDocument();
-      expect(screen.getByTestId('pie-chart')).toBeInTheDocument();
-      expect(screen.getByTestId('forecast-converted-expenses')).toBeInTheDocument();
+      expect(screen.getByTestId('pie-chart')).toBeInTheDocument(); // pie chart shows
+      expect(screen.getByTestId('forecast-converted-expenses')).toBeInTheDocument(); // forecast section shows
     });
   });
 
-  it('passes correct data to Pie chart', async () => {
+  it('correct data is passed to Pie chart', async () => {
     render(<BudgetForecast />);
     await waitFor(() => {
-      // Pie should have been called
       expect(pieMock).toHaveBeenCalled();
-      const props = pieMock.mock.calls[0][0]; // The first call's first argument
+      const props = pieMock.mock.calls[0][0];
 
-      // Check labels
       expect(props.data.labels).toEqual(['Food', 'Transport']);
-      // Check values
       expect(props.data.datasets[0].data).toEqual([50, 30]);
-      // Check colors
       expect(props.data.datasets[0].backgroundColor).toEqual([
-        '#1976d2', // Food
-        '#388e3c'  // Transport
+        '#1976d2', // food color
+        '#388e3c'  // transport color
       ]);
       expect(props.data.datasets[0].borderWidth).toBe(1);
     });

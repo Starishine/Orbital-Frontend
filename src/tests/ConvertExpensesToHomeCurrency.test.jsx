@@ -4,12 +4,13 @@ import ConvertExpensesToHomeCurrency from '../component/ConvertExpensesToHomeCur
 import '@testing-library/jest-dom';
 import axios from 'axios';
 
+// mock axios so we don’t actually call real backend
 vi.mock('axios');
 
 describe('ConvertExpensesToHomeCurrency', () => {
   beforeEach(() => {
     localStorage.setItem('token', 'test-token');
-    vi.resetAllMocks();
+    vi.resetAllMocks(); // clear all previous mocks
   });
 
   afterEach(() => {
@@ -17,19 +18,17 @@ describe('ConvertExpensesToHomeCurrency', () => {
     vi.clearAllMocks();
   });
 
-  it('calls backend and currency API, then displays converted results', async () => {
-    // Mock backend /expense/get
+  it('fetches expenses and conversion rate, then shows converted values', async () => {
     axios.get.mockResolvedValueOnce({
       data: [
         { _id: '1', category: 'Food', currency: 'USD', amount: 10, notes: 'Lunch' },
         { _id: '2', category: 'Transport', currency: 'SGD', amount: 5, notes: 'Bus' }
-      ]
+      ] // fake backend response for expenses
     });
 
-    // Mock fetch for currency conversion
     global.fetch = vi.fn().mockResolvedValueOnce({
       json: async () => ({
-        rates: { SGD: 1.5 }
+        rates: { SGD: 1.5 } // fake currency conversion: 1 USD = 1.5 SGD
       })
     });
 
@@ -37,7 +36,7 @@ describe('ConvertExpensesToHomeCurrency', () => {
     fireEvent.click(screen.getByRole('button', { name: /convert/i }));
 
     await waitFor(() => {
-      // Check backend call
+      // check if called the backend correctly
       expect(axios.get).toHaveBeenCalledWith(
         'http://localhost:8080/expense/get',
         expect.objectContaining({
@@ -46,37 +45,43 @@ describe('ConvertExpensesToHomeCurrency', () => {
           })
         })
       );
-      // Check currency API call
+
+      // check if called the exchange rate api with the right base currency
       expect(global.fetch).toHaveBeenCalledWith(
         expect.stringContaining('https://api.exchangerate-api.com/v4/latest/USD')
       );
-      // Check UI
+
+      // now check that converted stuff shows up
       expect(screen.getByText(/Food/)).toBeInTheDocument();
       expect(screen.getByText(/Lunch/)).toBeInTheDocument();
-      expect(screen.getByText('SGD 15.00')).toBeInTheDocument(); // 10 * 1.5
-      expect(screen.getAllByText('SGD 5.00').length).toBeGreaterThan(0); // SGD expense, no conversion
+      expect(screen.getByText('SGD 15.00')).toBeInTheDocument(); // 10 usd * 1.5 = 15 sgd
+      expect(screen.getAllByText('SGD 5.00').length).toBeGreaterThan(0); // no conversion needed
     });
   });
 
-  it('shows error if backend fails', async () => {
+  it('shows error message when backend fails', async () => {
+    // backend throws error
     axios.get.mockRejectedValueOnce(new Error('API error'));
+
     render(<ConvertExpensesToHomeCurrency homeCurrency="SGD" />);
     fireEvent.click(screen.getByRole('button', { name: /convert/i }));
+
+    // should show some kind of error message on screen
     await waitFor(() => {
       expect(screen.getByText(/Conversion failed/i)).toBeInTheDocument();
     });
   });
 
-  it('fetches expenses and calls exchange rate API, then displays converted results', async () => {
-    // Mock expenses from backend
+  it('handles expense + conversion flow correctly and gives the final results', async () => {
+    // fake response again
     axios.get.mockResolvedValueOnce({
       data: [
-        { _id: '1', category: 'Food', currency: 'USD', amount: 10, notes: 'Lunch' },
-        { _id: '2', category: 'Transport', currency: 'SGD', amount: 5, notes: 'Bus' }
+        { _id: '1', category: 'Food', currency: 'USD', amount: 10, notes: 'Lunching yum yum' },
+        { _id: '2', category: 'Transport', currency: 'SGD', amount: 5, notes: 'mrt ride' }
       ]
     });
 
-    // Mock fetch for exchange rate API
+    // fake currency rates again
     global.fetch = vi.fn().mockResolvedValueOnce({
       json: async () => ({
         rates: { SGD: 1.5 }
@@ -87,7 +92,7 @@ describe('ConvertExpensesToHomeCurrency', () => {
     fireEvent.click(screen.getByRole('button', { name: /convert/i }));
 
     await waitFor(() => {
-      // axios.get called with correct URL and headers
+      // same checks as earlier
       expect(axios.get).toHaveBeenCalledWith(
         'http://localhost:8080/expense/get',
         expect.objectContaining({
@@ -96,22 +101,25 @@ describe('ConvertExpensesToHomeCurrency', () => {
           })
         })
       );
-      // fetch called with correct exchange rate API URL
+
       expect(global.fetch).toHaveBeenCalledWith(
         expect.stringContaining('https://api.exchangerate-api.com/v4/latest/USD')
       );
-      // Check that converted results are rendered
+
       expect(screen.getByText(/Food/)).toBeInTheDocument();
-      expect(screen.getByText(/Lunch/)).toBeInTheDocument();
-      expect(screen.getByText(/SGD 15.00/)).toBeInTheDocument(); // 10 * 1.5
-      expect(screen.getAllByText('SGD 5.00').length).toBeGreaterThan(0); // SGD expense, no conversion
+      expect(screen.getByText(/Lunching yum yum/)).toBeInTheDocument();
+      expect(screen.getByText(/SGD 15.00/)).toBeInTheDocument();
+      expect(screen.getAllByText('SGD 5.00').length).toBeGreaterThan(0);
     });
   });
 
-  it('shows error if conversion fails', async () => {
+  it('shows error message when conversion fails', async () => {
+    // fail the backend call again
     axios.get.mockRejectedValueOnce(new Error('API error'));
+
     render(<ConvertExpensesToHomeCurrency homeCurrency="SGD" />);
     fireEvent.click(screen.getByRole('button', { name: /convert/i }));
+
     await waitFor(() => {
       expect(screen.getByText(/Conversion failed/i)).toBeInTheDocument();
     });

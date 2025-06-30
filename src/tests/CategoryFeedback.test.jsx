@@ -7,9 +7,9 @@ import axios from 'axios';
 vi.mock('axios');
 
 describe('CategoryFeedback', () => {
-  const categories = ['Food', 'Transport', 'Shopping'];
-  const description = 'Bought lunch';
-  const suggestedCategory = 'Food';
+  const categories = ['food', 'transport', 'shopping'];
+  const description = 'buy lunch';
+  const suggestedCategory = 'food';
   const onAccept = vi.fn();
   const onCorrection = vi.fn();
 
@@ -17,7 +17,7 @@ describe('CategoryFeedback', () => {
     vi.clearAllMocks();
   });
 
-  it('calls onAccept when "Yes" is clicked', () => {
+  it('lets user accept the suggested category by clicking "Yes"', () => {
     render(
       <CategoryFeedback
         description={description}
@@ -31,7 +31,7 @@ describe('CategoryFeedback', () => {
     expect(onAccept).toHaveBeenCalled();
   });
 
-  it('shows correction UI when "No" is clicked', () => {
+  it('shows correction dropdown when user clicks "No"', () => {
     render(
       <CategoryFeedback
         description={description}
@@ -45,7 +45,7 @@ describe('CategoryFeedback', () => {
     expect(screen.getByRole('combobox')).toBeInTheDocument();
   });
 
-  it('submits correction with selected category', () => {
+  it('lets user pick a different category and submit it as feedback', () => {
     render(
       <CategoryFeedback
         description={description}
@@ -56,16 +56,16 @@ describe('CategoryFeedback', () => {
       />
     );
     fireEvent.click(screen.getByRole('button', { name: /no/i }));
-    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'Transport' } });
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'transport' } });
     fireEvent.click(screen.getByRole('button', { name: /submit correction/i }));
     expect(axios.post).toHaveBeenCalledWith(
       'http://localhost:8000/feedback',
-      { description, correct_category: 'Transport' }
+      { description, correct_category: 'transport' }
     );
-    expect(onCorrection).toHaveBeenCalledWith('Transport');
+    expect(onCorrection).toHaveBeenCalledWith('transport');
   });
 
-  it('submits correction with custom category', () => {
+  it('lets user enter a custom category and submit that as feedback', () => {
     render(
       <CategoryFeedback
         description={description}
@@ -86,7 +86,7 @@ describe('CategoryFeedback', () => {
     expect(onCorrection).toHaveBeenCalledWith('Bills');
   });
 
-  it('submit button is disabled until a valid correction is entered', () => {
+  it('disables submit button until a valid category is chosen', () => {
     render(
       <CategoryFeedback
         description={description}
@@ -99,7 +99,7 @@ describe('CategoryFeedback', () => {
     fireEvent.click(screen.getByRole('button', { name: /no/i }));
     const submitBtn = screen.getByRole('button', { name: /submit correction/i });
     expect(submitBtn).toBeDisabled();
-    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'Transport' } });
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'transport' } });
     expect(submitBtn).not.toBeDisabled();
   });
 });
