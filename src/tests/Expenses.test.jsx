@@ -5,15 +5,15 @@ import { MemoryRouter } from "react-router-dom";
 import * as jwt from "jwt-decode";
 import "@testing-library/jest-dom";
 
-// Mock child components
+// mock child components
 vi.mock("../component/AddExpenseForm", () => ({
-    default: () => <div>AddExpenseFormMock</div>,
+    default: () => <div>AddExpenseFormMock</div>, 
 }));
 vi.mock("../component/ExistingExpense", () => ({
     default: () => <div>ExistingExpensesMock</div>,
 }));
 
-// Mock useNavigate
+// mock useNavigate
 const mockNavigate = vi.fn();
 vi.mock("react-router-dom", async (importOriginal) => {
     const actual = await importOriginal();
@@ -23,7 +23,7 @@ vi.mock("react-router-dom", async (importOriginal) => {
     };
 });
 
-// Mock jwtDecode
+// mock jwtDecode
 vi.mock("jwt-decode", () => ({
     jwtDecode: vi.fn(),
 }));
@@ -35,7 +35,7 @@ describe("Expenses Page", () => {
         jwt.jwtDecode.mockClear();
     });
 
-    it("redirects to login if no token", () => {
+    it("no token then it goes back to login", () => {
         render(
             <MemoryRouter>
                 <Expenses />
@@ -44,9 +44,9 @@ describe("Expenses Page", () => {
         expect(mockNavigate).toHaveBeenCalledWith("/");
     });
 
-    it("extracts username from token and renders page", async () => {
-        localStorage.setItem("token", "fake-token");
-        jwt.jwtDecode.mockReturnValue({ sub: "testuser" });
+    it(" gets username from token and shows final page", async () => {
+        localStorage.setItem("token1", "faketoken");
+        jwt.jwtDecode.mockReturnValue({ sub: "mousania" });
 
         render(
             <MemoryRouter>
@@ -60,8 +60,8 @@ describe("Expenses Page", () => {
     });
 
     it("renders navigation links", () => {
-        localStorage.setItem("token", "fake-token");
-        jwt.jwtDecode.mockReturnValue({ sub: "testuser" });
+        localStorage.setItem("token1", "faketoken");
+        jwt.jwtDecode.mockReturnValue({ sub: "mousania" });
 
         render(
             <MemoryRouter>
@@ -69,7 +69,7 @@ describe("Expenses Page", () => {
             </MemoryRouter>
         );
 
-        expect(screen.getByRole('link', { name: /dashboard/i })).toHaveAttribute('href', '/dashboard');
+        expect(screen.getByRole('link', { name: /dashboard/i })).toHaveAttribute('href', '/dashboard'); // href - hypertext reference , specifies the URL or path that the link points to and When a user clicks the link, the browser navigates to the URL in the href
         expect(screen.getByRole('link', { name: /exchange/i })).toHaveAttribute('href', '/exchange');
         expect(screen.getByRole('link', { name: /expenses/i })).toHaveAttribute('href', '/expenses');
         expect(screen.getByRole('link', { name: /visualisation/i })).toHaveAttribute('href', '/visualisation');

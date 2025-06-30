@@ -171,7 +171,7 @@ export default function ForecastConvertedExpenses({ converted }) {
                             <span style={{ color: '#388e3c', fontWeight: 500 }}>Remaining:</span>
                             <span style={{ marginLeft: 6 }}>{homeCurrency} {info.remaining.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                         </div>
-                        <div style={{ margin: '12px 0 18px 0', height: 12, background: '#eee', borderRadius: 6, overflow: 'hidden' }}>
+                        <div style={{ margin: '12px 0 18px 0', height: 12, background: '#eee', borderRadius: 6, overflow: 'true' }}>
                             <div
                                 style={{
                                     width: `${info.percentUsed}%`,

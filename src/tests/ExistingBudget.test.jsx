@@ -5,7 +5,7 @@ import axios from "axios";
 import * as jwt from 'jwt-decode';
 import '@testing-library/jest-dom';
 
-// Mock Bar chart, EditBudget, DeleteBudget
+// mock Bar chart, EditBudget, DeleteBudget
 vi.mock('react-chartjs-2', () => ({
     Bar: () => <div>BarChartMock</div>
 }));
@@ -41,24 +41,24 @@ describe("ExistingBudget", () => {
         axios.get.mockImplementation(() => Promise.resolve({ data: [] }));
     });
 
-    it("renders loading state initially", () => {
+    it("shows initial loading state", () => {
         render(<ExistingBudget />);
         expect(screen.getByText(/loading budgets/i)).toBeInTheDocument();
     });
 
-    it("renders error if user not logged in", async () => {
+    it("shows error if user not logged in", async () => {
         localStorage.removeItem("token");
         render(<ExistingBudget />);
         expect(await screen.findByText(/user not logged in/i)).toBeInTheDocument();
     });
 
-    it("renders error if fetch fails", async () => {
+    it("shows error if fetch fails", async () => {
         axios.get.mockRejectedValueOnce(new Error("fail"));
         render(<ExistingBudget />);
         expect(await screen.findByText(/failed to fetch budgets/i)).toBeInTheDocument();
     });
 
-    it("renders budgets and chart", async () => {
+    it("shows existing budgets and chart", async () => {
         axios.get.mockResolvedValueOnce({
             data: [
                 {
@@ -81,7 +81,7 @@ describe("ExistingBudget", () => {
         expect(screen.getByText("DeleteBudgetMock")).toBeInTheDocument();
     });
 
-    it("renders budgets and passes correct data to chart", async () => {
+    it("shows existing budgets and passes correct data to chart", async () => {
         axios.get.mockResolvedValueOnce({
             data: [
                 {

@@ -14,17 +14,17 @@ vi.mock('../component/ExistingBudget', () => ({
     default: () => <div>ExistingBudgetMock</div>
 }));
 
-// Mock jwtDecode
+// mock jwtDecode
 vi.mock('jwt-decode', () => ({
     jwtDecode: vi.fn(),
 }));
 
-// Mock useNavigate
+// mock useNavigate
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', async (importOriginal) => {
     const actual = await importOriginal();
     return {
-        ...actual,
+        ...actual, // retain all original exports
         useNavigate: () => mockNavigate,
     };
 });
@@ -36,7 +36,7 @@ describe('Dashboard', () => {
         jwt.jwtDecode.mockClear();
     });
 
-    it('redirects to login if no token', () => {
+    it('goes back to login if there is no token', () => {
         render(
             <MemoryRouter>
                 <Dashboard />
@@ -45,9 +45,9 @@ describe('Dashboard', () => {
         expect(mockNavigate).toHaveBeenCalledWith('/');
     });
 
-    it('renders username from token', async () => {
+    it('shows username after extracting from token', async () => {
         localStorage.setItem('token', 'fake-token');
-        jwt.jwtDecode.mockReturnValue({ sub: 'testuser' });
+        jwt.jwtDecode.mockReturnValue({ sub: 'cheeky' });
 
         render(
             <MemoryRouter>
@@ -55,12 +55,12 @@ describe('Dashboard', () => {
             </MemoryRouter>
         );
 
-        expect(await screen.findByText(/Welcome, testuser/i)).toBeInTheDocument();
+        expect(await screen.findByText(/Welcome, cheeky/i)).toBeInTheDocument();
     });
 
-    it('renders AddBudgetForm and ExistingBudget', () => {
+    it('shows AddBudgetForm and ExistingBudget', () => {
         localStorage.setItem('token', 'fake-token');
-        jwt.jwtDecode.mockReturnValue({ sub: 'testuser' });
+        jwt.jwtDecode.mockReturnValue({ sub: 'cheeky' });
 
         render(
             <MemoryRouter>
@@ -72,9 +72,9 @@ describe('Dashboard', () => {
         expect(screen.getByText('ExistingBudgetMock')).toBeInTheDocument();
     });
 
-    it('navigates to /exchange when Exchange link is clicked', () => {
+    it('goes to /exchange when Exchange link is clicked', () => {
         localStorage.setItem('token', 'fake-token');
-        jwt.jwtDecode.mockReturnValue({ sub: 'testuser' });
+        jwt.jwtDecode.mockReturnValue({ sub: 'moushami' });
 
         const history = createMemoryHistory({ initialEntries: ['/dashboard'] });
 
@@ -88,9 +88,9 @@ describe('Dashboard', () => {
         expect(history.location.pathname).toBe('/exchange');
     });
 
-    it('navigates to /expenses when Expenses link is clicked', () => {
+    it('goes to /expenses when Expenses link is clicked', () => {
         localStorage.setItem('token', 'fake-token');
-        jwt.jwtDecode.mockReturnValue({ sub: 'testuser' });
+        jwt.jwtDecode.mockReturnValue({ sub: 'mousania' });
 
         const history = createMemoryHistory({ initialEntries: ['/dashboard'] });
 
@@ -104,9 +104,9 @@ describe('Dashboard', () => {
         expect(history.location.pathname).toBe('/expenses');
     });
 
-    it('navigates to /visualisation when Visualisation link is clicked', () => {
+    it('goes to /visualisation when Visualisation link is clicked', () => {
         localStorage.setItem('token', 'fake-token');
-        jwt.jwtDecode.mockReturnValue({ sub: 'testuser' });
+        jwt.jwtDecode.mockReturnValue({ sub: 'pattypatricia' });
 
         const history = createMemoryHistory({ initialEntries: ['/dashboard'] });
 
@@ -122,7 +122,7 @@ describe('Dashboard', () => {
 
     it('logs out and navigates to home', () => {
         localStorage.setItem('token', 'fake-token');
-        jwt.jwtDecode.mockReturnValue({ sub: 'testuser' });
+        jwt.jwtDecode.mockReturnValue({ sub: 'sania' });
 
         render(
             <MemoryRouter>

@@ -10,36 +10,36 @@ describe("CurrencyDropdown", () => {
     const mockRates = {
         SGD: 1.35,
         USD: 1,
-        EUR: 0.9,
+        EUR: 0.85,
     };
     const setCurrency = vi.fn();
 
     beforeEach(() => {
         setCurrency.mockClear();
-        axios.get.mockReset();
+        axios.get.mockReset(); // reset any previous mock implementations
         axios.get.mockResolvedValue({ data: { rates: mockRates } });
         localStorage.clear();
     });
 
-    it("fetches and renders currency options from API", async () => {
+    it("loads and displays currency options from the API", async () => { // apparently can phrase this as fetches and renders currency options from API
         render(<CurrencyDropdown currency="USD" setCurrency={setCurrency} />);
-        // Wait for options to appear
+        // wait for options to appear
         await waitFor(() => {
-            expect(screen.getByRole("combobox")).toBeInTheDocument();
+            expect(screen.getByRole("combobox")).toBeInTheDocument(); // combobox - selects the dropdown element for currencies in your test
             expect(screen.getByRole("option", { name: "SGD" })).toBeInTheDocument();
             expect(screen.getByRole("option", { name: "USD" })).toBeInTheDocument();
             expect(screen.getByRole("option", { name: "EUR" })).toBeInTheDocument();
         });
     });
 
-    it("shows the selected value", async () => {
-        render(<CurrencyDropdown currency="EUR" setCurrency={setCurrency} />);
+    it("shows the currently selected currency", async () => {
+        render(<CurrencyDropdown currency="EUR" setCurrency={setCurrency} />); 
         await waitFor(() => {
-            expect(screen.getByRole("combobox").value).toBe("EUR");
+            expect(screen.getByRole("combobox").value).toBe("EUR"); // 
         });
     });
 
-    it("calls setCurrency and updates localStorage on change", async () => {
+    it("updates setCurrency and localStorage when user selects a new currency", async () => {
         render(<CurrencyDropdown currency="USD" setCurrency={setCurrency} />);
         await screen.findByRole("combobox");
         fireEvent.change(screen.getByRole("combobox"), { target: { value: "SGD" } });
@@ -47,7 +47,7 @@ describe("CurrencyDropdown", () => {
         expect(localStorage.getItem("currency")).toBe("SGD");
     });
 
-    it("renders with empty rates if API fails", async () => {
+    it("is displayed with empty rates if API fails", async () => {
         axios.get.mockRejectedValueOnce(new Error("fail"));
         render(<CurrencyDropdown currency="" setCurrency={setCurrency} />);
         await waitFor(() => {
@@ -55,14 +55,14 @@ describe("CurrencyDropdown", () => {
         });
     });
 
-    it("renders without crashing if no props are passed", async () => {
+    it("is displayed without crashing if no props are passed", async () => {
         render(<CurrencyDropdown />);
         await waitFor(() => {
             expect(screen.getByRole("combobox")).toBeInTheDocument();
         });
     });
 
-    it("is accessible by label", async () => {
+    it("has a label so users and screen readers can access it ", async () => {
         render(<CurrencyDropdown currency="USD" setCurrency={setCurrency} />);
         await waitFor(() => {
             expect(screen.getByLabelText(/select currency/i)).toBeInTheDocument();

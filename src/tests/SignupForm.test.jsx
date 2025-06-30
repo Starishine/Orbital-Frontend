@@ -5,16 +5,16 @@ import axios from 'axios';
 import { vi } from 'vitest';
 import '@testing-library/jest-dom';
 
-vi.mock('axios');
+vi.mock('axios'); // sort of tells vitest to mock the entire axios module so that we can control its behavior in tests
 
-describe('SignupForm', () => {
+describe('SignupForm', () => { // checking if every part of the page is there initially
     let onSuccess;
 
     beforeEach(() => {
         onSuccess = vi.fn();
     });
 
-    it('renders all input fields and button', () => {
+    it('all input fields and button are present', () => {
         render(<SignupForm onSuccess={onSuccess} />);
         expect(screen.getByLabelText(/username/i)).toBeInTheDocument();
         expect(screen.getByLabelText(/^password$/i)).toBeInTheDocument();
@@ -23,50 +23,50 @@ describe('SignupForm', () => {
         expect(screen.getByRole('button', { name: /sign up/i })).toBeInTheDocument();
     });
 
-    it('shows error if fields are empty', async () => {
+    it('shows error if fields are not filled up', async () => {
         render(<SignupForm onSuccess={onSuccess} />);
         fireEvent.click(screen.getByRole('button', { name: /sign up/i }));
-        expect(await screen.findByText(/please enter user name/i)).toBeInTheDocument();
+        expect(await screen.findByText(/please enter user name/i)).toBeInTheDocument(); // checks if the error message is displayed when the user clicks on the sign up button without entering any data
     });
 
     it('shows error if passwords do not match', async () => {
         render(<SignupForm onSuccess={onSuccess} />);
-        fireEvent.change(screen.getByLabelText(/username/i), { target: { value: 'user' } });
-        fireEvent.change(screen.getByLabelText(/^password$/i), { target: { value: 'pass1' } });
-        fireEvent.change(screen.getByLabelText(/confirm password/i), { target: { value: 'pass2' } });
-        fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'user@email.com' } });
+        fireEvent.change(screen.getByLabelText(/username/i), { target: { value: 'fatty' } });
+        fireEvent.change(screen.getByLabelText(/^password$/i), { target: { value: 'moushami123' } }); // ^ means start of the string and $ means end of the string
+        fireEvent.change(screen.getByLabelText(/confirm password/i), { target: { value: 'password2' } }); // password typed for the second is ovbiously not the same. 
+        fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'fatty@email.com' } });
         fireEvent.click(screen.getByRole('button', { name: /sign up/i }));
-        expect(await screen.findByText(/passwords do not match/i)).toBeInTheDocument();
+        expect(await screen.findByText(/passwords do not match/i)).toBeInTheDocument(); // checks for error message when passwords entered dont match
     });
 
     // check if email input is of type email to ensure proper validation
-    it('email input is of type email', () => {
-        render(<SignupForm onSuccess={vi.fn()} />);
+    it('email input is of correct type email', () => {
+        render(<SignupForm onSuccess={vi.fn()} />); // vi.fn - creates a fake function that remembers what happened to it
         const emailInput = screen.getByLabelText(/email/i);
-        expect(emailInput).toHaveAttribute('type', 'email');
+        expect(emailInput).toHaveAttribute('type', 'email'); // toHaveAttribute - checks the type of the email input
     });
 
-    it('calls onSuccess on successful signup', async () => {
+    it('calls onSuccess if signup is successful', async () => {
         axios.post.mockResolvedValueOnce({
             data: {
                 status: 'SUCCESS',
                 code: 200,
-                data: { username: 'user' }
-            }
+                data: { username: 'fatty' }
+            } // mimicking the response from backend when signup ends up being successful
         });
         render(<SignupForm onSuccess={onSuccess} />);
-        fireEvent.change(screen.getByLabelText(/username/i), { target: { value: 'user' } });
+        fireEvent.change(screen.getByLabelText(/username/i), { target: { value: 'fatty' } });
         fireEvent.change(screen.getByLabelText(/^password$/i), { target: { value: 'pass' } });
         fireEvent.change(screen.getByLabelText(/confirm password/i), { target: { value: 'pass' } });
-        fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'user@email.com' } });
+        fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'fatty@email.com' } });
         fireEvent.click(screen.getByRole('button', { name: /sign up/i }));
 
         await waitFor(() => {
-            expect(onSuccess).toHaveBeenCalledWith({ username: 'user' });
+            expect(onSuccess).toHaveBeenCalledWith({ username: 'fatty' });
         });
     });
 
-    it('shows backend error message on failed signup', async () => {
+    it('shows backend error message when signup fails', async () => {
         axios.post.mockResolvedValueOnce({
             data: {
                 status: 'FAIL',
@@ -75,24 +75,24 @@ describe('SignupForm', () => {
             }
         });
         render(<SignupForm onSuccess={onSuccess} />);
-        fireEvent.change(screen.getByLabelText(/username/i), { target: { value: 'user' } });
-        fireEvent.change(screen.getByLabelText(/^password$/i), { target: { value: 'pass' } });
-        fireEvent.change(screen.getByLabelText(/confirm password/i), { target: { value: 'pass' } });
-        fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'user@email.com' } });
+        fireEvent.change(screen.getByLabelText(/username/i), { target: { value: 'fatty' } });
+        fireEvent.change(screen.getByLabelText(/^password$/i), { target: { value: 'moushami123' } });
+        fireEvent.change(screen.getByLabelText(/confirm password/i), { target: { value: 'moushami123' } });
+        fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'fatty@email.com' } });
         fireEvent.click(screen.getByRole('button', { name: /sign up/i }));
 
         expect(await screen.findByText(/username already exists/i)).toBeInTheDocument();
     });
 
-    it('shows error if axios throws', async () => {
+    it('shows error that axios might throw', async () => {
         axios.post.mockRejectedValueOnce({
             response: { data: 'Server error' }
-        });
+        }); // mimicking a server error response
         render(<SignupForm onSuccess={onSuccess} />);
-        fireEvent.change(screen.getByLabelText(/username/i), { target: { value: 'user' } });
-        fireEvent.change(screen.getByLabelText(/^password$/i), { target: { value: 'pass' } });
-        fireEvent.change(screen.getByLabelText(/confirm password/i), { target: { value: 'pass' } });
-        fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'user@email.com' } });
+        fireEvent.change(screen.getByLabelText(/username/i), { target: { value: 'fatty' } });
+        fireEvent.change(screen.getByLabelText(/^password$/i), { target: { value: 'moushami123' } });
+        fireEvent.change(screen.getByLabelText(/confirm password/i), { target: { value: 'moushami123' } });
+        fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'fatty@email.com' } });
         fireEvent.click(screen.getByRole('button', { name: /sign up/i }));
 
         expect(await screen.findByText(/server error/i)).toBeInTheDocument();
@@ -108,10 +108,10 @@ describe('SignupForm', () => {
             }
         });
         render(<SignupForm onSuccess={onSuccess} />);
-        fireEvent.change(screen.getByLabelText(/username/i), { target: { value: 'us' } }); // too short
-        fireEvent.change(screen.getByLabelText(/^password$/i), { target: { value: '123' } }); // too short
-        fireEvent.change(screen.getByLabelText(/confirm password/i), { target: { value: '123' } });
-        fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'user@email.com' } });
+        fireEvent.change(screen.getByLabelText(/username/i), { target: { value: 'mo' } }); // too short
+        fireEvent.change(screen.getByLabelText(/^password$/i), { target: { value: '480' } }); // too short
+        fireEvent.change(screen.getByLabelText(/confirm password/i), { target: { value: '480' } });
+        fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'fatty@email.com' } });
         fireEvent.click(screen.getByRole('button', { name: /sign up/i }));
 
         expect(
@@ -119,7 +119,7 @@ describe('SignupForm', () => {
         ).toBeInTheDocument();
     });
 
-    it('navigates to sign in page when "Sign In" is clicked', () => {
+    it('goes to sign in page when sign in button is clicked', () => {
         delete window.location;
         window.location = { href: '' };
         render(<SignupForm onSuccess={onSuccess} />);

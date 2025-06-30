@@ -21,7 +21,7 @@ describe('AddBudgetForm', () => {
     axios.post = vi.fn(() => Promise.resolve({ data: {} }));
   });
 
-  it('renders category, amount, and currency fields', () => {
+  it('shows all the inputs and add button on first render', () => {
     render(<AddBudgetForm />);
     expect(screen.getByLabelText(/Category/i)).toBeVisible();
     expect(screen.getByLabelText(/Budget Amount/i)).toBeVisible();
@@ -29,13 +29,13 @@ describe('AddBudgetForm', () => {
     expect(screen.getByRole('button', { name: /Add Budget/i })).toBeVisible();
   });
 
-  it('shows custom category input when Others is selected', () => {
+  it('reveals custom input when user picks "Others" category', () => {
     render(<AddBudgetForm />);
     fireEvent.change(screen.getByLabelText(/Category/i), { target: { value: 'Others' } });
     expect(screen.getByLabelText(/Enter Category/i)).toBeVisible();
   });
 
-  it('category and amount fields are required', () => {
+  it('marks category and amount fields as required', () => {
     render(<AddBudgetForm />);
     const categoryField = screen.getByLabelText(/Category/i);
     const amountField = screen.getByLabelText(/Budget Amount/i);
@@ -44,7 +44,7 @@ describe('AddBudgetForm', () => {
     expect(amountField).toBeRequired();
   });
 
-  it('submits correct data to axios.post', async () => {
+  it('sends form data to backend when form is filled properly', async () => {
     axios.post.mockResolvedValueOnce({ data: { status: 'SUCCESS' } });
     render(<AddBudgetForm />);
     fireEvent.change(screen.getByLabelText(/Category/i), { target: { value: 'Food' } });
@@ -66,7 +66,7 @@ describe('AddBudgetForm', () => {
     });
   });
 
-  it('shows alert with API error message on failure to post', async () => {
+  it('shows a generic error alert if backend call fails', async () => {
     const alertMock = vi.spyOn(window, 'alert').mockImplementation(() => { });
     axios.post.mockRejectedValueOnce({
       response: {
@@ -89,7 +89,7 @@ describe('AddBudgetForm', () => {
     alertMock.mockRestore();
   });
 
-  it('shows alert if budget for category already exists for the user', async () => {
+  it('alerts user if budget already exists for selected category', async () => {
     const alertMock = vi.spyOn(window, 'alert').mockImplementation(() => { });
     axios.post.mockResolvedValueOnce({
       data: {
