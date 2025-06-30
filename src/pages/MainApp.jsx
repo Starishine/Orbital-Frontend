@@ -10,21 +10,21 @@ export default function MainApp() {
   const navigate = useNavigate();
 
   const handleAuthSuccess = (user, token) => {
-    localstorage.setItem('token', token); // store currency in local storage
-    localstorage.setItem('money_currency', 'SGD'); // default currency
+    localStorage.setItem('token', token); // Store currency in local storage
+    localStorage.setItem('currency', 'SGD'); // Default currency
     navigate('/dashboard');
   };
 
   const handleSignupSuccess = (user) => {
-    alert(`Signup successful! please log in, ${user.username}`);
+    alert(`Signup Successful! Please log in, ${user.username}`);
     setShowSignUp(false);
     navigate('/');
   };
 
   useEffect(() => {
-    const token = localstorage.getItem('token');
+    const token = localStorage.getItem('token');
     if (token) {
-      navigate('/dashboard'); // redirect to login/signin page if token is missing
+      navigate('/dashboard'); // Redirect to login/signin page if token is missing
     }
   });
 

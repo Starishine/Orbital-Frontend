@@ -28,7 +28,7 @@ beforeEach(() => {
     vi.clearAllMocks() //Clears the call history and behavior of all mock functions made with vi.fn() or vi.spyOn()
     // recreate a fack localstorage (gotta define it properly)
     const store = {}
-    vi.stubGlobal('localstorage', {
+    vi.stubGlobal('localStorage', {
         getItem: vi.fn((keys) => store[keys]),
         setItem: vi.fn((keys, value) => { store[keys] = value }),
         removeItem: vi.fn((keys) => { delete store[keys] }),
@@ -61,8 +61,8 @@ test('switches to SignupForm when SwitchToSignUp is clicked', () => {
 test('logs user in, saves token, and redirects to dashboard', () => {
     render(<MainApp />)
     fireEvent.click(screen.getByText(/MockSignInForm/i))
-    expect(localstorage.setItem).toHaveBeenCalledWith('token', 'token123') // toHaveBeenCalledWith - checks if the function was called with the token blah blah parameters
-    expect(localstorage.setItem).toHaveBeenCalledWith('money_currency', 'SGD')
+    expect(localStorage.setItem).toHaveBeenCalledWith('token', 'token123') // toHaveBeenCalledWith - checks if the function was called with the token blah blah parameters
+    expect(localStorage.setItem).toHaveBeenCalledWith('currency', 'SGD')
     expect(mockNavigate).toHaveBeenCalledWith('/dashboard')
 })
 
@@ -71,14 +71,14 @@ test('alerts signup success, resets form, and goes to homepage', () => {
     render(<MainApp />)
     fireEvent.click(screen.getByText(/SwitchToSignUp/i))
     fireEvent.click(screen.getByText(/MockSignupForm/i))
-    expect(window.alert).toHaveBeenCalledWith('Signup successful! please log in, mousania')
+    expect(window.alert).toHaveBeenCalledWith('Signup Successful! Please log in, mousania')
     expect(mockNavigate).toHaveBeenCalledWith('/')
     expect(screen.getAllByText(/Signup/i).length).toBeGreaterThan(0);
     //expect(screen.getByText(/Sign In/i)).toBeInTheDocument()
 })
 
 test('auto-redirects to dashboard if user is already logged in', () => {
-    localstorage.getItem.mockImplementation((key) => key === 'token' ? 'some_token' : null)
+    localStorage.getItem.mockImplementation((key) => key === 'token' ? 'some_token' : null)
     render(<MainApp />)
     expect(mockNavigate).toHaveBeenCalledWith('/dashboard')
 })
