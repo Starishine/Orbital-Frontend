@@ -11,6 +11,8 @@ export default function Expenses() {
         localStorage.removeItem('convertedExpenses')
         localStorage.removeItem('token')
         localStorage.removeItem('homeCurrency')
+        localStorage.removeItem('username')
+        localStorage.removeItem('email')
         navigate('/'); // Redirect to the home page
     }
 

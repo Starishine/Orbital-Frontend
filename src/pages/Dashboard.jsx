@@ -3,14 +3,14 @@ import AddBudgetForm from "../component/AddBudgetForm";
 import { useEffect, useState } from "react";
 import { jwtDecode } from 'jwt-decode';
 import ExistingBudget from "../component/ExistingBudget";
-import ExistingExpenses from "../component/ExistingExpense";
-import BudgetForecast from "../component/BudgetForecast";
+import axios from "axios";
 import React from "react";
 
 export default function Dashboard() {
     const location = useLocation();
     const navigate = useNavigate();
     const [username, setUserName] = useState(false);
+    const [email, setEmail] = useState('');
     const [darkMode, setDarkMode] = useState(() => localStorage.getItem('darkMode') === 'true');
 
     useEffect(() => {
@@ -26,6 +26,8 @@ export default function Dashboard() {
         localStorage.removeItem('token')
         localStorage.removeItem('convertedExpenses')
         localStorage.removeItem('homeCurrency')
+        localStorage.removeItem('username')
+        localStorage.removeItem('email')
         navigate('/'); // Redirect to the home page
     }
 
@@ -37,6 +39,22 @@ export default function Dashboard() {
         else {
             const decoded = jwtDecode(token);
             setUserName(decoded.sub); // Extract username from token
+            axios.get(`http://localhost:8080/signup/get`, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+                .then(response => {
+                    const filteredUser = response.data.find(user => user.username === (decoded.sub || 'User'));
+                    if (filteredUser) {
+                        setEmail(filteredUser.email || 'No email provided'); // Set email from the user data
+                        localStorage.setItem('username', filteredUser.username); // Set after getting value
+                        localStorage.setItem('email', filteredUser.email || 'No email provided');
+                    } else {
+                        setEmail('User not found');
+                    }
+                })
+                .catch(error => {
+                    setEmail('Error fetching email');
+                });
         }
     }, [navigate]);
 

@@ -10,6 +10,8 @@ export default function SharedBudget() {
         localStorage.removeItem('token')
         localStorage.removeItem('convertedExpenses')
         localStorage.removeItem('homeCurrency')
+        localStorage.removeItem('username')
+        localStorage.removeItem('email')
         navigate('/'); // Redirect to the home page
     }
     return (

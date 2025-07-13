@@ -21,7 +21,9 @@ export default function CreateSharedBudgetForm() {
             budgetName: budgetName,
             amount: parseFloat(amount),
             currency: currency,
-            invites: invites
+            invites: invites,
+            inviter: localStorage.getItem('username') || 'User',
+            inviterEmail: localStorage.getItem('email') || 'No email provided'
         }, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
             .then((response) => {
                 const data = response.data;
@@ -33,6 +35,7 @@ export default function CreateSharedBudgetForm() {
                     setCurrency('SGD');
                     setError('');
                     setInvites([]);
+
                 } else {
                     setError(data.message || 'Failed to create shared budget');
                 }

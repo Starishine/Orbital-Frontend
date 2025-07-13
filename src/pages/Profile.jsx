@@ -1,42 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom';
+import { useLocation, Link, useNavigate } from "react-router-dom";
 
 export default function Profile() {
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
     const [darkMode, setDarkMode] = useState(() => localStorage.getItem('darkMode') === 'true');
+    let username = localStorage.getItem('username') || 'User';
+    let email = localStorage.getItem('email') || 'No email provided';
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) {
-            setUsername('Guest');
-            setEmail('guest@example.com');
-        } else {
-            const decoded = jwtDecode(token);
-            setUsername(decoded.sub || 'User');
-            axios.get(`http://localhost:8080/signup/get`, {
-                headers: { Authorization: `Bearer ${token}` }
-            })
-                .then(response => {
-                    const filteredUser = response.data.find(user => user.username === (decoded.sub || 'User'));
-                    if (filteredUser) {
-                        setEmail(filteredUser.email || 'No email provided');
-                    } else {
-                        setEmail('User not found');
-                    }
-                })
-                .catch(error => {
-                    setEmail('Error fetching email');
-                });
+            username = 'Guest';
+            email = 'guest@example.com';
         }
-    }, []);
+    }
+        , []);
 
     const handleLogout = () => {
         localStorage.removeItem('token')
         localStorage.removeItem('convertedExpenses')
         localStorage.removeItem('homeCurrency')
+        localStorage.removeItem('username')
+        localStorage.removeItem('email')
         navigate('/'); // Redirect to the home page
     }
 
