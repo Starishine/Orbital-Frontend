@@ -20,6 +20,12 @@ export default function AddBudgetForm() {
     const [customCategory, setCustomCategory] = useState(''); // if "Others" is selected, this will be used to enter a custom category
     const [amount, setAmount] = useState('');
     const [currency, setCurrency] = useState(localStorage.getItem('currency')); // Default to SGD if no currency is set
+    const [interval, setInterval] = useState('Monthly'); // Default to monthly
+    const [customEnd, setCustomEnd] = useState(''); // Custom end date for the budget if needed
+    const [date, setDate] = useState(() => {
+        const today = new Date();
+        return today.toISOString().split('T')[0]; // YYYY-MM-DD
+    });
 
 
 
@@ -35,11 +41,26 @@ export default function AddBudgetForm() {
         const finalCategory = category === "Others" ? customCategory : category;
         const currency = localStorage.getItem('currency'); // Default to SGD if no currency is set
 
+        // Calculate expiry date based on the interval
+        let calculatedExpiryDate = '';
+        if (interval === 'Weekly') {
+            calculatedExpiryDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]; // 1 week from now
+        } else if (interval === 'Monthly') {
+            calculatedExpiryDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]; // 1 month from now
+        } else if (interval === 'Yearly') {
+            calculatedExpiryDate = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]; // 1 year from now
+        } else if (interval === 'Custom' && customEnd) {
+            calculatedExpiryDate = customEnd; // Use the custom end date
+        }
+
         axios.post('http://localhost:8080/budget/create', {
             category: finalCategory,
             currency: currency,
             amountAllocated: parseFloat(amount),
-            amount: parseFloat(amount)
+            amount: parseFloat(amount),
+            interval: interval,
+            dateCreated: date,
+            expiryDate: calculatedExpiryDate
         }, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
             .then((response) => {
                 console.log(response);
@@ -51,6 +72,7 @@ export default function AddBudgetForm() {
                     setCategory('');
                     setCustomCategory('');
                     setAmount('');
+                    setInterval('Monthly'); // Reset to default interval
                     window.location.reload(); // Reload the page to reflect the new budget
                 } else {
                     alert(data.message);
@@ -133,7 +155,44 @@ export default function AddBudgetForm() {
                             required
                         />
                     </div>
-
+                    <div style={{ marginBottom: '16px' }}>
+                        <label htmlFor="interval" style={{ display: 'block', marginBottom: 6, fontWeight: 500 }}>
+                            Budget Interval
+                        </label>
+                        <select
+                            id="interval"
+                            value={interval}
+                            onChange={e => setInterval(e.target.value)}
+                            style={{ width: '100%', padding: 8, borderRadius: 4, border: '1px solid #ccc', background: 'var(--bg)', color: 'var(--text)' }}
+                            required
+                        >
+                            <option value="Weekly">Weekly</option>
+                            <option value="Monthly">Monthly</option>
+                            <option value="Yearly">Yearly</option>
+                            <option value="Custom">Custom</option>
+                        </select>
+                        {interval === 'Custom' && (
+                            <div style={{ marginTop: '12px' }}>
+                                <label htmlFor="customEnd" style={{ display: 'block', marginBottom: 6, fontWeight: 500, marginTop: '12px' }}>
+                                    Custom End Date
+                                </label>
+                                <input
+                                    id="customEnd"
+                                    type="date"
+                                    value={customEnd}
+                                    onChange={e => setCustomEnd(e.target.value)}
+                                    style={{
+                                        width: '100%', padding: 8, borderRadius: 4, border: '1px solid var(--primary)', background: 'var(--bg)',
+                                        color: 'var(--text)', boxSizing: 'border-box'
+                                    }}
+                                    required
+                                />
+                                <div style={{ fontSize: 12, color: 'var(--primary)', marginTop: 4 }}>
+                                    Start date will be today: {date}
+                                </div>
+                            </div>
+                        )}
+                    </div>
                     <button
                         type="submit"
                         style={{

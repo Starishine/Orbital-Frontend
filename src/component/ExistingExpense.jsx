@@ -55,12 +55,20 @@ export default function ExistingExpenses() {
     };
 
     // Filtering logic
-    const filteredExpenses = expenses.filter(expense =>
-        (filters.category === '' || expense.category.toLowerCase().includes(filters.category.toLowerCase())) &&
-        (filters.name === '' || (expense.notes || '').toLowerCase().includes(filters.name.toLowerCase())) &&
-        (filters.amount === '' || String(expense.amount).includes(filters.amount)) &&
-        (filters.date === '' || (expense.date && new Date(expense.date).toLocaleDateString().includes(filters.date)))
-    );
+    const filteredExpenses = expenses.filter(expense => {
+        const categoryMatch = filters.category.length === 0 || filters.category.includes(expense.category);
+        const nameMatch = filters.name === '' || (expense.notes || '').toLowerCase().includes(filters.name.toLowerCase());
+        const amountMatch = filters.amount === '' || String(expense.amount).includes(filters.amount);
+        const expenseDate = expense.date ? new Date(expense.date) : null;
+        const startDate = filters.startDate ? new Date(filters.startDate) : null;
+        const endDate = filters.endDate ? new Date(filters.endDate) : null;
+        const dateMatch = (!startDate || (expenseDate && expenseDate >= startDate)) &&
+            (!endDate || (expenseDate && expenseDate <= endDate));
+
+        return categoryMatch && nameMatch && amountMatch && dateMatch;
+    });
+
+    const uniqueCategories = Array.from(new Set(expenses.map(expense => expense.category)))
 
     return (
         <div>
@@ -81,8 +89,7 @@ export default function ExistingExpenses() {
                         <tr>
                             <th style={{ border: '1px solid var(--primary)', padding: '8px', background: 'var(--bg)' }}>
                                 Category<br />
-                                <input
-                                    type="text"
+                                <select
                                     value={filters.category}
                                     onChange={e => setFilters(f => ({ ...f, category: e.target.value }))}
                                     style={{
@@ -93,8 +100,12 @@ export default function ExistingExpenses() {
                                         borderRadius: 4,
                                         padding: 4
                                     }}
-                                    placeholder="Filter"
-                                />
+                                >
+                                    <option value="">All</option>
+                                    {uniqueCategories.map((category, idx) => (
+                                        <option key={idx} value={category}>{category}</option>
+                                    ))}
+                                </select>
                             </th>
                             <th style={{ border: '1px solid var(--primary)', padding: '8px', background: 'var(--bg)' }}>
                                 Name<br />
@@ -133,18 +144,18 @@ export default function ExistingExpenses() {
                             <th style={{ border: '1px solid var(--primary)', padding: '8px', background: 'var(--bg)' }}>
                                 Date<br />
                                 <input
-                                    type="text"
-                                    value={filters.date}
-                                    onChange={e => setFilters(f => ({ ...f, date: e.target.value }))}
-                                    style={{
-                                        width: '90%',
-                                        background: 'var(--bg)',
-                                        color: 'var(--text)',
-                                        border: '1px solid var(--primary)',
-                                        borderRadius: 4,
-                                        padding: 4
-                                    }}
-                                    placeholder="Filter"
+                                    type="date"
+                                    value={filters.startDate || ''}
+                                    onChange={e => setFilters(f => ({ ...f, startDate: e.target.value }))}
+                                    style={{ width: '44%', marginRight: '2%' }}
+                                    placeholder="Start"
+                                />
+                                <input
+                                    type="date"
+                                    value={filters.endDate || ''}
+                                    onChange={e => setFilters(f => ({ ...f, endDate: e.target.value }))}
+                                    style={{ width: '44%' }}
+                                    placeholder="End"
                                 />
                             </th>
                         </tr>
