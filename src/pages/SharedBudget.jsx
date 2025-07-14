@@ -5,6 +5,7 @@ import { useLocation, Link, useNavigate } from "react-router-dom";
 
 
 export default function SharedBudget() {
+    const navigate = useNavigate();
 
     const handleLogout = () => {
         localStorage.removeItem('token')
@@ -47,11 +48,37 @@ export default function SharedBudget() {
                     Logout
                 </button>
             </nav>
-            <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-                <h1>Shared Budget</h1>
-                <p>You can create your shared budget right here! [Under Construction!]</p>
-                <CreateSharedBudgetForm />
-                <SharedBudgetDetail />
+            <div style={{
+                padding: '20px',
+                fontFamily: 'Arial, sans-serif',
+                background: 'var(--bg)',
+                color: 'var(--text)',
+                minHeight: '100vh'
+            }}>
+                <h1>Shared Budgets</h1>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '40px' }}>
+                    <div style={{
+                        marginRight: '40px',
+                        width: '500px',
+                        background: 'var(--card)',
+                        borderRadius: 'var(--round-md)',
+                        boxShadow: '0 2px 8px rgba(25, 118, 210, 0.04)',
+                        padding: '24px'
+
+                    }}>
+                        <CreateSharedBudgetForm />
+                    </div>
+                    <div style={{
+                        flex: 1,
+                        background: 'var(--card)',
+                        borderRadius: 'var(--round-md)',
+                        boxShadow: '0 2px 8px rgba(25, 118, 210, 0.04)',
+                        padding: '24px',
+                        width: '80vh'
+                    }}>
+                        <SharedBudgetDetail />
+                    </div>
+                </div>
             </div>
         </>
     );

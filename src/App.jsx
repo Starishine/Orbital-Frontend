@@ -6,6 +6,7 @@ import Expenses from './pages/Expenses';
 import Visualisation from './pages/Visualisation';
 import SharedBudget from './pages/SharedBudget';
 import Profile from './pages/Profile';
+import WelcomeInvite from './pages/WelcomeInvite';
 import React from 'react';
 
 export default function App() {
@@ -26,6 +27,7 @@ export default function App() {
           <Route path="visualisation" element={<Visualisation />} />
           <Route path="/shared-budget" element={<SharedBudget />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/welcomeInvite" element={<WelcomeInvite />} />
 
 
 

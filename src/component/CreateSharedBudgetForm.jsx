@@ -19,6 +19,7 @@ export default function CreateSharedBudgetForm() {
         }
         axios.post('http://localhost:8080/shared-budget/create', {
             budgetName: budgetName,
+            amountAllocated: parseFloat(amount),
             amount: parseFloat(amount),
             currency: currency,
             invites: invites,
@@ -35,6 +36,7 @@ export default function CreateSharedBudgetForm() {
                     setCurrency('SGD');
                     setError('');
                     setInvites([]);
+                    window.location.reload(); // Reload the page to reflect the new budget
 
                 } else {
                     setError(data.message || 'Failed to create shared budget');

@@ -14,10 +14,32 @@ export default function InviteMembersForm({ invites, setInvites }) {
             setError('This email is already invited');
             return;
         }
-        setInvites([...invites, { username, email }]);
-        setEmail('');
-        setUsername('');
-        setError('');
+
+        // check if user inputs own username and email
+        if (username === localStorage.getItem('username') && email === localStorage.getItem('email')) {
+            setError('You cannot invite yourself');
+            return;
+        }
+
+        axios.post('http://localhost:8080/signup/checkAccount', {
+            username: username,
+            email: email,
+        }, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
+            .then(response => {
+                if (response.data.status === "SUCCESS") {
+                    // refresh invites
+                    setInvites([...invites, { username, email }]);
+                    setEmail('');
+                    setUsername('');
+                    setError('');
+                } else {
+                    setError('User does not exist');
+                }
+            })
+            .catch(() => {
+                setError('Failed to check user existence');
+            });
+
     };
 
     return (
