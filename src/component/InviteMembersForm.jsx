@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 export default function InviteMembersForm({ invites, setInvites }) {
     const [email, setEmail] = useState('');
@@ -36,9 +37,9 @@ export default function InviteMembersForm({ invites, setInvites }) {
                     setError('User does not exist');
                 }
             })
-            .catch(() => {
-                setError('Failed to check user existence');
-            });
+        // .catch(() => {
+        //     setError('Failed to check user existence');
+        // });
 
     };
 
