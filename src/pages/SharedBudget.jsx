@@ -1,20 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import CreateSharedBudgetForm from '../component/CreateSharedBudgetForm';
 import SharedBudgetDetail from '../component/SharedBudgetDetail';
-import { useLocation, Link, useNavigate } from "react-router-dom";
-
+import ViewSharedExpenses from '../component/ViewSharedExpenses';
+import { Link, useNavigate } from "react-router-dom";
 
 export default function SharedBudget() {
+    const [selectedBudgetId, setSelectedBudgetId] = useState('');
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        localStorage.removeItem('token')
-        localStorage.removeItem('convertedExpenses')
-        localStorage.removeItem('homeCurrency')
-        localStorage.removeItem('username')
-        localStorage.removeItem('email')
-        navigate('/'); // Redirect to the home page
-    }
+        localStorage.removeItem('token');
+        localStorage.removeItem('convertedExpenses');
+        localStorage.removeItem('homeCurrency');
+        localStorage.removeItem('username');
+        localStorage.removeItem('email');
+        navigate('/');
+    };
+
     return (
         <>
             <nav style={{
@@ -56,27 +58,32 @@ export default function SharedBudget() {
                 minHeight: '100vh'
             }}>
                 <h1>Shared Budgets</h1>
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '40px' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '40px', justifyContent: 'center' }}>
                     <div style={{
-                        marginRight: '40px',
-                        width: '500px',
+                        width: '420px',
                         background: 'var(--card)',
                         borderRadius: 'var(--round-md)',
                         boxShadow: '0 2px 8px rgba(25, 118, 210, 0.04)',
                         padding: '24px'
-
                     }}>
                         <CreateSharedBudgetForm />
+                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '40px', justifyContent: 'center' }}>
+                            <ViewSharedExpenses budgetId={selectedBudgetId} />
+                        </div>
                     </div>
-                    <div style={{
-                        flex: 1,
-                        background: 'var(--card)',
-                        borderRadius: 'var(--round-md)',
-                        boxShadow: '0 2px 8px rgba(25, 118, 210, 0.04)',
-                        padding: '24px',
-                        width: '80vh'
-                    }}>
-                        <SharedBudgetDetail />
+                    <div>
+                        <div style={{
+                            width: '500px',
+                            background: 'var(--card)',
+                            borderRadius: 'var(--round-md)',
+                            boxShadow: '0 2px 8px rgba(25, 118, 210, 0.04)',
+                            padding: '24px'
+                        }}>
+                            <SharedBudgetDetail
+                                selectedBudgetId={selectedBudgetId}
+                                setSelectedBudgetId={setSelectedBudgetId}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>

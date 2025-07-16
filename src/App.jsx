@@ -7,6 +7,7 @@ import Visualisation from './pages/Visualisation';
 import SharedBudget from './pages/SharedBudget';
 import Profile from './pages/Profile';
 import WelcomeInvite from './pages/WelcomeInvite';
+import AddSharedExpenseForm from './component/AddSharedExpenseForm';
 import React from 'react';
 
 export default function App() {
@@ -24,10 +25,11 @@ export default function App() {
           <Route path="/exchange" element={<Exchange />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/expenses" element={<Expenses />} />
-          <Route path="visualisation" element={<Visualisation />} />
+          <Route path="/visualisation" element={<Visualisation />} />
           <Route path="/shared-budget" element={<SharedBudget />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/welcomeInvite" element={<WelcomeInvite />} />
+          <Route path="/shared-expense" element={<AddSharedExpenseForm />} />
 
 
 

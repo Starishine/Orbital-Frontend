@@ -37,9 +37,9 @@ export default function InviteMembersForm({ invites, setInvites }) {
                     setError('User does not exist');
                 }
             })
-        // .catch(() => {
-        //     setError('Failed to check user existence');
-        // });
+            .catch(() => {
+                setError('Failed to check user existence');
+            });
 
     };
 
