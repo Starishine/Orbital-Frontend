@@ -36,7 +36,6 @@ export default function VisualisationRing({ expenses, members }) {
                             display: true,
                             position: "bottom",
                             labels: {
-                                color: "var(--text, #222)",
                                 font: { size: 14 }
                             }
                         },

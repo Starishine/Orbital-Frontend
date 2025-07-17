@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
+import CurrencyDropdown from '../component/CurrencyDropdown';
 import { useLocation, Link, useNavigate } from "react-router-dom";
 
 export default function Profile() {
     const [darkMode, setDarkMode] = useState(() => localStorage.getItem('darkMode') === 'true');
     let username = localStorage.getItem('username') || 'User';
     let email = localStorage.getItem('email') || 'No email provided';
+    const [homeCurrency, setHomeCurrency] = useState(localStorage.getItem('homeCurrency') || 'SGD');
 
     const navigate = useNavigate();
 
@@ -103,6 +105,12 @@ export default function Profile() {
                     <div>
                         <span style={{ fontWeight: 500, color: 'var(--primary)' }}>Email:</span>
                         <span style={{ marginLeft: 8 }}>{email}</span>
+                    </div>
+
+                    <div style={{ marginBottom: 20, marginTop: 20, color: 'var(--primary)' }}>
+                        Select Home Currency:
+                        <CurrencyDropdown currency={homeCurrency} setCurrency={setHomeCurrency} />
+                        {localStorage.setItem('homeCurrency', homeCurrency)}
                     </div>
                 </div>
             </div>

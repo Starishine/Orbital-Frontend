@@ -58,6 +58,7 @@ export default function Expenses() {
                 <Link to="/expenses" style={{ color: 'var(--primary)' }}>Expenses</Link>
                 <Link to="/visualisation" style={{ color: 'var(--primary)' }}>Visualisation</Link>
                 <Link to="/shared-budget" style={{ color: 'var(--primary)' }}>Shared Budget</Link>
+                <Link to="/profile" style={{ color: 'var(--primary)' }}>Profile</Link>
                 <button
                     onClick={handleLogout}
                     style={{

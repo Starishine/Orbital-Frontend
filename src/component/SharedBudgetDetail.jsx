@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Bar } from 'react-chartjs-2';
 import ViewSharedExpenses from './ViewSharedExpenses';
+import EditSharedBudgetForm from './EditSharedBudget';
 import { Chart, CategoryScale, LinearScale, BarElement, Tooltip, Legend } from 'chart.js';
 Chart.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
 export default function SharedBudgetDetail({ selectedBudgetId, setSelectedBudgetId }) {
     const [budgets, setBudgets] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [editing, setEditing] = useState(false);
 
     useEffect(() => {
         axios.get(`http://localhost:8080/shared-budget/get`, {
@@ -41,6 +43,15 @@ export default function SharedBudgetDetail({ selectedBudgetId, setSelectedBudget
         visibleBudgets.length === 1
             ? visibleBudgets[0]
             : visibleBudgets.find(budget => budget.id === selectedBudgetId);
+
+    const onSave = () => {
+        axios.get(`http://localhost:8080/shared-budget/get`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        }).then(res => {
+            setBudgets(res.data);
+            setLoading(false);
+        });
+    };
 
     return (
         <>
@@ -125,6 +136,30 @@ export default function SharedBudgetDetail({ selectedBudgetId, setSelectedBudget
                                     ))}
                                 </ul>
                             </div>
+                            {username === selectedBudget.inviter && (
+                                <button
+                                    style={{
+                                        backgroundColor: '#1976d2',
+                                        color: 'white',
+                                        border: 'none',
+                                        borderRadius: '4px',
+                                        padding: '6px 16px',
+                                        fontWeight: 500,
+                                        cursor: 'pointer',
+                                        marginTop: '12px'
+                                    }}
+                                    onClick={() => setEditing(true)}
+                                >
+                                    Edit Shared Budget
+                                </button>
+                            )}
+                            {editing && (
+                                <EditSharedBudgetForm
+                                    budget={selectedBudget}
+                                    onSave={() => { setEditing(false); onSave(); }}
+                                    onCancel={() => setEditing(false)}
+                                />
+                            )}
                         </div>
                         <div style={{ display: 'flex', gap: 32, flexWrap: 'wrap' }}>
                             <ViewSharedExpenses

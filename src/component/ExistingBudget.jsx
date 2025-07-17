@@ -215,9 +215,9 @@ export default function ExistingBudget() {
                             Close
                         </button>
                     </div>
-                    <h3 style={{ color: 'var(--text)', marginBottom: 20 }}>Expired Budgets (History)</h3>
+                    <h3 style={{ color: 'var(--card)', marginBottom: 20 }}>Expired Budgets (History)</h3>
                     {expiredBudgets.length === 0 ? (
-                        <p style={{ color: 'var(--text)' }}>No expired budgets.</p>
+                        <p style={{ color: 'var(--card)' }}>No expired budgets.</p>
                     ) : (
                         expiredBudgets.map(renderBudgetCard)
                     )}

@@ -6,10 +6,10 @@ import React from 'react';
 
 export default function ExistingExpenses() {
     const [expenses, setExpenses] = useState([]);
-    const [homeCurrency, setHomeCurrency] = useState('SGD'); // Default home currency
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [editIdx, setEditIdx] = useState(null); // State to track which budget is being edited
+    const homeCurrency = localStorage.getItem('homeCurrency') || 'SGD';
     const [filters, setFilters] = useState({
         category: '',
         name: '',
@@ -176,9 +176,6 @@ export default function ExistingExpenses() {
                     </tbody>
                 </table>
             )}
-            <div style={{ marginBottom: 20, marginTop: 20 }}>
-                <CurrencyDropdown currency={homeCurrency} setCurrency={setHomeCurrency} />
-            </div>
             <ConvertExpensesToHomeCurrency homeCurrency={homeCurrency} />
         </div>
     );
