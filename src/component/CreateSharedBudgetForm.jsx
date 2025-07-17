@@ -50,31 +50,76 @@ export default function CreateSharedBudgetForm() {
     };
 
     return (
-        <>
-            <form onSubmit={handleSubmit} style={{ margin: '20px 0' }}>
-                <h2>Create Shared Budget</h2>
-                {error && <div style={{ color: 'red' }}>{error}</div>}
-                <input
-                    type="text"
-                    placeholder="Budget Name"
-                    value={budgetName}
-                    onChange={(e) => setBudgetName(e.target.value)}
-                    required
-                />
-
-                <InviteMembersForm invites={invites} setInvites={setInvites} />
-                <div style={{ flex: 1 }}>
+        <div style={{
+            padding: '20px',
+            fontFamily: 'Arial, sans-serif',
+            maxWidth: 400,
+            background: 'var(--card)',
+            color: 'var(--text)',
+            borderRadius: 'var(--round-md)',
+            boxShadow: '0 2px 8px rgba(25, 118, 210, 0.04)'
+        }}>
+            <h2>Create Shared Budget</h2>
+            <form onSubmit={handleSubmit}>
+                {error && <div style={{ color: 'red', marginBottom: 12 }}>{error}</div>}
+                <div style={{ marginBottom: '16px' }}>
+                    <label htmlFor="budgetName" style={{ display: 'block', marginBottom: 6, fontWeight: 500 }}>
+                        Budget Name
+                    </label>
+                    <input
+                        id="budgetName"
+                        type="text"
+                        placeholder="e.g. Trip to Japan"
+                        value={budgetName}
+                        onChange={(e) => setBudgetName(e.target.value)}
+                        style={{
+                            width: '100%', padding: 8, borderRadius: 4, border: '1px solid #ccc', background: 'var(--bg)', color: 'var(--text)'
+                        }}
+                        required
+                    />
+                </div>
+                <div style={{ marginBottom: '16px' }}>
+                    <label style={{ display: 'block', marginBottom: 6, fontWeight: 500 }}>
+                        Invite Members
+                    </label>
+                    <InviteMembersForm invites={invites} setInvites={setInvites} />
+                </div>
+                <div style={{ marginBottom: '16px' }}>
                     <CurrencyDropdown currency={currency} setCurrency={setCurrency} />
                 </div>
-                <input
-                    type="number"
-                    placeholder="Amount"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    required
-                />
-                <button type="submit">Create Budget</button>
+                <div style={{ marginBottom: '16px' }}>
+                    <label htmlFor="amount" style={{ display: 'block', marginBottom: 6, fontWeight: 500 }}>
+                        Amount
+                    </label>
+                    <input
+                        id="amount"
+                        type="number"
+                        placeholder="Amount"
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value)}
+                        style={{
+                            width: '100%', padding: 8, borderRadius: 4, border: '1px solid var(--primary)', background: 'var(--bg)', color: 'var(--text)'
+                        }}
+                        required
+                    />
+                </div>
+                <button
+                    type="submit"
+                    style={{
+                        width: '100%',
+                        padding: '10px',
+                        background: 'var(--primary)',
+                        color: 'var(--card)',
+                        border: 'none',
+                        borderRadius: '4px',
+                        fontWeight: 600,
+                        fontSize: '16px',
+                        cursor: 'pointer'
+                    }}
+                >
+                    Create Budget
+                </button>
             </form>
-        </>
+        </div>
     );
 }

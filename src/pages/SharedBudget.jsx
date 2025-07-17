@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CreateSharedBudgetForm from '../component/CreateSharedBudgetForm';
 import SharedBudgetDetail from '../component/SharedBudgetDetail';
 import ViewSharedExpenses from '../component/ViewSharedExpenses';
@@ -7,6 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 export default function SharedBudget() {
     const [selectedBudgetId, setSelectedBudgetId] = useState('');
     const navigate = useNavigate();
+    const [darkMode, setDarkMode] = useState(() => localStorage.getItem('darkMode') === 'true');
 
     const handleLogout = () => {
         localStorage.removeItem('token');
@@ -16,6 +17,15 @@ export default function SharedBudget() {
         localStorage.removeItem('email');
         navigate('/');
     };
+
+    useEffect(() => {
+        if (darkMode) {
+            document.body.classList.add('dark-mode');
+        } else {
+            document.body.classList.remove('dark-mode');
+        }
+        localStorage.setItem('darkMode', darkMode);
+    }, [darkMode]);
 
     return (
         <>
@@ -67,9 +77,6 @@ export default function SharedBudget() {
                         padding: '24px'
                     }}>
                         <CreateSharedBudgetForm />
-                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '40px', justifyContent: 'center' }}>
-                            <ViewSharedExpenses budgetId={selectedBudgetId} />
-                        </div>
                     </div>
                     <div>
                         <div style={{
