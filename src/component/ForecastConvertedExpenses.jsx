@@ -275,13 +275,34 @@ export default function ForecastConvertedExpenses({ converted }) {
                             )}
                             {/* Insights section for ML suggestions */}
                             {cardSuggestions.length > 0 && openInsights[info.category] && (
-                                <div style={{ marginTop: 12, color: '#1976d2', fontWeight: 500 }}>
-                                    <span role="img" aria-label="lightbulb">💡</span> Insights:
-                                    <ul>
+                                <div style={{ marginTop: 14 }}>
+                                    <div style={{ fontWeight: 600, color: '#1976d2', marginBottom: 8, display: 'flex', alignItems: 'center' }}>
+                                        <span role="img" aria-label="lightbulb" style={{ fontSize: 22, marginRight: 6 }}>💡</span>
+                                        Insights
+                                    </div>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                                         {cardSuggestions.map((s, idx) => (
-                                            <li key={idx}>{s.message ? s.message : s}</li>
+                                            <div
+                                                key={idx}
+                                                style={{
+                                                    background: '#f5faff',
+                                                    borderLeft: '4px solid #1976d2',
+                                                    borderRadius: 8,
+                                                    padding: '10px 14px',
+                                                    color: '#222',
+                                                    fontSize: 15,
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    boxShadow: '0 1px 4px rgba(25, 118, 210, 0.06)'
+                                                }}
+                                            >
+                                                <span style={{ marginRight: 10, fontSize: 18 }}>
+                                                    {s.type === 'warning' ? '⚠️' : '💡'}
+                                                </span>
+                                                <span>{s.message ? s.message : s}</span>
+                                            </div>
                                         ))}
-                                    </ul>
+                                    </div>
                                 </div>
                             )}
                         </div>

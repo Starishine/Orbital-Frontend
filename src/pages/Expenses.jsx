@@ -1,6 +1,7 @@
 import AddExpenseForm from "../component/AddExpenseForm";
 import AddSharedExpenseForm from "../component/AddSharedExpenseForm";
 import ExistingExpenses from "../component/ExistingExpense";
+import Notifications from "../component/Notifications";
 import { Link } from 'react-router-dom';
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -13,6 +14,7 @@ export default function Expenses() {
         localStorage.removeItem('homeCurrency')
         localStorage.removeItem('username')
         localStorage.removeItem('email')
+        localStorage.removeItem('lastReadNotifHash')
         navigate('/');
     }
 
@@ -59,6 +61,7 @@ export default function Expenses() {
                 <Link to="/visualisation" style={{ color: 'var(--primary)' }}>Visualisation</Link>
                 <Link to="/shared-budget" style={{ color: 'var(--primary)' }}>Shared Budget</Link>
                 <Link to="/profile" style={{ color: 'var(--primary)' }}>Profile</Link>
+                <Notifications />
                 <button
                     onClick={handleLogout}
                     style={{

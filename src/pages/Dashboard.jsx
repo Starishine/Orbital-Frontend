@@ -3,6 +3,7 @@ import AddBudgetForm from "../component/AddBudgetForm";
 import { useEffect, useState } from "react";
 import { jwtDecode } from 'jwt-decode';
 import ExistingBudget from "../component/ExistingBudget";
+import Notifications from "../component/Notifications";
 import axios from "axios";
 import React from "react";
 
@@ -28,6 +29,7 @@ export default function Dashboard() {
         localStorage.removeItem('homeCurrency')
         localStorage.removeItem('username')
         localStorage.removeItem('email')
+        localStorage.removeItem('lastReadNotifHash');
         navigate('/'); // Redirect to the home page
     }
 
@@ -76,6 +78,7 @@ export default function Dashboard() {
                 <Link to="/visualisation" style={{ color: 'var(--primary)' }}>Visualisation</Link>
                 <Link to="/shared-budget" style={{ color: 'var(--primary)' }}>Shared Budget</Link>
                 <Link to="/profile" style={{ color: 'var(--primary)' }}>Profile</Link>
+                <Notifications />
                 <button
                     onClick={handleLogout}
                     style={{
