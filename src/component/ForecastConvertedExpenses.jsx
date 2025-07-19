@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import axios from 'axios';
 import React from 'react';
 
@@ -6,6 +6,8 @@ export default function ForecastConvertedExpenses({ converted }) {
     const [budgets, setBudgets] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [mlSuggestions, setMlSuggestions] = useState([]);
+    const [openInsights, setOpenInsights] = useState({});
     const homeCurrency = localStorage.getItem('homeCurrency');
 
     useEffect(() => {
@@ -27,10 +29,6 @@ export default function ForecastConvertedExpenses({ converted }) {
                 setLoading(false);
             });
     }, []);
-
-    if (loading) return <div>Loading forecast...</div>;
-    if (error) return <div style={{ color: 'red' }}>{error}</div>;
-    if (!converted || converted.length === 0) return <div>No converted expenses to forecast.</div>;
 
     const today = new Date();
 
@@ -64,6 +62,7 @@ export default function ForecastConvertedExpenses({ converted }) {
         const catExpenses = converted.filter(e => e.category === budget.category && e.convertedAmount !== null);
         const spent = catExpenses.reduce((sum, e) => sum + e.convertedAmount, 0);
         const sortedDates = catExpenses.map(e => new Date(e.date)).sort((a, b) => a - b);
+        const budgetduration = budget.duration || 'monthly'; // Default to monthly if not set
 
         // detect interval
         let interval = 'daily';
@@ -115,8 +114,25 @@ export default function ForecastConvertedExpenses({ converted }) {
                 : interval === 'weekly' ? 'week'
                     : 'day';
 
+
+        // Streak Calculation
+        let streak = 0;
+        if (intervalGroups.length > 0 && allocated > 0) {
+            // Go from most recent interval to oldest
+            for (let i = intervalGroups.length - 1; i >= 0; i--) {
+                // Stayed under budget for this interval
+                if (intervalGroups[i] <= allocated) {
+                    streak++;
+                } else {
+                    // Broke the streak
+                    break;
+                }
+            }
+        }
+
         return {
             category: budget.category,
+            budgetduration,
             intervalLabel,
             avgPerInterval,
             intervalsLeft,
@@ -124,9 +140,38 @@ export default function ForecastConvertedExpenses({ converted }) {
             remaining: Number(budget.amount),
             spent,
             allocated,
-            percentUsed
+            percentUsed,
+            streak,
         };
     });
+
+    // For ML insights, prepare data
+    const mlBudgets = forecastInfo.map(info => ({
+        category: info.category,
+        budgetduration: info.budgetduration,
+        allocated: info.allocated,
+        spent: info.spent,
+        currency: homeCurrency,
+        spendinginterval: info.intervalLabel,
+        percent_used: info.percentUsed,
+        streak: info.streak
+    }));
+
+    useEffect(() => {
+        if (mlBudgets.length > 0) {
+            axios.post('http://localhost:8000/insights', mlBudgets)
+                .then(res => {
+                    console.log('ML insights:', res);
+                    setMlSuggestions(res.data.suggestions);
+                })
+                .catch(() => setMlSuggestions(['Could not fetch ML insights.']));
+        }
+    }, [JSON.stringify(mlBudgets)]);
+
+    if (loading) return <div>Loading forecast...</div>;
+    if (error) return <div style={{ color: 'red' }}>{error}</div>;
+    if (!converted || converted.length === 0) return <div>No converted expenses to forecast.</div>;
+
 
     return (
         <div style={{ marginTop: 32 }}>
@@ -138,69 +183,110 @@ export default function ForecastConvertedExpenses({ converted }) {
                 justifyContent: 'center',
                 alignItems: 'stretch'
             }}>
-                {forecastInfo.map(info => (
-                    <div
-                        key={info.category}
-                        style={{
-                            minWidth: 380,
-                            maxWidth: 380,
-                            background: '#fff',
-                            color: '#333',
-                            boxShadow: '0 2px 12px rgba(0,0,0,0.10)',
-                            borderRadius: 14,
-                            padding: 24,
-                            marginBottom: 24,
-                            borderLeft: info.remaining <= 0 ? '6px solid #d32f2f' : '6px solid #1976d2',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'space-between',
-                            height: '100%'
-                        }}
-                    >
-                        <div style={{ fontWeight: 700, fontSize: 20, marginBottom: 10, color: '#222', textAlign: 'left' }}>
-                            {info.category}
-                            <span style={{ fontSize: 15, color: '#888', marginLeft: 8 }}>
-                                ({homeCurrency})
-                            </span>
-                        </div>
-                        <div style={{ marginBottom: 14, fontSize: 15 }}>
-                            <span style={{ color: '#1976d2', fontWeight: 500 }}>Allocated:</span>
-                            <span style={{ marginLeft: 6 }}>{homeCurrency} {info.allocated.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span><br />
-                            <span style={{ color: '#d32f2f', fontWeight: 500 }}>Spent:</span>
-                            <span style={{ marginLeft: 6 }}>{homeCurrency} {info.spent.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span><br />
-                            <span style={{ color: '#388e3c', fontWeight: 500 }}>Remaining:</span>
-                            <span style={{ marginLeft: 6 }}>{homeCurrency} {info.remaining.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
-                        </div>
-                        <div style={{ margin: '12px 0 18px 0', height: 12, background: '#eee', borderRadius: 6, overflow: 'true' }}>
-                            <div
-                                style={{
-                                    width: `${info.percentUsed}%`,
-                                    height: '100%',
-                                    background: info.percentUsed > 90 ? '#d32f2f' : '#1976d2',
-                                    transition: 'width 0.5s'
-                                }}
-                            />
-                        </div>
-                        {info.avgPerInterval > 0 && info.remaining > 0 ? (
-                            <div style={{ color: '#333', fontSize: 15, textAlign: 'left' }}>
-                                <span role="img" aria-label="forecast">⏳</span> Based on your <b>{info.intervalLabel}</b> spending pattern,
-                                if you keep spending at <b>{homeCurrency} {info.avgPerInterval.toLocaleString(undefined, { minimumFractionDigits: 2 })}</b> per {info.intervalLabel},<br />
-                                <span>
-                                    you’ll run out of budget in <b>{info.intervalsLeft.toFixed(1)}</b> {info.intervalLabel}{info.intervalsLeft > 1 ? 's' : ''}
-                                    {info.runOutDate && <> ({info.runOutDate.toLocaleDateString()})</>}
-                                </span>
+                {forecastInfo.map(info => {
+                    // Filter ML suggestions for this category
+                    const cardSuggestions = mlSuggestions.filter(
+                        s => (s.category || '').toLowerCase() === info.category.toLowerCase()
+                    );
+                    return (
+                        <div
+                            key={info.category}
+                            style={{
+                                minWidth: 380,
+                                maxWidth: 380,
+                                background: '#fff',
+                                color: '#333',
+                                boxShadow: '0 2px 12px rgba(0,0,0,0.10)',
+                                borderRadius: 14,
+                                padding: 24,
+                                marginBottom: 24,
+                                borderLeft: info.remaining <= 0 ? '6px solid #d32f2f' : '6px solid #1976d2',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'space-between',
+                                height: '100%'
+                            }}
+                        >
+                            <div style={{ display: 'flex', alignItems: 'center', marginBottom: 10 }}>
+                                <div style={{ fontWeight: 700, fontSize: 20, color: '#222', textAlign: 'left', flex: 1 }}>
+                                    {info.category}
+                                    <span style={{ fontSize: 15, color: '#888', marginLeft: 8 }}>
+                                        ({homeCurrency})
+                                    </span>
+                                </div>
+                                {/* Lightbulb icon button for ML suggestions */}
+                                {cardSuggestions.length > 0 && (
+                                    <button
+                                        onClick={() =>
+                                            setOpenInsights(prev => ({
+                                                ...prev,
+                                                [info.category]: !prev[info.category]
+                                            }))
+                                        }
+                                        style={{
+                                            background: 'none',
+                                            border: 'none',
+                                            cursor: 'pointer',
+                                            fontSize: 22,
+                                            marginLeft: 8,
+                                            color: openInsights[info.category] ? '#1976d2' : '#bbb'
+                                        }}
+                                        title={openInsights[info.category] ? "Hide Insights" : "Show Insights"}
+                                    >
+                                        <span role="img" aria-label="lightbulb">💡</span>
+                                    </button>
+                                )}
                             </div>
-                        ) : info.remaining <= 0 ? (
-                            <div style={{ color: '#d32f2f', fontWeight: 600, fontSize: 15, textAlign: 'left' }}>
-                                <span role="img" aria-label="alert">⚠️</span> Budget exceeded!
+                            <div style={{ marginBottom: 14, fontSize: 15 }}>
+                                <span style={{ color: '#1976d2', fontWeight: 500 }}>Allocated:</span>
+                                <span style={{ marginLeft: 6 }}>{homeCurrency} {info.allocated.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span><br />
+                                <span style={{ color: '#d32f2f', fontWeight: 500 }}>Spent:</span>
+                                <span style={{ marginLeft: 6 }}>{homeCurrency} {info.spent.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span><br />
+                                <span style={{ color: '#388e3c', fontWeight: 500 }}>Remaining:</span>
+                                <span style={{ marginLeft: 6 }}>{homeCurrency} {info.remaining.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                             </div>
-                        ) : (
-                            <div style={{ color: 'gray', fontSize: 15, textAlign: 'left' }}>
-                                <span role="img" aria-label="info">ℹ️</span> No expenses yet. Forecast not available.
+                            <div style={{ margin: '12px 0 18px 0', height: 12, background: '#eee', borderRadius: 6, overflow: 'true' }}>
+                                <div
+                                    style={{
+                                        width: `${info.percentUsed}%`,
+                                        height: '100%',
+                                        background: info.percentUsed > 90 ? '#d32f2f' : '#1976d2',
+                                        transition: 'width 0.5s'
+                                    }}
+                                />
                             </div>
-                        )}
-                    </div>
-                ))}
+                            {info.avgPerInterval > 0 && info.remaining > 0 ? (
+                                <div style={{ color: '#333', fontSize: 15, textAlign: 'left' }}>
+                                    <span role="img" aria-label="forecast">⏳</span> Based on your <b>{info.intervalLabel}</b> spending pattern,
+                                    if you keep spending at <b>{homeCurrency} {info.avgPerInterval.toLocaleString(undefined, { minimumFractionDigits: 2 })}</b> per {info.intervalLabel},<br />
+                                    <span>
+                                        you’ll run out of budget in <b>{info.intervalsLeft.toFixed(1)}</b> {info.intervalLabel}{info.intervalsLeft > 1 ? 's' : ''}
+                                        {info.runOutDate && <> ({info.runOutDate.toLocaleDateString()})</>}
+                                    </span>
+                                </div>
+                            ) : info.remaining <= 0 ? (
+                                <div style={{ color: '#d32f2f', fontWeight: 600, fontSize: 15, textAlign: 'left' }}>
+                                    <span role="img" aria-label="alert">⚠️</span> Budget exceeded!
+                                </div>
+                            ) : (
+                                <div style={{ color: 'gray', fontSize: 15, textAlign: 'left' }}>
+                                    <span role="img" aria-label="info">ℹ️</span> No expenses yet. Forecast not available.
+                                </div>
+                            )}
+                            {/* Insights section for ML suggestions */}
+                            {cardSuggestions.length > 0 && openInsights[info.category] && (
+                                <div style={{ marginTop: 12, color: '#1976d2', fontWeight: 500 }}>
+                                    <span role="img" aria-label="lightbulb">💡</span> Insights:
+                                    <ul>
+                                        {cardSuggestions.map((s, idx) => (
+                                            <li key={idx}>{s.message ? s.message : s}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
+                        </div>
+                    );
+                })}
             </div>
         </div>
     );
