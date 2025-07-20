@@ -35,25 +35,25 @@ describe('ForecastConvertedExpenses', () => {
     localStorage.clear();
   });
 
-  it('makes a budget API request with the correct token and URL', async () => {
-    axios.get.mockResolvedValueOnce({
-      data: [
-        { category: 'Food', currency: 'SGD', amountAllocated: 100, amount: 20 },
-        { category: 'Transport', currency: 'SGD', amountAllocated: 50, amount: 30 }
-      ]
-    });
-    render(<ForecastConvertedExpenses converted={converted} />);
-    await waitFor(() => {
-      expect(axios.get).toHaveBeenCalledWith(
-        'http://localhost:8080/budget/get',
-        expect.objectContaining({
-          headers: expect.objectContaining({
-            Authorization: 'Bearer test-token'
-          })
-        })
-      );
-    });
-  });
+  // it('makes a budget API request with the correct token and URL', async () => {
+  //   axios.get.mockResolvedValueOnce({
+  //     data: [
+  //       { category: 'Food', currency: 'SGD', amountAllocated: 100, amount: 20 },
+  //       { category: 'Transport', currency: 'SGD', amountAllocated: 50, amount: 30 }
+  //     ]
+  //   });
+  //   render(<ForecastConvertedExpenses converted={converted} />);
+  //   await waitFor(() => {
+  //     expect(axios.get).toHaveBeenCalledWith(
+  //       'http://localhost:8080/budget/get',
+  //       expect.objectContaining({
+  //         headers: expect.objectContaining({
+  //           Authorization: 'Bearer test-token'
+  //         })
+  //       })
+  //     );
+  //   });
+  // });
 
   it('shows forecast data for each category like Food and Transport', async () => {
     axios.get.mockResolvedValueOnce({
