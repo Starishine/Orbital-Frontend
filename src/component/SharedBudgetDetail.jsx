@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { Bar } from 'react-chartjs-2';
+import ViewSharedExpenses from './ViewSharedExpenses';
+import EditSharedBudgetForm from './EditSharedBudget';
+import { Chart, CategoryScale, LinearScale, BarElement, Tooltip, Legend } from 'chart.js';
+Chart.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
-export default function SharedBudgetDetail() {
+export default function SharedBudgetDetail({ selectedBudgetId, setSelectedBudgetId }) {
     const [budgets, setBudgets] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [expenses, setExpenses] = useState({});
-    const [newExpense, setNewExpense] = useState({});
-    const [splitSummary, setSplitSummary] = useState({});
+    const [editing, setEditing] = useState(false);
 
     useEffect(() => {
         axios.get(`http://localhost:8080/shared-budget/get`, {
@@ -17,129 +20,198 @@ export default function SharedBudgetDetail() {
         });
     }, []);
 
-    // Fetch expenses for each budget
+    const username = localStorage.getItem('username');
+
+    // Filter budgets: show if owner, or if invitee with accepted status
+    const visibleBudgets = budgets.filter(budget =>
+        budget.inviter === username ||
+        budget.invites.some(invite => invite.username === username && invite.status === "accepted")
+    );
+
     useEffect(() => {
-        budgets.forEach(budget => {
-            axios.get(`http://localhost:8080/shared-budget/${budget.id}/expenses`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-            }).then(res => {
-                setExpenses(prev => ({ ...prev, [budget.id]: res.data }));
-            });
-        });
-    }, [budgets]);
-
-    // Calculate split summary for each budget
-    useEffect(() => {
-        budgets.forEach(budget => {
-            const exp = expenses[budget.id] || [];
-            const members = budget.invites.map(i => i.username);
-            // Simple equal split
-            const total = exp.reduce((sum, e) => sum + e.amount, 0);
-            const perPerson = members.length ? total / members.length : 0;
-            const paid = {};
-            members.forEach(m => paid[m] = 0);
-            exp.forEach(e => { paid[e.paidBy] += e.amount; });
-            const balances = {};
-            members.forEach(m => { balances[m] = paid[m] - perPerson; });
-            setSplitSummary(prev => ({ ...prev, [budget.id]: balances }));
-        });
-    }, [expenses, budgets]);
-
-    const handleExpenseChange = (budgetId, field, value) => {
-        setNewExpense(prev => ({
-            ...prev,
-            [budgetId]: { ...prev[budgetId], [field]: value }
-        }));
-    };
-
-    const handleAddExpense = (budgetId, members) => {
-        const exp = newExpense[budgetId];
-        if (!exp || !exp.amount || !exp.paidBy || !exp.description) return;
-        axios.post(`http://localhost:8080/shared-budget/${budgetId}/expense`, exp, {
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-        }).then(res => {
-            setExpenses(prev => ({
-                ...prev,
-                [budgetId]: [...(prev[budgetId] || []), res.data]
-            }));
-            setNewExpense(prev => ({ ...prev, [budgetId]: {} }));
-        });
-    };
+        if (visibleBudgets.length === 1) {
+            setSelectedBudgetId(visibleBudgets[0].id);
+        }
+    }, [visibleBudgets]);
 
     if (loading) return <div>Loading...</div>;
     if (!budgets.length) return <div>No shared budgets found.</div>;
+    if (!visibleBudgets.length) return <div>No shared budgets to display.</div>;
+
+    // Find the selected budget object
+    const selectedBudget =
+        visibleBudgets.length === 1
+            ? visibleBudgets[0]
+            : visibleBudgets.find(budget => budget.id === selectedBudgetId);
+
+    const onSave = () => {
+        axios.get(`http://localhost:8080/shared-budget/get`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        }).then(res => {
+            setBudgets(res.data);
+            setLoading(false);
+        });
+    };
 
     return (
-        <div>
-            <h2>Your Shared Budgets</h2>
-            {budgets.map(budget => (
-                <div key={budget.id} style={{ border: "1px solid #ccc", borderRadius: 8, padding: 16, marginBottom: 32 }}>
-                    <h3>{budget.budgetName}</h3>
-                    <div><b>Amount:</b> {budget.amount} {budget.currency}</div>
-                    <div>
-                        <b>Invited Members:</b>
-                        <ul>
-                            {budget.invites.map((invite, idx) => (
-                                <li key={idx}>{invite.username} ({invite.email})</li>
-                            ))}
-                        </ul>
-                    </div>
-                    <div>
-                        <h4>Expenses</h4>
-                        <ul>
-                            {(expenses[budget.id] || []).map((exp, idx) => (
-                                <li key={idx}>
-                                    {exp.description}: {exp.amount} ({exp.paidBy})
-                                </li>
-                            ))}
-                        </ul>
-                        <form
-                            onSubmit={e => {
-                                e.preventDefault();
-                                handleAddExpense(budget.id, budget.invites.map(i => i.username));
-                            }}
-                            style={{ marginTop: 8, display: "flex", gap: 8, alignItems: "center" }}
+        <>
+            <div>
+                <h2>Your Shared Budgets</h2>
+                {visibleBudgets.length > 1 && (
+                    <div style={{ marginBottom: '16px' }}>
+                        <label htmlFor="budget-select"><b>Select Budget:</b></label>
+                        <select
+                            id="budget-select"
+                            value={selectedBudgetId}
+                            onChange={e => setSelectedBudgetId(e.target.value)}
+                            style={{ marginLeft: '8px', padding: '4px 8px', borderRadius: '4px' }}
                         >
-                            <input
-                                type="text"
-                                placeholder="Description"
-                                value={newExpense[budget.id]?.description || ""}
-                                onChange={e => handleExpenseChange(budget.id, "description", e.target.value)}
-                                required
-                            />
-                            <input
-                                type="number"
-                                placeholder="Amount"
-                                value={newExpense[budget.id]?.amount || ""}
-                                onChange={e => handleExpenseChange(budget.id, "amount", e.target.value)}
-                                required
-                            />
-                            <select
-                                value={newExpense[budget.id]?.paidBy || ""}
-                                onChange={e => handleExpenseChange(budget.id, "paidBy", e.target.value)}
-                                required
-                            >
-                                <option value="">Paid By</option>
-                                {budget.invites.map((invite, idx) => (
-                                    <option key={idx} value={invite.username}>{invite.username}</option>
-                                ))}
-                            </select>
-                            <button type="submit">Add Expense</button>
-                        </form>
+                            <option value="">-- Choose a budget --</option>
+                            {visibleBudgets.map(budget => (
+                                <option key={budget.id} value={budget.id}>
+                                    {budget.budgetName}
+                                </option>
+                            ))}
+                        </select>
                     </div>
-                    <div style={{ marginTop: 16 }}>
-                        <h4>Split Summary</h4>
-                        <ul>
-                            {splitSummary[budget.id] &&
-                                Object.entries(splitSummary[budget.id]).map(([user, balance]) => (
-                                    <li key={user}>
-                                        {user}: {balance > 0 ? `is owed ${balance.toFixed(2)}` : `owes ${(-balance).toFixed(2)}`}
-                                    </li>
-                                ))}
-                        </ul>
-                    </div>
-                </div>
-            ))}
-        </div>
+                )}
+                {selectedBudget && (
+                    <>
+                        <div key={selectedBudget.id} style={{ border: "1px solid #ccc", borderRadius: 8, padding: 16, marginBottom: 32 }}>
+                            <h3>{selectedBudget.budgetName}</h3>
+                            <div><b>Owner:</b> {selectedBudget.inviter} ({selectedBudget.inviterEmail})</div>
+                            <div style={{ margin: '16px 0' }}>
+                                <Bar
+                                    data={{
+                                        labels: [''],
+                                        datasets: [
+                                            {
+                                                label: 'Spent',
+                                                data: [selectedBudget.amountAllocated - selectedBudget.amount],
+                                                backgroundColor: '#d32f2f',
+                                            },
+                                            {
+                                                label: 'Remaining',
+                                                data: [selectedBudget.amount],
+                                                backgroundColor: '#388e3c',
+                                            },
+                                        ],
+                                    }}
+                                    options={{
+                                        indexAxis: 'y',
+                                        responsive: true,
+                                        plugins: {
+                                            legend: { position: 'top' },
+                                            tooltip: { enabled: true },
+                                        },
+                                        scales: {
+                                            x: {
+                                                stacked: true,
+                                                min: 0,
+                                                max: selectedBudget.amountAllocated,
+                                                ticks: {
+                                                    callback: value => `${selectedBudget.currency} ${Number(value).toFixed(2)}`
+                                                }
+                                            },
+                                            y: { stacked: true }
+                                        },
+                                        elements: {
+                                            bar: {
+                                                barThickness: 30
+                                            }
+                                        }
+                                    }}
+                                    height={60}
+                                />
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8, color: 'var(--text)' }}>
+                                    <span>Allocated: {selectedBudget.currency} {Number(selectedBudget.amountAllocated).toFixed(2)}</span>
+                                    <span>Remaining: {selectedBudget.currency} {Number(selectedBudget.amount).toFixed(2)}</span>
+                                </div>
+                            </div>
+                            <div style={{ marginTop: 16 }}>
+                                <b>Invited Members:</b>
+                                <div style={{
+                                    marginTop: 8,
+                                    border: '1px solid #e0e0e0',
+                                    borderRadius: 8,
+                                    background: 'var(--card)',
+                                    overflow: 'hidden',
+                                    boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
+                                }}>
+                                    <div style={{
+                                        display: 'flex',
+                                        fontWeight: 600,
+                                        background: 'var(--bg)',
+                                        color: 'var(--text)',
+                                        padding: '8px 16px',
+                                        borderBottom: '1px solid #e0e0e0',
+                                        fontSize: 15
+                                    }}>
+                                        <div style={{ flex: 2 }}>Name</div>
+                                        <div style={{ flex: 3 }}>Email</div>
+                                        <div style={{ flex: 1, textAlign: 'center' }}>Status</div>
+                                    </div>
+                                    {selectedBudget.invites.map((invite, idx) => (
+                                        <div
+                                            key={idx}
+                                            style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                padding: '8px 16px',
+                                                borderBottom: idx !== selectedBudget.invites.length - 1 ? '1px solid #f0f0f0' : 'none',
+                                                fontSize: 15,
+                                                background: idx % 2 === 0 ? 'var(--bg)' : 'var(--card)'
+                                            }}
+                                        >
+                                            <div style={{ flex: 2, color: 'var(--text)' }}>{invite.username}</div>
+                                            <div style={{ flex: 3, color: '#888' }}>{invite.email}</div>
+                                            <div style={{
+                                                flex: 1,
+                                                textAlign: 'center',
+                                                color: invite.status === "accepted" ? "#388e3c" : "#d32f2f",
+                                                fontWeight: 500
+                                            }}>
+                                                {invite.status.charAt(0).toUpperCase() + invite.status.slice(1)}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                            {username === selectedBudget.inviter && (
+                                <button
+                                    style={{
+                                        backgroundColor: '#1976d2',
+                                        color: 'white',
+                                        border: 'none',
+                                        borderRadius: '4px',
+                                        padding: '6px 16px',
+                                        fontWeight: 500,
+                                        cursor: 'pointer',
+                                        marginTop: '12px'
+                                    }}
+                                    onClick={() => setEditing(true)}
+                                >
+                                    Edit Shared Budget
+                                </button>
+                            )}
+                            {editing && (
+                                <EditSharedBudgetForm
+                                    budget={selectedBudget}
+                                    onSave={() => { setEditing(false); onSave(); }}
+                                    onCancel={() => setEditing(false)}
+                                />
+                            )}
+                        </div>
+                        <div style={{ display: 'flex', gap: 32, flexWrap: 'wrap' }}>
+                            <ViewSharedExpenses
+                                budgetId={selectedBudget.id}
+                                inviter={selectedBudget.inviter}
+                                invitees={selectedBudget.invites}
+                            />
+                        </div>
+                    </>
+                )}
+            </div>
+        </>
     );
 }

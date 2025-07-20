@@ -7,7 +7,7 @@ import "@testing-library/jest-dom";
 
 // mock child components
 vi.mock("../component/AddExpenseForm", () => ({
-    default: () => <div>AddExpenseFormMock</div>, 
+    default: () => <div>AddExpenseFormMock</div>,
 }));
 vi.mock("../component/ExistingExpense", () => ({
     default: () => <div>ExistingExpensesMock</div>,

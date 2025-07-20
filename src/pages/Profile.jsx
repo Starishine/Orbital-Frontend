@@ -1,42 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom';
+import CurrencyDropdown from '../component/CurrencyDropdown';
+import Notifications from '../component/Notifications';
+import { useLocation, Link, useNavigate } from "react-router-dom";
 
 export default function Profile() {
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
     const [darkMode, setDarkMode] = useState(() => localStorage.getItem('darkMode') === 'true');
+    let username = localStorage.getItem('username') || 'User';
+    let email = localStorage.getItem('email') || 'No email provided';
+    const [homeCurrency, setHomeCurrency] = useState(localStorage.getItem('homeCurrency') || 'SGD');
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) {
-            setUsername('Guest');
-            setEmail('guest@example.com');
-        } else {
-            const decoded = jwtDecode(token);
-            setUsername(decoded.sub || 'User');
-            axios.get(`http://localhost:8080/signup/get`, {
-                headers: { Authorization: `Bearer ${token}` }
-            })
-                .then(response => {
-                    const filteredUser = response.data.find(user => user.username === (decoded.sub || 'User'));
-                    if (filteredUser) {
-                        setEmail(filteredUser.email || 'No email provided');
-                    } else {
-                        setEmail('User not found');
-                    }
-                })
-                .catch(error => {
-                    setEmail('Error fetching email');
-                });
+            username = 'Guest';
+            email = 'guest@example.com';
         }
-    }, []);
+    }
+        , []);
 
     const handleLogout = () => {
         localStorage.removeItem('token')
         localStorage.removeItem('convertedExpenses')
         localStorage.removeItem('homeCurrency')
+        localStorage.removeItem('username')
+        localStorage.removeItem('email')
+        localStorage.removeItem('lastReadNotifHash')
         navigate('/'); // Redirect to the home page
     }
 
@@ -58,6 +50,7 @@ export default function Profile() {
                 <Link to="/visualisation" style={{ color: 'var(--primary)' }}>Visualisation</Link>
                 <Link to="/shared-budget" style={{ color: 'var(--primary)' }}>Shared Budget</Link>
                 <Link to="/profile" style={{ color: 'var(--primary)' }}>Profile</Link>
+                <Notifications />
                 <button
                     onClick={handleLogout}
                     style={{
@@ -115,6 +108,12 @@ export default function Profile() {
                     <div>
                         <span style={{ fontWeight: 500, color: 'var(--primary)' }}>Email:</span>
                         <span style={{ marginLeft: 8 }}>{email}</span>
+                    </div>
+
+                    <div style={{ marginBottom: 20, marginTop: 20, color: 'var(--primary)' }}>
+                        Select Home Currency:
+                        <CurrencyDropdown currency={homeCurrency} setCurrency={setHomeCurrency} />
+                        {localStorage.setItem('homeCurrency', homeCurrency)}
                     </div>
                 </div>
             </div>

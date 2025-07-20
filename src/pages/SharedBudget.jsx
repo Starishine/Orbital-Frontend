@@ -1,17 +1,33 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import CreateSharedBudgetForm from '../component/CreateSharedBudgetForm';
 import SharedBudgetDetail from '../component/SharedBudgetDetail';
-import { useLocation, Link, useNavigate } from "react-router-dom";
-
+import Notifications from '../component/Notifications';
+import { Link, useNavigate } from "react-router-dom";
 
 export default function SharedBudget() {
+    const [selectedBudgetId, setSelectedBudgetId] = useState('');
+    const navigate = useNavigate();
+    const [darkMode, setDarkMode] = useState(() => localStorage.getItem('darkMode') === 'true');
 
     const handleLogout = () => {
-        localStorage.removeItem('token')
-        localStorage.removeItem('convertedExpenses')
-        localStorage.removeItem('homeCurrency')
-        navigate('/'); // Redirect to the home page
-    }
+        localStorage.removeItem('token');
+        localStorage.removeItem('convertedExpenses');
+        localStorage.removeItem('homeCurrency');
+        localStorage.removeItem('username');
+        localStorage.removeItem('email');
+        localStorage.removeItem('lastReadNotifHash');
+        navigate('/');
+    };
+
+    useEffect(() => {
+        if (darkMode) {
+            document.body.classList.add('dark-mode');
+        } else {
+            document.body.classList.remove('dark-mode');
+        }
+        localStorage.setItem('darkMode', darkMode);
+    }, [darkMode]);
+
     return (
         <>
             <nav style={{
@@ -29,6 +45,8 @@ export default function SharedBudget() {
                 <Link to="/expenses" style={{ color: 'var(--primary)' }}>Expenses</Link>
                 <Link to="/visualisation" style={{ color: 'var(--primary)' }}>Visualisation</Link>
                 <Link to="/shared-budget" style={{ color: 'var(--primary)' }}>Shared Budget</Link>
+                <Link to="/profile" style={{ color: 'var(--primary)' }}>Profile</Link>
+                <Notifications />
                 <button
                     onClick={handleLogout}
                     style={{
@@ -45,11 +63,39 @@ export default function SharedBudget() {
                     Logout
                 </button>
             </nav>
-            <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-                <h1>Shared Budget</h1>
-                <p>You can create your shared budget right here! [Under Construction!]</p>
-                <CreateSharedBudgetForm />
-                <SharedBudgetDetail />
+            <div style={{
+                padding: '20px',
+                fontFamily: 'Arial, sans-serif',
+                background: 'var(--bg)',
+                color: 'var(--text)',
+                minHeight: '100vh'
+            }}>
+                <h1>Shared Budgets</h1>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '40px', justifyContent: 'center' }}>
+                    <div style={{
+                        width: '420px',
+                        background: 'var(--card)',
+                        borderRadius: 'var(--round-md)',
+                        boxShadow: '0 2px 8px rgba(25, 118, 210, 0.04)',
+                        padding: '24px'
+                    }}>
+                        <CreateSharedBudgetForm />
+                    </div>
+                    <div>
+                        <div style={{
+                            width: '500px',
+                            background: 'var(--card)',
+                            borderRadius: 'var(--round-md)',
+                            boxShadow: '0 2px 8px rgba(25, 118, 210, 0.04)',
+                            padding: '24px'
+                        }}>
+                            <SharedBudgetDetail
+                                selectedBudgetId={selectedBudgetId}
+                                setSelectedBudgetId={setSelectedBudgetId}
+                            />
+                        </div>
+                    </div>
+                </div>
             </div>
         </>
     );
