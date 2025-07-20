@@ -27,12 +27,14 @@ export default function Notifications() {
         Promise.all([
             axios.get(`http://localhost:8080/budget/get`, { headers: { Authorization: `Bearer ${token}` } }),
             axios.get(`http://localhost:8080/expense/get`, { headers: { Authorization: `Bearer ${token}` } }),
+            axios.get(`http://localhost:8080/shared-budget/get-by-user`, { headers: { Authorization: `Bearer ${token}` } })
         ])
 
-            .then(([budgetResponse, expenseResponse]) => {
+            .then(([budgetResponse, expenseResponse, sharedBudgetResponse]) => {
                 const budgets = budgetResponse.data;
                 const expenses = expenseResponse.data;
-
+                const sharedBudgets = sharedBudgetResponse.data;
+                console.log('Shared Budgets:', sharedBudgets);
                 console.log('Budgets:', budgets);
                 console.log('Expenses:', expenses);
 
@@ -76,6 +78,14 @@ export default function Notifications() {
                     }
                 } else {
                     notifs.push({ type: 'reminder', message: 'No expenses logged yet.' });
+                }
+
+                if (sharedBudgets && sharedBudgets.length > 0) {
+                    sharedBudgets.forEach(sharedBudget => {
+                        if (sharedBudget.amount <= 0) {
+                            notifs.push({ type: 'warning', message: `Shared budget ${sharedBudget.budgetName} has been fully spent.` });
+                        }
+                    });
                 }
 
                 const notifHash = getNotifHash(notifs);

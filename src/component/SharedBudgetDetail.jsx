@@ -128,13 +128,54 @@ export default function SharedBudgetDetail({ selectedBudgetId, setSelectedBudget
                                     <span>Remaining: {selectedBudget.currency} {Number(selectedBudget.amount).toFixed(2)}</span>
                                 </div>
                             </div>
-                            <div>
+                            <div style={{ marginTop: 16 }}>
                                 <b>Invited Members:</b>
-                                <ul>
+                                <div style={{
+                                    marginTop: 8,
+                                    border: '1px solid #e0e0e0',
+                                    borderRadius: 8,
+                                    background: 'var(--card)',
+                                    overflow: 'hidden',
+                                    boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
+                                }}>
+                                    <div style={{
+                                        display: 'flex',
+                                        fontWeight: 600,
+                                        background: 'var(--bg)',
+                                        color: 'var(--text)',
+                                        padding: '8px 16px',
+                                        borderBottom: '1px solid #e0e0e0',
+                                        fontSize: 15
+                                    }}>
+                                        <div style={{ flex: 2 }}>Name</div>
+                                        <div style={{ flex: 3 }}>Email</div>
+                                        <div style={{ flex: 1, textAlign: 'center' }}>Status</div>
+                                    </div>
                                     {selectedBudget.invites.map((invite, idx) => (
-                                        <li key={idx}>{invite.username} ({invite.email}) - {invite.status}</li>
+                                        <div
+                                            key={idx}
+                                            style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                padding: '8px 16px',
+                                                borderBottom: idx !== selectedBudget.invites.length - 1 ? '1px solid #f0f0f0' : 'none',
+                                                fontSize: 15,
+                                                background: idx % 2 === 0 ? 'var(--bg)' : 'var(--card)'
+                                            }}
+                                        >
+                                            <div style={{ flex: 2, color: 'var(--text)' }}>{invite.username}</div>
+                                            <div style={{ flex: 3, color: '#888' }}>{invite.email}</div>
+                                            <div style={{
+                                                flex: 1,
+                                                textAlign: 'center',
+                                                color: invite.status === "accepted" ? "#388e3c" : "#d32f2f",
+                                                fontWeight: 500
+                                            }}>
+                                                {invite.status.charAt(0).toUpperCase() + invite.status.slice(1)}
+                                            </div>
+                                        </div>
                                     ))}
-                                </ul>
+                                </div>
                             </div>
                             {username === selectedBudget.inviter && (
                                 <button

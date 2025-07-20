@@ -161,12 +161,36 @@ export default function ForecastConvertedExpenses({ converted }) {
         if (mlBudgets.length > 0) {
             axios.post('http://localhost:8000/insights', mlBudgets)
                 .then(res => {
-                    console.log('ML insights:', res);
-                    setMlSuggestions(res.data.suggestions);
+                    // Transform insights to cardSuggestions format
+                    const insights = (res.data.insights || []).map(insight => ({
+                        category: insight.category,
+                        type: insight.prediction,
+                        message: generateInsightMessage(insight)
+                    }));
+                    console.log('ML Insights:', insights);
+                    setMlSuggestions(insights);
                 })
-                .catch(() => setMlSuggestions(['Could not fetch ML insights.']));
+                .catch(() => setMlSuggestions([{ message: 'Could not fetch ML insights.' }]));
         }
     }, [JSON.stringify(mlBudgets)]);
+
+    // Helper to generate a user-friendly message
+    function generateInsightMessage(insight) {
+        switch (insight.prediction) {
+            case "overspending":
+                return `⚠️ Careful! Your spending in "${insight.category}" is higher than usual. Consider reviewing your expenses to stay within budget.`;
+            case "saving":
+                return `💡 Great job! You're consistently saving more than expected in "${insight.category}". Keep up the good work!`;
+            case "underspending":
+                return `ℹ️ You are spending less than your < 50% of your allocated budget in "${insight.category}". If this is intentional, fantastic!`;
+            case "warning":
+                return `⚠️ Warning: Your spending in "${insight.category}" is approaching the budget limit.`;
+            case "invalid_budget":
+                return `⚠️ Allocated budget is zero. Please set a positive budget amount for meaningful insights.`;
+            default:
+                return `Insight for "${insight.category}": ${insight.prediction}`;
+        }
+    }
 
     if (loading) return <div>Loading forecast...</div>;
     if (error) return <div style={{ color: 'red' }}>{error}</div>;
@@ -279,6 +303,11 @@ export default function ForecastConvertedExpenses({ converted }) {
                                     <div style={{ fontWeight: 600, color: '#1976d2', marginBottom: 8, display: 'flex', alignItems: 'center' }}>
                                         <span role="img" aria-label="lightbulb" style={{ fontSize: 22, marginRight: 6 }}>💡</span>
                                         Insights
+                                        {info.streak > 0 && (
+                                            <span style={{ marginLeft: 16, fontSize: 15, color: '#388e3c', fontWeight: 500 }}>
+                                                🏆 Streak: {info.streak} day{info.streak > 1 ? 's' : ''}
+                                            </span>
+                                        )}
                                     </div>
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                                         {cardSuggestions.map((s, idx) => (
@@ -296,9 +325,6 @@ export default function ForecastConvertedExpenses({ converted }) {
                                                     boxShadow: '0 1px 4px rgba(25, 118, 210, 0.06)'
                                                 }}
                                             >
-                                                <span style={{ marginRight: 10, fontSize: 18 }}>
-                                                    {s.type === 'warning' ? '⚠️' : '💡'}
-                                                </span>
                                                 <span>{s.message ? s.message : s}</span>
                                             </div>
                                         ))}
