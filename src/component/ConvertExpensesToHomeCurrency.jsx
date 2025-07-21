@@ -58,7 +58,7 @@ export default function ConvertExpensesToHomeCurrency({ homeCurrency }) {
                         {converted.map((exp, idx) => (
                             <tr key={exp._id || idx}>
                                 <td>{exp.category}</td>
-                                <td>{exp.notes || '-'}</td>
+                                <td>{exp.name || '-'}</td>
                                 <td>{exp.currency} {Number(exp.amount).toFixed(2)}</td>
                                 <td>
                                     {exp.convertedAmount !== null

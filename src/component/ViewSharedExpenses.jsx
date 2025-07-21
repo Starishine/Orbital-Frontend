@@ -144,7 +144,7 @@ export default function ViewSharedExpenses({ budgetId, inviter, invitees }) {
                                     fontWeight: 500,
                                     boxShadow: '0 1px 4px rgba(25, 118, 210, 0.06)'
                                 }}>
-                                    <span style={{ color: 'black' }}>{expense.description}</span>
+                                    <span style={{ color: 'black' }}>{expense.name}</span>
                                     <span style={{ float: 'right', color: '#1976d2' }}>
                                         {displayAmount(expense)}
                                     </span>
@@ -181,7 +181,7 @@ export default function ViewSharedExpenses({ budgetId, inviter, invitees }) {
                                     boxShadow: '0 1px 4px rgba(25, 118, 210, 0.06)'
                                 }}>
                                     <b style={{ color: 'black' }}>{expense.username} : </b>
-                                    <span style={{ color: 'black' }}>{expense.description}</span>
+                                    <span style={{ color: 'black' }}>{expense.name}</span>
                                     <span style={{ float: 'right', color: '#d32f2f' }}>
                                         {displayAmount(expense)}
                                     </span>

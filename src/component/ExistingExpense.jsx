@@ -50,7 +50,10 @@ export default function ExistingExpenses() {
         axios.get(`http://localhost:8080/expense/get`,
             { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
 
-            .then(response => setExpenses(response.data));
+            .then(response => {
+                console.log('Expense:' + response.data);
+                setExpenses(response.data);
+            });
         setEditIdx(null);
     };
 
@@ -164,7 +167,7 @@ export default function ExistingExpenses() {
                         {filteredExpenses.map((expense, idx) => (
                             <tr key={expense._id || idx}>
                                 <td style={{ border: '1px solid var(--primary)', padding: '8px' }}>{expense.category}</td>
-                                <td style={{ border: '1px solid var(--primary)', padding: '8px' }}>{expense.notes || '-'}</td>
+                                <td style={{ border: '1px solid var(--primary)', padding: '8px' }}>{expense.name || '-'}</td>
                                 <td style={{ border: '1px solid var(--primary)', padding: '8px' }}>
                                     {expense.currency} {Number(expense.amount).toFixed(2)}
                                 </td>

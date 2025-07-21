@@ -5,7 +5,7 @@ import { useState } from "react";
 import React from "react";
 
 export default function CreateSharedBudgetForm() {
-    const [budgetName, setBudgetName] = useState('');
+    const [category, setCategory] = useState('');
     const [amount, setAmount] = useState('');
     const [currency, setCurrency] = useState('SGD');
     const [invites, setInvites] = useState([]);
@@ -13,12 +13,12 @@ export default function CreateSharedBudgetForm() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!budgetName || !amount) {
+        if (!category || !amount) {
             setError('Please fill in all fields');
             return;
         }
         axios.post('http://localhost:8080/shared-budget/create', {
-            budgetName: budgetName,
+            category: category,
             amountAllocated: parseFloat(amount),
             amount: parseFloat(amount),
             currency: currency,
@@ -31,7 +31,7 @@ export default function CreateSharedBudgetForm() {
                 if (data.status === "SUCCESS" && data.code === 200) {
                     console.log('Shared budget created:', data.data);
                     alert('Shared budget created successfully!');
-                    setBudgetName('');
+                    setCategory('');
                     setAmount('');
                     setCurrency('SGD');
                     setError('');
@@ -63,15 +63,15 @@ export default function CreateSharedBudgetForm() {
             <form onSubmit={handleSubmit}>
                 {error && <div style={{ color: 'red', marginBottom: 12 }}>{error}</div>}
                 <div style={{ marginBottom: '16px' }}>
-                    <label htmlFor="budgetName" style={{ display: 'block', marginBottom: 6, fontWeight: 500 }}>
+                    <label htmlFor="category" style={{ display: 'block', marginBottom: 6, fontWeight: 500 }}>
                         Budget Name
                     </label>
                     <input
-                        id="budgetName"
+                        id="category"
                         type="text"
                         placeholder="e.g. Trip to Japan"
-                        value={budgetName}
-                        onChange={(e) => setBudgetName(e.target.value)}
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}
                         style={{
                             width: '100%', padding: 8, borderRadius: 4, border: '1px solid #ccc', background: 'var(--bg)', color: 'var(--text)'
                         }}

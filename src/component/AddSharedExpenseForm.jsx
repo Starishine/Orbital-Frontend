@@ -4,7 +4,6 @@ import CurrencyDropdown from "./CurrencyDropdown";
 import CategoryFeedback from "./CategoryFeedback";
 import React from "react";
 
-
 export default function AddExpenseForm() {
     const [budget, setBudget] = useState([]);
     const [categories, setCategories] = useState([]);
@@ -18,7 +17,6 @@ export default function AddExpenseForm() {
         return today.toISOString().split('T')[0]; // YYYY-MM-DD
     });
 
-
     useEffect(() => {
         axios.get(`http://localhost:8080/shared-budget/get`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
@@ -28,12 +26,13 @@ export default function AddExpenseForm() {
                 const username = localStorage.getItem('username');
                 const filteredBudgets = response.data.filter(budget =>
                     budget.inviter === username ||
-                    budget.invites.some(invite => invite.username === username && invite.status === "accepted")
+                    (Array.isArray(budget.invites) &&
+                        budget.invites.some(invite => invite.username === username && invite.status === "accepted"))
                 );
                 setBudget(filteredBudgets);
 
                 // Extract budget names
-                const budgetNames = filteredBudgets.map(b => b.budgetName);
+                const budgetNames = filteredBudgets.map(b => b.category);
                 setCategories(budgetNames);
 
                 // Autofill category if only one budget
@@ -66,6 +65,7 @@ export default function AddExpenseForm() {
                     // Reset form fields
                     setCategory('');
                     setDescription('');
+                    setAmount('');
                     setDate(() => {
                         const today = new Date();
                         return today.toISOString().split('T')[0];
@@ -80,11 +80,8 @@ export default function AddExpenseForm() {
     }
 
     const handleDescriptionChange = (e) => {
-        const description = e.target.value;
-        setDescription(description);
+        setDescription(e.target.value);
     };
-
-
 
     return (
         <>

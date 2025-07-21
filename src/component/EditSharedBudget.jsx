@@ -4,7 +4,7 @@ import CurrencyDropdown from "./CurrencyDropdown";
 import React from "react";
 
 export default function EditSharedBudget({ budget, onSave, onCancel }) {
-    const [budgetName, setBudgetName] = useState(budget.budgetName);
+    const [budgetName, setBudgetName] = useState(budget.category);
     const [amount, setAmount] = useState(0.00);
     const [currency, setCurrency] = useState(budget.currency);
 
@@ -43,7 +43,7 @@ export default function EditSharedBudget({ budget, onSave, onCancel }) {
         try {
             await axios.put('http://localhost:8080/shared-budget/update', {
                 id: budget.id,
-                budgetName: budgetName,
+                category: budgetName,
                 amountAllocated: newAmountAllocated,
                 amount: newAmount,
                 currency: currency

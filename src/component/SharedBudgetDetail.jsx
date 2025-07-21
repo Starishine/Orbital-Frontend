@@ -22,17 +22,18 @@ export default function SharedBudgetDetail({ selectedBudgetId, setSelectedBudget
 
     const username = localStorage.getItem('username');
 
-    // Filter budgets: show if owner, or if invitee with accepted status
+    // Only show budgets where user is owner or accepted invitee
     const visibleBudgets = budgets.filter(budget =>
         budget.inviter === username ||
-        budget.invites.some(invite => invite.username === username && invite.status === "accepted")
+        (Array.isArray(budget.invites) &&
+            budget.invites.some(invite => invite.username === username && invite.status === "accepted"))
     );
 
     useEffect(() => {
         if (visibleBudgets.length === 1) {
             setSelectedBudgetId(visibleBudgets[0].id);
         }
-    }, [visibleBudgets]);
+    }, [visibleBudgets, setSelectedBudgetId]);
 
     if (loading) return <div>Loading...</div>;
     if (!budgets.length) return <div>No shared budgets found.</div>;
@@ -69,7 +70,7 @@ export default function SharedBudgetDetail({ selectedBudgetId, setSelectedBudget
                             <option value="">-- Choose a budget --</option>
                             {visibleBudgets.map(budget => (
                                 <option key={budget.id} value={budget.id}>
-                                    {budget.budgetName}
+                                    {budget.category}
                                 </option>
                             ))}
                         </select>
@@ -78,7 +79,7 @@ export default function SharedBudgetDetail({ selectedBudgetId, setSelectedBudget
                 {selectedBudget && (
                     <>
                         <div key={selectedBudget.id} style={{ border: "1px solid #ccc", borderRadius: 8, padding: 16, marginBottom: 32 }}>
-                            <h3>{selectedBudget.budgetName}</h3>
+                            <h3>{selectedBudget.category}</h3>
                             <div><b>Owner:</b> {selectedBudget.inviter} ({selectedBudget.inviterEmail})</div>
                             <div style={{ margin: '16px 0' }}>
                                 <Bar
@@ -151,7 +152,7 @@ export default function SharedBudgetDetail({ selectedBudgetId, setSelectedBudget
                                         <div style={{ flex: 3 }}>Email</div>
                                         <div style={{ flex: 1, textAlign: 'center' }}>Status</div>
                                     </div>
-                                    {selectedBudget.invites.map((invite, idx) => (
+                                    {(Array.isArray(selectedBudget.invites) ? selectedBudget.invites : []).map((invite, idx) => (
                                         <div
                                             key={idx}
                                             style={{
@@ -214,4 +215,5 @@ export default function SharedBudgetDetail({ selectedBudgetId, setSelectedBudget
             </div>
         </>
     );
+
 }
