@@ -53,7 +53,7 @@ export default function AddBudgetForm() {
             calculatedExpiryDate = customEnd; // Use the custom end date
         }
 
-        axios.post('http://localhost:8080/budget/create', {
+        axios.post('/api/budget/create', {
             category: finalCategory,
             currency: currency,
             amountAllocated: parseFloat(amount),

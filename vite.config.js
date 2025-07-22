@@ -5,4 +5,13 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8080', // your backend
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+    },
+  },
 });

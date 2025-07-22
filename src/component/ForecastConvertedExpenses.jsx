@@ -17,7 +17,7 @@ export default function ForecastConvertedExpenses({ converted }) {
             setLoading(false);
             return;
         }
-        axios.get('http://localhost:8080/budget/get', {
+        axios.get('/api/budget/get', {
             headers: { Authorization: `Bearer ${token}` }
         })
             .then(res => {

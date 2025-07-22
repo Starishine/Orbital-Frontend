@@ -18,7 +18,7 @@ export default function AddExpenseForm() {
     });
 
     useEffect(() => {
-        axios.get(`http://localhost:8080/shared-budget/get`, {
+        axios.get(`/api/shared-budget/get`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         })
             .then(response => {
@@ -48,7 +48,7 @@ export default function AddExpenseForm() {
     const handleSubmit = (e) => {
         console.log(description, category, currency, date);
         e.preventDefault();
-        axios.post('http://localhost:8080/shared-expense/create', {
+        axios.post('/api/shared-expense/create', {
             description: description,
             category: category,
             currency: currency,

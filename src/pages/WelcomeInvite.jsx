@@ -9,7 +9,7 @@ export default function WelcomeInvite() {
     const token = searchParams.get('token');
 
     useEffect(() => {
-        axios.get(`http://localhost:8080/shared-budget/accept?token=${token}`, {
+        axios.get(`/api/shared-budget/accept?token=${token}`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         })
             .catch(error => {

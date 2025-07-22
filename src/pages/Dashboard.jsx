@@ -41,7 +41,7 @@ export default function Dashboard() {
         else {
             const decoded = jwtDecode(token);
             setUserName(decoded.sub); // Extract username from token
-            axios.get(`http://localhost:8080/signup/get`, {
+            axios.get(`/api/signup/get`, {
                 headers: { Authorization: `Bearer ${token}` }
             })
                 .then(response => {

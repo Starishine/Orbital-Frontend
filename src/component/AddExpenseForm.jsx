@@ -19,7 +19,7 @@ export default function AddExpenseForm() {
 
 
     useEffect(() => {
-        axios.get(`http://localhost:8080/budget/get`,
+        axios.get(`/api/budget/get`,
             { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
             .then(response => {
                 console.log('Fetched budgets:', response.data);
@@ -34,7 +34,7 @@ export default function AddExpenseForm() {
     const handleSubmit = (e) => {
         console.log(description, category, currency, date);
         e.preventDefault();
-        axios.post('http://localhost:8080/expense/create', {
+        axios.post('/api/expense/create', {
             category: category,
             currency: currency,
             amount: parseFloat(amount),

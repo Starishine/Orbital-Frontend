@@ -21,7 +21,7 @@ export default function SignupForm({ onSuccess }) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) return setError('Please enter a valid email address.');
 
-        axios.post('http://localhost:8080/signup/register', {
+        axios.post('/api/signup/register', {
             username: username,
             password: password,
             email: email

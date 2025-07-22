@@ -22,7 +22,7 @@ export default function InviteMembersForm({ invites, setInvites }) {
             return;
         }
 
-        axios.post('http://localhost:8080/signup/checkAccount', {
+        axios.post('/api/signup/checkAccount', {
             username: username,
             email: email,
         }, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })

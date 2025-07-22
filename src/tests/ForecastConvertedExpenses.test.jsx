@@ -45,7 +45,7 @@ describe('ForecastConvertedExpenses', () => {
   //   //   render(<ForecastConvertedExpenses converted={converted} />);
   //   //   await waitFor(() => {
   //   //     expect(axios.get).toHaveBeenCalledWith(
-  //   //       'http://localhost:8080/budget/get',
+  //   //       '/api/budget/get',
   //   //       expect.objectContaining({
   //   //         headers: expect.objectContaining({
   //   //           Authorization: 'Bearer test-token'

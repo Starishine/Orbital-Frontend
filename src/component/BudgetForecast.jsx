@@ -26,7 +26,7 @@ export default function BudgetForecast() {
             setConverted(JSON.parse(stored));
         }
 
-        axios.get(`http://localhost:8080/budget/get`, { headers: { Authorization: `Bearer ${token}` } })
+        axios.get(`/api/budget/get`, { headers: { Authorization: `Bearer ${token}` } })
             .then((response) => {
                 setBudgets(response.data);
                 setLoading(false);

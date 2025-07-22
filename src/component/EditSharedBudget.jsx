@@ -41,7 +41,7 @@ export default function EditSharedBudget({ budget, onSave, onCancel }) {
         newAmount += topUpAmount;
 
         try {
-            await axios.put('http://localhost:8080/shared-budget/update', {
+            await axios.put('/api/shared-budget/update', {
                 id: budget.id,
                 category: budgetName,
                 amountAllocated: newAmountAllocated,

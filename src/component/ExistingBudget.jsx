@@ -22,7 +22,7 @@ export default function ExistingBudget() {
             return;
         }
 
-        axios.get(`http://localhost:8080/budget/get`,
+        axios.get(`/api/budget/get`,
             { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
             .then(response => {
                 setBudgets(response.data);
@@ -38,7 +38,7 @@ export default function ExistingBudget() {
     if (error) return <div style={{ color: 'red' }}>{error}</div>;
 
     const refreshBudgets = () => {
-        axios.get(`http://localhost:8080/budget/get`,
+        axios.get(`/api/budget/get`,
             { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
         )
             .then(response => setBudgets(response.data));

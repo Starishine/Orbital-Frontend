@@ -38,7 +38,7 @@ describe('ConvertExpensesToHomeCurrency', () => {
     await waitFor(() => {
       // check if called the backend correctly
       expect(axios.get).toHaveBeenCalledWith(
-        'http://localhost:8080/expense/get',
+        '/api/expense/get',
         expect.objectContaining({
           headers: expect.objectContaining({
             Authorization: 'Bearer test-token'
@@ -94,7 +94,7 @@ describe('ConvertExpensesToHomeCurrency', () => {
     await waitFor(() => {
       // same checks as earlier
       expect(axios.get).toHaveBeenCalledWith(
-        'http://localhost:8080/expense/get',
+        '/api/expense/get',
         expect.objectContaining({
           headers: expect.objectContaining({
             Authorization: 'Bearer test-token'

@@ -12,7 +12,7 @@ export default function SharedBudgetDetail({ selectedBudgetId, setSelectedBudget
     const [editing, setEditing] = useState(false);
 
     useEffect(() => {
-        axios.get(`http://localhost:8080/shared-budget/get`, {
+        axios.get(`/api/shared-budget/get`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         }).then(res => {
             setBudgets(res.data);
@@ -46,7 +46,7 @@ export default function SharedBudgetDetail({ selectedBudgetId, setSelectedBudget
             : visibleBudgets.find(budget => budget.id === selectedBudgetId);
 
     const onSave = () => {
-        axios.get(`http://localhost:8080/shared-budget/get`, {
+        axios.get(`/api/shared-budget/get`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         }).then(res => {
             setBudgets(res.data);

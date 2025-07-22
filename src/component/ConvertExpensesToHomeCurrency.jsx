@@ -13,7 +13,7 @@ export default function ConvertExpensesToHomeCurrency({ homeCurrency }) {
         try {
             // Fetch all expenses
             const token = localStorage.getItem('token');
-            const res = await axios.get('http://localhost:8080/expense/get', {
+            const res = await axios.get('/api/expense/get', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const expenses = res.data;

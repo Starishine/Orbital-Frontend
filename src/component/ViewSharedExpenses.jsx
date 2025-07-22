@@ -14,7 +14,7 @@ export default function ViewSharedExpenses({ budgetId, inviter, invitees }) {
 
     useEffect(() => {
         if (!budgetId) return;
-        axios.get(`http://localhost:8080/shared-expense/get-by-budget?budgetId=${budgetId}`, {
+        axios.get(`/api/shared-expense/get-by-budget?budgetId=${budgetId}`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         })
             .then(response => {

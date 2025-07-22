@@ -25,9 +25,9 @@ export default function Notifications() {
         }
 
         Promise.all([
-            axios.get(`http://localhost:8080/budget/get`, { headers: { Authorization: `Bearer ${token}` } }),
-            axios.get(`http://localhost:8080/expense/get`, { headers: { Authorization: `Bearer ${token}` } }),
-            axios.get(`http://localhost:8080/shared-budget/get-by-user`, { headers: { Authorization: `Bearer ${token}` } })
+            axios.get(`/api/budget/get`, { headers: { Authorization: `Bearer ${token}` } }),
+            axios.get(`/api/expense/get`, { headers: { Authorization: `Bearer ${token}` } }),
+            axios.get(`/api/shared-budget/get-by-user`, { headers: { Authorization: `Bearer ${token}` } })
         ])
 
             .then(([budgetResponse, expenseResponse, sharedBudgetResponse]) => {

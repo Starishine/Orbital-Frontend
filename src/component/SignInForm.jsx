@@ -22,7 +22,7 @@ export default function SignInForm({ onSuccess, onSwitchToSignUp }) {
         if (!username) return setError('Please enter your username');
         if (!password) return setError('Please enter your password');
 
-        axios.post('http://localhost:8080/signup/login', {
+        axios.post('/api/signup/login', {
             username: username,
             password: password
         }, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })

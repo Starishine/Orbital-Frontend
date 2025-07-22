@@ -17,7 +17,7 @@ export default function CreateSharedBudgetForm() {
             setError('Please fill in all fields');
             return;
         }
-        axios.post('http://localhost:8080/shared-budget/create', {
+        axios.post('/api/shared-budget/create', {
             category: category,
             amountAllocated: parseFloat(amount),
             amount: parseFloat(amount),

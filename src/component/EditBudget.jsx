@@ -53,7 +53,7 @@ export default function EditBudget({ budget, onSave, onCancel }) {
         }
 
 
-        axios.put('http://localhost:8080/budget/update', {
+        axios.put('/api/budget/update', {
             id: budget.id,
             currency: currency,
             amountAllocated: newAmountAllocated,

@@ -25,7 +25,7 @@ export default function ExistingExpenses() {
             return;
         }
 
-        axios.get(`http://localhost:8080/expense/get`,
+        axios.get(`/api/expense/get`,
             { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
             .then(response => {
                 console.log('Fetched expenses:', response.data);
@@ -47,7 +47,7 @@ export default function ExistingExpenses() {
     const refreshExpenses = () => {
         // re-fetch Expenses
         //  after edit so that the UI reflects the latest data
-        axios.get(`http://localhost:8080/expense/get`,
+        axios.get(`/api/expense/get`,
             { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
 
             .then(response => {
