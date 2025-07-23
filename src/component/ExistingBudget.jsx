@@ -93,7 +93,6 @@ export default function ExistingBudget() {
             }
         };
 
-        // --- UI IMPROVEMENTS START HERE ---
         return (
             <div
                 key={budget._id || idx}
@@ -116,7 +115,7 @@ export default function ExistingBudget() {
                     top: 18,
                     right: 18,
                     fontSize: 28,
-                    opacity: 0.15,
+                    opacity: 1.0,
                     pointerEvents: 'none'
                 }}>
                     💸
@@ -216,7 +215,7 @@ export default function ExistingBudget() {
                 )}
             </div>
         );
-        // --- UI IMPROVEMENTS END HERE ---
+    
     };
 
     return (
