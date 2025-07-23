@@ -18,7 +18,7 @@ export default function Exchange() {
   });
 
   useEffect(() => {
-    // changed: sync theme with dashboard
+    // Sync theme with dashboard
     if (darkMode) {
       document.body.classList.add('dark-mode');
       document.body.style.background = 'linear-gradient(135deg,#263859 0%,#1e2746 100%)';
@@ -52,11 +52,11 @@ export default function Exchange() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
-      navigate('/'); // Redirect to login/signin page if token is missing
+      navigate('/');
     }
     else {
       const decoded = jwtDecode(token);
-      setUserName(decoded.sub); // Extract username from token
+      setUserName(decoded.sub);
     }
   }, [navigate]);
 
@@ -67,33 +67,38 @@ export default function Exchange() {
     localStorage.removeItem('username');
     localStorage.removeItem('email');
     localStorage.removeItem('lastReadNotifHash');
-    navigate('/'); // Redirect to the home page
+    navigate('/');
   };
 
   const { cardBg, textColor, primary, fontColor } = themeColors;
 
   return (
     <>
-      {/* changed: navigation bar matches dashboard */}
+      {/* Navigation bar - full width, same height and padding as dashboard */}
       <nav style={{
         marginBottom: '24px',
         display: 'flex',
-        gap: '16px',
+        gap: '24px', // increased gap for dashboard look
         background: darkMode
           ? 'linear-gradient(90deg,#263859 0%,#1e2746 100%)'
           : 'linear-gradient(90deg,#1976d2 0%,#42a5f5 100%)',
         color: fontColor,
-        padding: '14px 28px',
+        padding: '14px 40px', // increased padding for dashboard feel
         borderRadius: '18px',
         boxShadow: '0 4px 24px rgba(25, 118, 210, 0.10)',
-        alignItems: 'center'
+        alignItems: 'center',
+        minWidth: 0,
+        width: 'calc(100% - 80px)', // matches dashboard nav width
+        maxWidth: '1400px',
+        marginLeft: 'auto',
+        marginRight: 'auto'
       }}>
-        <Link to="/dashboard" style={{ color: darkMode ? primary : '#115293', fontWeight: 600 }}>Dashboard</Link>
-        <Link to="/exchange" style={{ color: darkMode ? primary : '#115293', fontWeight: 600 }}>Exchange</Link>
-        <Link to="/expenses" style={{ color: darkMode ? primary : '#115293', fontWeight: 600 }}>Expenses</Link>
-        <Link to="/visualisation" style={{ color: darkMode ? primary : '#115293', fontWeight: 600 }}>Visualisation</Link>
-        <Link to="/shared-budget" style={{ color: darkMode ? primary : '#115293', fontWeight: 600 }}>Shared Budget</Link>
-        <Link to="/profile" style={{ color: darkMode ? primary : '#115293', fontWeight: 600 }}>Profile</Link>
+        <Link to="/dashboard" style={{ color: darkMode ? primary : '#115293', fontWeight: 600, fontSize: 18 }}>Dashboard</Link>
+        <Link to="/exchange" style={{ color: darkMode ? primary : '#115293', fontWeight: 600, fontSize: 18 }}>Exchange</Link>
+        <Link to="/expenses" style={{ color: darkMode ? primary : '#115293', fontWeight: 600, fontSize: 18 }}>Expenses</Link>
+        <Link to="/visualisation" style={{ color: darkMode ? primary : '#115293', fontWeight: 600, fontSize: 18 }}>Visualisation</Link>
+        <Link to="/shared-budget" style={{ color: darkMode ? primary : '#115293', fontWeight: 600, fontSize: 18 }}>Shared Budget</Link>
+        <Link to="/profile" style={{ color: darkMode ? primary : '#115293', fontWeight: 600, fontSize: 18 }}>Profile</Link>
         <Notifications />
         <button
           onClick={handleLogout}
@@ -116,37 +121,74 @@ export default function Exchange() {
           Logout
         </button>
       </nav>
-      {/* changed: page background and font color consistent with dashboard */}
+      {/* Main content area - centered and consistent with dashboard */}
       <div style={{
         padding: '32px',
         fontFamily: 'Inter, Arial, sans-serif',
         background: 'none',
         color: fontColor,
-        minHeight: '100vh'
+        minHeight: '100vh',
+        maxWidth: '1400px',
+        marginLeft: 'auto',
+        marginRight: 'auto'
       }}>
         <h1 style={{
           fontWeight: 800,
           fontSize: 36,
           marginBottom: 8,
-          color: primary
+          color: primary,
+          textAlign: 'left'
         }}>Welcome, {username}</h1>
         <p style={{
           fontSize: 18,
           color: fontColor,
-          marginBottom: 32
+          marginBottom: 32,
+          textAlign: 'left'
         }}>Use the currency exchange tool below!</p>
-        {/* changed: CurrencyExchange card is centered and matches dashboard */}
+        {/* CurrencyExchange card - centered, matches dashboard card style */}
         <div style={{
-          maxWidth: 600,
-          margin: '0 auto',
-          background: cardBg,
-          borderRadius: '18px',
-          boxShadow: '0 4px 24px rgba(25, 118, 210, 0.10)',
-          padding: '32px',
-          color: fontColor
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'flex-start',
+          gap: 40
         }}>
-          <CurrencyExchange />
+          <div style={{
+            flex: 1,
+            background: cardBg,
+            borderRadius: '18px',
+            boxShadow: '0 4px 24px rgba(25, 118, 210, 0.10)',
+            padding: '32px',
+            color: fontColor,
+            maxWidth: 600,
+            margin: '0 auto'
+          }}>
+            <CurrencyExchange />
+          </div>
         </div>
+        {/* Dark mode toggle button - same as dashboard */}
+        <button
+          onClick={() => setDarkMode(dm => !dm)}
+          style={{
+            position: 'fixed',
+            bottom: 32,
+            right: 32,
+            background: primary,
+            color: darkMode ? '#263859' : '#fff',
+            border: 'none',
+            borderRadius: 24,
+            padding: '14px 32px',
+            fontWeight: 700,
+            fontSize: 18,
+            boxShadow: '0 4px 24px rgba(25, 118, 210, 0.10)',
+            cursor: 'pointer',
+            zIndex: 1000,
+            transition: 'background 0.2s'
+          }}
+          onMouseOver={e => e.currentTarget.style.background = darkMode ? '#1e2746' : '#115293'}
+          onMouseOut={e => e.currentTarget.style.background = primary}
+        >
+          {darkMode ? '🌙 Dark Mode' : '☀️ Light Mode'}
+        </button>
       </div>
     </>
   );
