@@ -27,6 +27,22 @@ export default function AddBudgetForm() {
         return today.toISOString().split('T')[0];
     });
 
+    // Detect dark mode from localStorage
+    const darkMode = localStorage.getItem('darkMode') === 'true';
+
+    // Theme colors to fit the Exchange/Dashboard theme
+    const theme = {
+        cardBg: '#fff',
+        textColor: darkMode ? '#263859' : '#222',
+        labelColor: darkMode ? '#1976d2' : '#1976d2',
+        inputBg: darkMode ? '#e3f2fd' : '#f5f5f5',
+        inputBorder: darkMode ? '#90caf9' : '#bdbdbd',
+        primary: darkMode ? '#90caf9' : '#1976d2',
+        buttonHover: darkMode ? '#42a5f5' : '#115293',
+        border: '#e3f2fd',
+        shadow: '0 4px 24px rgba(25, 118, 210, 0.10)'
+    };
+
     const handleCategoryChange = (e) => {
         setCategory(e.target.value);
         if (e.target.value !== "Others") {
@@ -77,38 +93,59 @@ export default function AddBudgetForm() {
     };
 
     return (
-        <div className="budget-form-card" style={{
-            boxShadow: '0 4px 24px rgba(25, 118, 210, 0.10)', // changed: increased shadow for modern card look
-            borderRadius: 16, // changed: more rounded corners
-            padding: '32px 24px', // changed: more padding for spacious feel
-            background: 'var(--card)',
-            color: 'var(--text)',
-            maxWidth: 420,
-            margin: '0 auto',
-            fontFamily: 'Inter, Arial, sans-serif',
-            position: 'relative',
-            transition: 'box-shadow 0.2s',
-        }}>
+        <div
+            className="budget-form-card"
+            style={{
+                boxShadow: theme.shadow,
+                borderRadius: 20,
+                padding: '36px 32px',
+                background: theme.cardBg,
+                color: theme.textColor,
+                maxWidth: 440,
+                margin: '0 auto',
+                fontFamily: 'Inter, Arial, sans-serif',
+                border: `1px solid ${theme.border}`,
+                position: 'relative',
+                transition: 'box-shadow 0.2s',
+            }}
+        >
             <h2 style={{
                 textAlign: 'center',
-                marginBottom: 24,
-                fontWeight: 700,
-                fontSize: 28, // changed: larger heading
-                letterSpacing: 1
+                marginBottom: 28,
+                fontWeight: 800,
+                fontSize: 26,
+                letterSpacing: 1,
+                color: darkMode ? '#263859' : '#1976d2' // darker title for both modes
             }}>
-                <span role="img" aria-label="budget">💰</span> Create Budget {/* changed: added emoji for heading */}
+                <span role="img" aria-label="budget">💰</span> Create Budget
             </h2>
             <form onSubmit={handleSubmit}>
                 {/* Category Section */}
-                <div style={{ marginBottom: '20px' }}>
-                    <label htmlFor="category" style={{ display: 'flex', alignItems: 'center', marginBottom: 8, fontWeight: 600 }}>
-                        <span role="img" aria-label="category" style={{ marginRight: 8 }}>📂</span> Category {/* changed: added emoji for category */}
+                <div style={{ marginBottom: '22px' }}>
+                    <label htmlFor="category" style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        marginBottom: 8,
+                        fontWeight: 600,
+                        color: theme.labelColor,
+                        fontSize: 16
+                    }}>
+                        <span role="img" aria-label="category" style={{ marginRight: 8 }}>📂</span> Category
                     </label>
                     <select
                         id="category"
                         value={category}
                         onChange={handleCategoryChange}
-                        style={{ width: '100%', padding: 10, borderRadius: 8, border: '1px solid #bdbdbd', background: 'var(--bg)', color: 'var(--text)', fontSize: 16 }} // changed: improved input style
+                        style={{
+                            width: '100%',
+                            padding: '12px 14px',
+                            borderRadius: 10,
+                            border: `1.5px solid ${theme.inputBorder}`,
+                            background: theme.inputBg,
+                            color: theme.textColor,
+                            fontSize: 16,
+                            outline: 'none'
+                        }}
                         required
                     >
                         <option value="" disabled>Select category</option>
@@ -118,9 +155,16 @@ export default function AddBudgetForm() {
                     </select>
                 </div>
                 {category === "Others" && (
-                    <div style={{ marginBottom: '20px' }}>
-                        <label htmlFor="customCategory" style={{ display: 'flex', alignItems: 'center', marginBottom: 8, fontWeight: 600 }}>
-                            <span role="img" aria-label="custom">📝</span> Enter Category {/* changed: added emoji for custom category */}
+                    <div style={{ marginBottom: '22px' }}>
+                        <label htmlFor="customCategory" style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            marginBottom: 8,
+                            fontWeight: 600,
+                            color: theme.labelColor,
+                            fontSize: 16
+                        }}>
+                            <span role="img" aria-label="custom">📝</span> Enter Category
                         </label>
                         <input
                             id="customCategory"
@@ -130,24 +174,44 @@ export default function AddBudgetForm() {
                             value={customCategory}
                             onChange={e => setCustomCategory(e.target.value)}
                             style={{
-                                width: '100%', padding: 10, borderRadius: 8, border: '1px solid var(--primary)', background: 'var(--bg)',
-                                color: 'var(--text)', fontSize: 16 // changed: improved input style
+                                width: '100%',
+                                padding: '12px 14px',
+                                borderRadius: 10,
+                                border: `1.5px solid ${theme.primary}`,
+                                background: theme.inputBg,
+                                color: theme.textColor,
+                                fontSize: 16,
+                                outline: 'none'
                             }}
                             required
                         />
                     </div>
                 )}
                 {/* Currency Section */}
-                <div style={{ marginBottom: '20px' }}>
-                    <label style={{ display: 'flex', alignItems: 'center', marginBottom: 8, fontWeight: 600 }}>
-                        <span role="img" aria-label="currency" style={{ marginRight: 8 }}>💱</span> Currency {/* changed: added emoji for currency */}
+                <div style={{ marginBottom: '22px' }}>
+                    <label style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        marginBottom: 8,
+                        fontWeight: 600,
+                        color: theme.labelColor,
+                        fontSize: 16
+                    }}>
+                        <span role="img" aria-label="currency" style={{ marginRight: 8 }}>💱</span> Currency
                     </label>
                     <CurrencyDropdown currency={currency} setCurrency={setCurrency} />
                 </div>
                 {/* Amount Section */}
-                <div style={{ marginBottom: '20px' }}>
-                    <label htmlFor="amount" style={{ display: 'flex', alignItems: 'center', marginBottom: 8, fontWeight: 600 }}>
-                        <span role="img" aria-label="amount" style={{ marginRight: 8 }}>💵</span> Budget Amount {/* changed: added emoji for amount */}
+                <div style={{ marginBottom: '22px' }}>
+                    <label htmlFor="amount" style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        marginBottom: 8,
+                        fontWeight: 600,
+                        color: theme.labelColor,
+                        fontSize: 16
+                    }}>
+                        <span role="img" aria-label="amount" style={{ marginRight: 8 }}>💵</span> Budget Amount
                     </label>
                     <input
                         id="amount"
@@ -159,22 +223,44 @@ export default function AddBudgetForm() {
                         value={amount}
                         onChange={e => setAmount(e.target.value)}
                         style={{
-                            width: '100%', padding: 10, borderRadius: 8, border: '1px solid var(--primary)', background: 'var(--bg)',
-                            color: 'var(--text)', fontSize: 16 // changed: improved input style
+                            width: '100%',
+                            padding: '12px 14px',
+                            borderRadius: 10,
+                            border: `1.5px solid ${theme.primary}`,
+                            background: theme.inputBg,
+                            color: theme.textColor,
+                            fontSize: 16,
+                            outline: 'none'
                         }}
                         required
                     />
                 </div>
                 {/* Interval Section */}
-                <div style={{ marginBottom: '20px' }}>
-                    <label htmlFor="interval" style={{ display: 'flex', alignItems: 'center', marginBottom: 8, fontWeight: 600 }}>
-                        <span role="img" aria-label="interval" style={{ marginRight: 8 }}>⏰</span> Budget Interval {/* changed: added emoji for interval */}
+                <div style={{ marginBottom: '22px' }}>
+                    <label htmlFor="interval" style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        marginBottom: 8,
+                        fontWeight: 600,
+                        color: theme.labelColor,
+                        fontSize: 16
+                    }}>
+                        <span role="img" aria-label="interval" style={{ marginRight: 8 }}>⏰</span> Budget Interval
                     </label>
                     <select
                         id="interval"
                         value={interval}
                         onChange={e => setInterval(e.target.value)}
-                        style={{ width: '100%', padding: 10, borderRadius: 8, border: '1px solid #bdbdbd', background: 'var(--bg)', color: 'var(--text)', fontSize: 16 }} // changed: improved input style
+                        style={{
+                            width: '100%',
+                            padding: '12px 14px',
+                            borderRadius: 10,
+                            border: `1.5px solid ${theme.inputBorder}`,
+                            background: theme.inputBg,
+                            color: theme.textColor,
+                            fontSize: 16,
+                            outline: 'none'
+                        }}
                         required
                     >
                         <option value="Weekly">Weekly</option>
@@ -184,8 +270,15 @@ export default function AddBudgetForm() {
                     </select>
                     {interval === 'Custom' && (
                         <div style={{ marginTop: '12px' }}>
-                            <label htmlFor="customEnd" style={{ display: 'flex', alignItems: 'center', marginBottom: 8, fontWeight: 600 }}>
-                                <span role="img" aria-label="date" style={{ marginRight: 8 }}>📅</span> Custom End Date {/* changed: added emoji for custom end date */}
+                            <label htmlFor="customEnd" style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                marginBottom: 8,
+                                fontWeight: 600,
+                                color: theme.labelColor,
+                                fontSize: 16
+                            }}>
+                                <span role="img" aria-label="date" style={{ marginRight: 8 }}>📅</span> Custom End Date
                             </label>
                             <input
                                 id="customEnd"
@@ -193,12 +286,18 @@ export default function AddBudgetForm() {
                                 value={customEnd}
                                 onChange={e => setCustomEnd(e.target.value)}
                                 style={{
-                                    width: '100%', padding: 10, borderRadius: 8, border: '1px solid var(--primary)', background: 'var(--bg)',
-                                    color: 'var(--text)', fontSize: 16 // changed: improved input style
+                                    width: '100%',
+                                    padding: '12px 14px',
+                                    borderRadius: 10,
+                                    border: `1.5px solid ${theme.primary}`,
+                                    background: theme.inputBg,
+                                    color: theme.textColor,
+                                    fontSize: 16,
+                                    outline: 'none'
                                 }}
                                 required
                             />
-                            <div style={{ fontSize: 13, color: 'var(--primary)', marginTop: 4 }}>
+                            <div style={{ fontSize: 13, color: theme.primary, marginTop: 4 }}>
                                 Start date will be today: {date}
                             </div>
                         </div>
@@ -208,21 +307,22 @@ export default function AddBudgetForm() {
                     type="submit"
                     style={{
                         width: '100%',
-                        padding: '12px',
-                        background: 'var(--primary)', // changed: button color and style
-                        color: 'var(--card)',
+                        padding: '14px',
+                        background: theme.primary,
+                        color: theme.cardBg,
                         border: 'none',
-                        borderRadius: 8, // changed: rounded button
+                        borderRadius: 10,
                         fontWeight: 700,
                         fontSize: 18,
                         cursor: 'pointer',
-                        boxShadow: '0 2px 8px rgba(25, 118, 210, 0.10)', // changed: button shadow
-                        transition: 'background 0.2s', // changed: smooth hover transition
+                        boxShadow: theme.shadow,
+                        transition: 'background 0.2s',
+                        marginTop: 8
                     }}
-                    onMouseOver={e => e.currentTarget.style.background = 'var(--primary-dark)'} // changed: button hover effect
-                    onMouseOut={e => e.currentTarget.style.background = 'var(--primary)'} // changed: button hover effect
+                    onMouseOver={e => e.currentTarget.style.background = theme.buttonHover}
+                    onMouseOut={e => e.currentTarget.style.background = theme.primary}
                 >
-                    ➕ Add Budget {/* changed: added emoji to button */}
+                    ➕ Add Budget
                 </button>
             </form>
         </div>

@@ -52,6 +52,21 @@ export default function ExistingBudget() {
     const activeBudgets = budgets.filter(b => b.expiryDate == "" || b.expiryDate >= today);
     const expiredBudgets = budgets.filter(b => b.expiryDate && b.expiryDate < today);
 
+    // Detect dark mode from localStorage
+    const darkMode = localStorage.getItem('darkMode') === 'true';
+
+    // Theme colors to match AddBudgetForm
+    const theme = {
+        cardBg: '#fff',
+        textColor: darkMode ? '#263859' : '#222',
+        labelColor: darkMode ? '#1976d2' : '#1976d2',
+        primary: darkMode ? '#90caf9' : '#1976d2',
+        buttonHover: darkMode ? '#42a5f5' : '#115293',
+        border: '#e3f2fd',
+        shadow: '0 4px 24px rgba(25, 118, 210, 0.10)',
+        inputBg: darkMode ? '#e3f2fd' : '#f5f5f5'
+    };
+
     // Render a single budget card with chart and actions
     const renderBudgetCard = (budget, idx) => {
         // Calculate spent and remaining amounts
@@ -98,18 +113,19 @@ export default function ExistingBudget() {
                 key={budget._id || idx}
                 style={{
                     width: '100%',
-                    maxWidth: 420, // changed: slightly wider card
-                    margin: '28px auto', // changed: more vertical spacing
-                    background: 'linear-gradient(135deg, var(--card) 80%, #e3f2fd 100%)', // changed: subtle gradient
-                    padding: '24px', // changed: more padding
-                    borderRadius: '18px', // changed: more rounded corners
-                    border: 'none', // changed: removed dotted border
-                    boxShadow: '0 6px 24px rgba(25, 118, 210, 0.10)', // changed: deeper shadow for pop effect
+                    maxWidth: 440,
+                    margin: '28px auto',
+                    background: theme.cardBg,
+                    color: theme.textColor,
+                    padding: '32px',
+                    borderRadius: '20px',
+                    border: `1px solid ${theme.border}`,
+                    boxShadow: theme.shadow,
                     position: 'relative',
                     transition: 'box-shadow 0.2s',
+                    fontFamily: 'Inter, Arial, sans-serif'
                 }}
             >
-                {/* Decorative icon for budget category */}
                 <div style={{
                     position: 'absolute',
                     top: 18,
@@ -120,24 +136,21 @@ export default function ExistingBudget() {
                 }}>
                     💸
                 </div>
-                <div style={{ fontWeight: 700, fontSize: '1.2em', marginBottom: 8, letterSpacing: 1 }}>
-                    {/* Show budget category */}
+                <div style={{ fontWeight: 800, fontSize: '1.2em', marginBottom: 8, letterSpacing: 1, color: theme.primary }}>
                     {budget.category}
                 </div>
-                <div style={{ color: 'var(--primary)', fontSize: 15, marginBottom: 8 }}>
-                    {/* Show expiry date or N/A */}
+                <div style={{ color: theme.labelColor, fontSize: 15, marginBottom: 8 }}>
                     <span role="img" aria-label="calendar" style={{ marginRight: 6 }}>📅</span>
                     Expiry: {budget.expiryDate || 'N/A'}
                 </div>
-                {/* Budget bar chart */}
-                <div style={{ margin: '18px 0 10px 0', background: '#f5f7fa', borderRadius: 8, padding: 8 }}>
+                <div style={{ margin: '18px 0 10px 0', background: theme.inputBg, borderRadius: 8, padding: 8 }}>
                     <Bar
                         data={data}
                         options={{
                             ...options,
                             elements: {
                                 bar: {
-                                    barThickness: 32 // changed: slightly thinner bar for aesthetics
+                                    barThickness: 32
                                 }
                             }
                         }}
@@ -149,9 +162,9 @@ export default function ExistingBudget() {
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     marginTop: 8,
-                    color: 'var(--text)',
+                    color: theme.textColor,
                     fontSize: 15,
-                    fontWeight: 500
+                    fontWeight: 600
                 }}>
                     <span>
                         <span role="img" aria-label="money" style={{ marginRight: 4 }}>💰</span>
@@ -162,7 +175,6 @@ export default function ExistingBudget() {
                         Remaining: {budget.currency} {Number(budget.amount).toFixed(2)}
                     </span>
                 </div>
-                {/* Edit and Delete actions */}
                 {editIdx === idx ? (
                     <EditBudget
                         budget={budget}
@@ -178,19 +190,19 @@ export default function ExistingBudget() {
                     }}>
                         <button
                             style={{
-                                border: 'none', // changed: flat button
-                                borderRadius: 6, // changed: more rounded
-                                padding: '8px 18px',
-                                background: 'var(--primary)',
-                                color: 'var(--card)',
-                                fontWeight: 600,
-                                fontSize: 15,
+                                border: 'none',
+                                borderRadius: 8,
+                                padding: '10px 24px',
+                                background: theme.primary,
+                                color: theme.cardBg,
+                                fontWeight: 700,
+                                fontSize: 16,
                                 cursor: 'pointer',
-                                boxShadow: '0 2px 8px rgba(25, 118, 210, 0.10)',
+                                boxShadow: theme.shadow,
                                 transition: 'background 0.2s'
                             }}
-                            onMouseOver={e => e.currentTarget.style.background = 'var(--primary-dark)'}
-                            onMouseOut={e => e.currentTarget.style.background = 'var(--primary)'}
+                            onMouseOver={e => e.currentTarget.style.background = theme.buttonHover}
+                            onMouseOut={e => e.currentTarget.style.background = theme.primary}
                             onClick={() => setEditIdx(idx)}
                         >
                             ✏️ Edit
@@ -200,14 +212,14 @@ export default function ExistingBudget() {
                             onDeleteSuccess={refreshBudgets}
                             buttonStyle={{
                                 border: 'none',
-                                borderRadius: 6,
-                                padding: '8px 18px',
+                                borderRadius: 8,
+                                padding: '10px 24px',
                                 background: '#d32f2f',
-                                color: 'var(--card)',
-                                fontWeight: 600,
-                                fontSize: 15,
+                                color: theme.cardBg,
+                                fontWeight: 700,
+                                fontSize: 16,
                                 cursor: 'pointer',
-                                boxShadow: '0 2px 8px rgba(25, 118, 210, 0.10)',
+                                boxShadow: theme.shadow,
                                 transition: 'background 0.2s'
                             }}
                         />
@@ -215,29 +227,27 @@ export default function ExistingBudget() {
                 )}
             </div>
         );
-    
     };
 
     return (
         <div>
-            {/* Button to view expired budgets */}
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}>
                 <button
                     onClick={() => setShowExpired(true)}
                     style={{
-                        background: 'var(--primary)',
-                        color: 'var(--card)',
+                        background: theme.primary,
+                        color: theme.cardBg,
                         border: 'none',
-                        borderRadius: 8, // changed: more rounded
-                        padding: '10px 24px', // changed: larger button
+                        borderRadius: 8,
+                        padding: '10px 24px',
                         fontWeight: 700,
                         fontSize: 16,
                         cursor: 'pointer',
-                        boxShadow: '0 2px 8px rgba(25, 118, 210, 0.10)',
+                        boxShadow: theme.shadow,
                         transition: 'background 0.2s'
                     }}
-                    onMouseOver={e => e.currentTarget.style.background = 'var(--primary-dark)'}
-                    onMouseOut={e => e.currentTarget.style.background = 'var(--primary)'}
+                    onMouseOver={e => e.currentTarget.style.background = theme.buttonHover}
+                    onMouseOut={e => e.currentTarget.style.background = theme.primary}
                 >
                     🕒 View Expired Budgets
                 </button>
@@ -249,7 +259,6 @@ export default function ExistingBudget() {
                 activeBudgets.map(renderBudgetCard)
             )}
 
-            {/* Overlay for expired budgets */}
             {showExpired && (
                 <div
                     style={{
@@ -258,7 +267,7 @@ export default function ExistingBudget() {
                         left: 0,
                         width: '100vw',
                         height: '100vh',
-                        background: 'rgba(30, 32, 38, 0.90)', // changed: darker overlay
+                        background: 'rgba(30, 32, 38, 0.90)',
                         zIndex: 1000,
                         display: 'flex',
                         flexDirection: 'column',
@@ -271,8 +280,8 @@ export default function ExistingBudget() {
                         <button
                             onClick={() => setShowExpired(false)}
                             style={{
-                                background: 'var(--primary)',
-                                color: 'var(--card)',
+                                background: theme.primary,
+                                color: theme.cardBg,
                                 border: 'none',
                                 borderRadius: 8,
                                 padding: '10px 24px',
@@ -280,18 +289,18 @@ export default function ExistingBudget() {
                                 fontSize: 16,
                                 cursor: 'pointer',
                                 marginBottom: 16,
-                                boxShadow: '0 2px 8px rgba(25, 118, 210, 0.10)',
+                                boxShadow: theme.shadow,
                                 transition: 'background 0.2s'
                             }}
-                            onMouseOver={e => e.currentTarget.style.background = 'var(--primary-dark)'}
-                            onMouseOut={e => e.currentTarget.style.background = 'var(--primary)'}
+                            onMouseOver={e => e.currentTarget.style.background = theme.buttonHover}
+                            onMouseOut={e => e.currentTarget.style.background = theme.primary}
                         >
                             Close
                         </button>
                     </div>
-                    <h3 style={{ color: 'var(--card)', marginBottom: 20, fontWeight: 700, fontSize: 22, letterSpacing: 1 }}>Expired Budgets (History)</h3>
+                    <h3 style={{ color: theme.cardBg, marginBottom: 20, fontWeight: 700, fontSize: 22, letterSpacing: 1 }}>Expired Budgets (History)</h3>
                     {expiredBudgets.length === 0 ? (
-                        <p style={{ color: 'var(--card)' }}>No expired budgets.</p>
+                        <p style={{ color: theme.cardBg }}>No expired budgets.</p>
                     ) : (
                         expiredBudgets.map(renderBudgetCard)
                     )}
