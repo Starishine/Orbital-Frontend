@@ -8,6 +8,7 @@ import SharedBudget from './pages/SharedBudget';
 import Profile from './pages/Profile';
 import WelcomeInvite from './pages/WelcomeInvite';
 import AddSharedExpenseForm from './component/AddSharedExpenseForm';
+import Dummy from './pages/dummy';
 import React from 'react';
 
 export default function App() {
@@ -30,6 +31,7 @@ export default function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/welcomeInvite" element={<WelcomeInvite />} />
           <Route path="/shared-expense" element={<AddSharedExpenseForm />} />
+          <Route path="/dummy" element={<Dummy />} />
 
 
 

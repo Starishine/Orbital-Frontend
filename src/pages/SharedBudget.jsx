@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import CreateSharedBudgetForm from '../component/CreateSharedBudgetForm';
 import SharedBudgetDetail from '../component/SharedBudgetDetail';
-import Notifications from '../component/Notifications';
 import { Link, useNavigate } from "react-router-dom";
 
 export default function SharedBudget() {
@@ -46,7 +45,7 @@ export default function SharedBudget() {
                 <Link to="/visualisation" style={{ color: 'var(--primary)' }}>Visualisation</Link>
                 <Link to="/shared-budget" style={{ color: 'var(--primary)' }}>Shared Budget</Link>
                 <Link to="/profile" style={{ color: 'var(--primary)' }}>Profile</Link>
-                <Notifications />
+
                 <button
                     onClick={handleLogout}
                     style={{

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
 import CurrencyDropdown from '../component/CurrencyDropdown';
-import Notifications from '../component/Notifications';
 import { useLocation, Link, useNavigate } from "react-router-dom";
 
 export default function Profile() {
@@ -50,7 +49,6 @@ export default function Profile() {
                 <Link to="/visualisation" style={{ color: 'var(--primary)' }}>Visualisation</Link>
                 <Link to="/shared-budget" style={{ color: 'var(--primary)' }}>Shared Budget</Link>
                 <Link to="/profile" style={{ color: 'var(--primary)' }}>Profile</Link>
-                <Notifications />
                 <button
                     onClick={handleLogout}
                     style={{

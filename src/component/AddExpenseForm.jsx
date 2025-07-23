@@ -67,7 +67,7 @@ export default function AddExpenseForm() {
         const description = e.target.value;
         setDescription(description);
         if (description.length > 0) {
-            axios.post('http://localhost:8000/categorize', {
+            axios.post('/ml/categorize', {
                 description: description
             })
                 .then(res => {

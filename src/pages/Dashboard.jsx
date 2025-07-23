@@ -3,16 +3,18 @@ import AddBudgetForm from "../component/AddBudgetForm";
 import { useEffect, useState } from "react";
 import { jwtDecode } from 'jwt-decode';
 import ExistingBudget from "../component/ExistingBudget";
-import Notifications from "../component/Notifications";
+import BudgetBannerManager from "../component/BudgetBannerManager";
+import NotificationBell from "../component/NotificationBell";
 import axios from "axios";
 import React from "react";
-
 export default function Dashboard() {
     const location = useLocation();
     const navigate = useNavigate();
     const [username, setUserName] = useState(false);
     const [email, setEmail] = useState('');
     const [darkMode, setDarkMode] = useState(() => localStorage.getItem('darkMode') === 'true');
+    const [banner, setBanner] = useState([]);
+    const [bannerIdx, setBannerIdx] = useState(0);
 
     useEffect(() => {
         if (darkMode) {
@@ -30,6 +32,7 @@ export default function Dashboard() {
         localStorage.removeItem('username')
         localStorage.removeItem('email')
         localStorage.removeItem('lastReadNotifHash');
+        sessionStorage.removeItem('bannerDismissed');
         navigate('/'); // Redirect to the home page
     }
 
@@ -60,8 +63,10 @@ export default function Dashboard() {
         }
     }, [navigate]);
 
+
     return (
         <>
+            <BudgetBannerManager banner={banner} setBanner={setBanner} />
             <nav style={{
                 marginBottom: '24px',
                 display: 'flex',
@@ -78,7 +83,7 @@ export default function Dashboard() {
                 <Link to="/visualisation" style={{ color: 'var(--primary)' }}>Visualisation</Link>
                 <Link to="/shared-budget" style={{ color: 'var(--primary)' }}>Shared Budget</Link>
                 <Link to="/profile" style={{ color: 'var(--primary)' }}>Profile</Link>
-                <Notifications />
+                <NotificationBell banners={banner} isDarkMode={darkMode} />
                 <button
                     onClick={handleLogout}
                     style={{
