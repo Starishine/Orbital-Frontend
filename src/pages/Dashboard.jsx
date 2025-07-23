@@ -54,6 +54,7 @@ export default function Dashboard() {
         localStorage.setItem('darkMode', darkMode);
     }, [darkMode]);
 
+
     const handleLogout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('convertedExpenses');
