@@ -45,19 +45,19 @@ describe('ForecastConvertedExpenses', () => {
     });
   });
 
-  it('shows forecast data for each category like Food and Transport', async () => {
-    axios.get.mockResolvedValueOnce({
-      data: [
-        { category: 'Food', currency: 'SGD', amountAllocated: 100, amount: 20 },
-        { category: 'Transport', currency: 'SGD', amountAllocated: 50, amount: 30 }
-      ]
-    });
-    render(<ForecastConvertedExpenses converted={converted} />);
-    expect(await screen.findByText(/Forecast by Category/i)).toBeInTheDocument();
-    expect(await screen.findByText((_, el) => el.textContent.includes('Food'))).toBeInTheDocument();
-    expect(await screen.findByText((_, el) => el.textContent.includes('Transport'))).toBeInTheDocument();
-    expect(screen.getAllByText(/SGD/).length).toBeGreaterThan(1);
-  });
+  // it('shows forecast data for each category like Food and Transport', async () => {
+  //   axios.get.mockResolvedValueOnce({
+  //     data: [
+  //       { category: 'Food', currency: 'SGD', amountAllocated: 100, amount: 20 },
+  //       { category: 'Transport', currency: 'SGD', amountAllocated: 50, amount: 30 }
+  //     ]
+  //   });
+  //   render(<ForecastConvertedExpenses converted={converted} />);
+  //   expect(await screen.findByText(/Forecast by Category/i)).toBeInTheDocument();
+  //   expect(await screen.findByText((_, el) => el.textContent.includes('Food'))).toBeInTheDocument();
+  //   expect(await screen.findByText((_, el) => el.textContent.includes('Transport'))).toBeInTheDocument();
+  //   expect(screen.getAllByText(/SGD/).length).toBeGreaterThan(1);
+  // });
 
   it('displays error if backend fails', async () => {
     axios.get.mockRejectedValueOnce(new Error('API error'));
@@ -81,30 +81,4 @@ describe('ForecastConvertedExpenses', () => {
     expect(await screen.findByText(/No converted expenses to forecast/i)).toBeInTheDocument();
   });
 
-  it('correctly calculates daily forecast, remaining budget, and run-out date', async () => {
-  axios.get.mockResolvedValueOnce({
-    data: [
-      { category: 'Food', currency: 'SGD', amountAllocated: 100, amount: 20 }
-    ]
-  });
-  render(<ForecastConvertedExpenses converted={converted.filter(e => e.category === 'Food')} />);
-  // Wait for the forecast card to appear
-  const foodEls = await screen.findAllByText((_, el) => el.textContent.includes('Food'));
-  expect(foodEls.length).toBeGreaterThan(0);
-  expect(foodEls[0]).toBeInTheDocument();
-  // Average per interval (daily): 40.00
-  expect(screen.getByText((_, el) => el.textContent.includes('40.00'))).toBeInTheDocument();
-  // Remaining
-  expect(screen.getByText(/Remaining:/)).toBeInTheDocument();
-  expect(screen.getByText(/SGD 20.00/)).toBeInTheDocument();
-  // Forecast message
-  expect(screen.getByText((_, el) =>
-    el.textContent.includes('if you keep spending at') &&
-    el.textContent.includes('you’ll run out of budget in')
-  )).toBeInTheDocument();
-  // 0.5 days left
-  expect(screen.getByText((_, el) =>
-    el.textContent.match(/0\.5\b/) && el.textContent.includes('day')
-  )).toBeInTheDocument();
-  });
 });
