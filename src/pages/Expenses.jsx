@@ -11,7 +11,6 @@ export default function Expenses() {
     const navigate = useNavigate();
     const [username, setUserName] = useState(false);
     const [darkMode, setDarkMode] = useState(() => localStorage.getItem('darkMode') === 'true');
-    const [showPersonal, setShowPersonal] = useState(true);
 
     // Theme colors for consistency with dashboard and exchange
     const [themeColors, setThemeColors] = useState({
@@ -148,90 +147,50 @@ export default function Expenses() {
                     marginBottom: 32,
                     textAlign: 'left'
                 }}>Manage your personal and shared expenses below.</p>
-                {/* Toggle for personal vs shared expenses */}
+                {/* Personal and Shared forms side by side */}
                 <div style={{
                     display: 'flex',
-                    alignItems: 'center',
+                    gap: 40,
+                    alignItems: 'flex-start',
                     justifyContent: 'center',
-                    margin: '32px 0 24px 0',
-                    gap: '24px'
+                    maxWidth: 1200,
+                    margin: '0 auto 40px auto'
                 }}>
-                    <label style={{
-                        fontWeight: 600,
-                        color: showPersonal ? primary : '#888',
-                        fontSize: 18,
-                        cursor: 'pointer'
-                    }}>
-                        <input
-                            type="radio"
-                            checked={showPersonal}
-                            onChange={() => setShowPersonal(true)}
-                            style={{ marginRight: 8 }}
-                        />
-                        Personal Expense
-                    </label>
-                    <label style={{
-                        fontWeight: 600,
-                        color: !showPersonal ? primary : '#888',
-                        fontSize: 18,
-                        cursor: 'pointer'
-                    }}>
-                        <input
-                            type="radio"
-                            checked={!showPersonal}
-                            onChange={() => setShowPersonal(false)}
-                            style={{ marginRight: 8 }}
-                        />
-                        Shared Expense
-                    </label>
-                </div>
-                {/* Conditional Form */}
-                {showPersonal ? (
-                    <div style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: 40,
-                        alignItems: 'flex-start',
-                        maxWidth: 1200,
-                        margin: '0 auto'
-                    }}>
-                        <div style={{
-                            width: '420px',
-                            background: cardBg,
-                            borderRadius: '18px',
-                            boxShadow: '0 4px 24px rgba(25, 118, 210, 0.10)',
-                            padding: '32px',
-                            color: fontColor
-                        }}>
-                            <h2 style={{ marginBottom: '16px', color: primary, fontWeight: 700 }}>Personal Expense</h2>
-                            <AddExpenseForm />
-                        </div>
-                        <div style={{
-                            flex: 1,
-                            background: cardBg,
-                            borderRadius: '18px',
-                            boxShadow: '0 4px 24px rgba(25, 118, 210, 0.10)',
-                            padding: '32px',
-                            color: fontColor,
-                            minWidth: 0
-                        }}>
-                            <ExistingExpenses />
-                        </div>
-                    </div>
-                ) : (
                     <div style={{
                         width: '420px',
                         background: cardBg,
                         borderRadius: '18px',
                         boxShadow: '0 4px 24px rgba(25, 118, 210, 0.10)',
                         padding: '32px',
-                        color: fontColor,
-                        margin: '0 auto'
+                        color: fontColor
+                    }}>
+                        <h2 style={{ marginBottom: '16px', color: primary, fontWeight: 700 }}>Personal Expense</h2>
+                        <AddExpenseForm />
+                    </div>
+                    <div style={{
+                        width: '420px',
+                        background: cardBg,
+                        borderRadius: '18px',
+                        boxShadow: '0 4px 24px rgba(25, 118, 210, 0.10)',
+                        padding: '32px',
+                        color: fontColor
                     }}>
                         <h2 style={{ marginBottom: '16px', color: primary, fontWeight: 700 }}>Shared Expense</h2>
                         <AddSharedExpenseForm />
                     </div>
-                )}
+                </div>
+                {/* Existing expenses at the bottom */}
+                <div style={{
+                    background: cardBg,
+                    borderRadius: '18px',
+                    boxShadow: '0 4px 24px rgba(25, 118, 210, 0.10)',
+                    padding: '32px',
+                    color: fontColor,
+                    maxWidth: 1200,
+                    margin: '0 auto'
+                }}>
+                    <ExistingExpenses />
+                </div>
                 {/* Dark mode toggle button */}
                 <button
                     onClick={() => setDarkMode(dm => !dm)}
