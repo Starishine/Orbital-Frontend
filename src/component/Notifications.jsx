@@ -29,48 +29,33 @@ export default function Notifications() {
             axios.get(`/api/expense/get`, { headers: { Authorization: `Bearer ${token}` } }),
             axios.get(`/api/shared-budget/get-by-user`, { headers: { Authorization: `Bearer ${token}` } })
         ])
-
             .then(([budgetResponse, expenseResponse, sharedBudgetResponse]) => {
                 const budgets = budgetResponse.data;
                 const expenses = expenseResponse.data;
                 const sharedBudgets = sharedBudgetResponse.data;
-                console.log('Shared Budgets:', sharedBudgets);
-                console.log('Budgets:', budgets);
-                console.log('Expenses:', expenses);
 
                 const notifs = [];
                 const today = new Date();
                 budgets.forEach(budget => {
-                    if (!budget.expiryDate) return; // Skip budgets without expiry
+                    if (!budget.expiryDate) return;
                     const expiryDate = budget.expiryDate;
-                    console.log('Expiry date:', expiryDate);
-                    // count the number of days until expiry
                     const daysUntilExpiry = Math.ceil((new Date(expiryDate) - today) / (1000 * 60 * 60 * 24));
-                    // Notify if budget is expiring in 5 days or less
-
                     if (daysUntilExpiry < 0) {
                         notifs.push({ type: 'expiry', message: `Budget for ${budget.category} has expired.` });
                     } else if (daysUntilExpiry > 0 && daysUntilExpiry <= 5) {
                         notifs.push({ type: 'expiry', message: `Budget for ${budget.category} expires in ${daysUntilExpiry} days.` });
                     }
-
                     if (budget.amount <= 0) {
                         notifs.push({ type: 'warning', message: `Budget for ${budget.category} has been fully spent.` });
                     }
                 });
 
-                // Notify if no expense loggeed for the day
                 if (expenses && expenses.length > 0) {
                     const lastExpenseDate = new Date(expenses.map(exp => new Date(exp.date)).sort((a, b) => b - a)[0]);
-                    console.log('Last expense date:', lastExpenseDate);
                     const today = new Date();
-
-                    // Remove time from dates for comparison
                     lastExpenseDate.setHours(0, 0, 0, 0);
                     today.setHours(0, 0, 0, 0);
-
                     const daysSinceLastExpense = Math.ceil((today - lastExpenseDate) / (1000 * 60 * 60 * 24));
-
                     if (daysSinceLastExpense == 1) {
                         notifs.push({ type: 'reminder', message: 'No expenses logged for today.' });
                     } else if (daysSinceLastExpense > 1) {
@@ -91,21 +76,15 @@ export default function Notifications() {
                 const notifHash = getNotifHash(notifs);
                 const lastReadHash = localStorage.getItem('lastReadNotifHash');
                 setUnread(notifHash !== lastReadHash && notifs.length > 0);
-                console.log('Notifications:', notifs);
                 setNotifications(notifs);
                 setLoading(false);
             })
-
             .catch(() => {
                 setError('Failed to fetch notifications.');
                 setLoading(false);
             });
-
     }, []);
 
-
-
-    // Close dropdown when clicking outside
     useEffect(() => {
         function handleClickOutside(event) {
             if (bell.current && !bell.current.contains(event.target)) {
@@ -122,7 +101,7 @@ export default function Notifications() {
 
     const handleBellClick = () => {
         setOpen(o => !o);
-        if (!open) { // Only mark as read when opening
+        if (!open) {
             const notifHash = getNotifHash(notifications);
             localStorage.setItem('lastReadNotifHash', notifHash);
             setUnread(false);
@@ -162,12 +141,13 @@ export default function Notifications() {
                         position: 'absolute',
                         top: 2,
                         right: 2,
-                        width: 10,
-                        height: 10,
-                        background: '#d32f2f',
+                        width: 12, // changed: slightly larger dot
+                        height: 12, // changed: slightly larger dot
+                        background: 'linear-gradient(135deg,#d32f2f,#ff9800)', // changed: gradient for attention
                         borderRadius: '50%',
                         border: '2px solid #fff',
-                        display: 'inline-block'
+                        display: 'inline-block',
+                        boxShadow: '0 0 6px #d32f2f88' // changed: glow effect
                     }} />
                 )}
             </button>
@@ -176,38 +156,61 @@ export default function Notifications() {
                     position: 'absolute',
                     right: 0,
                     top: 32,
-                    minWidth: 320,
+                    minWidth: 340, // changed: slightly wider
                     background: isDarkMode ? '#23272f' : '#fff',
                     color: isDarkMode ? '#eee' : '#222',
-                    boxShadow: '0 4px 24px rgba(0,0,0,0.13)',
-                    borderRadius: 10,
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.18)', // changed: deeper shadow
+                    borderRadius: 14, // changed: more rounded
                     zIndex: 100,
-                    padding: '12px 0'
+                    padding: '16px 0', // changed: more vertical padding
+                    border: isDarkMode ? '1px solid #333' : '1px solid #e3e3e3', // changed: subtle border
+                    animation: 'fadeInNotif 0.25s' // changed: fade-in animation
                 }}>
+                    {/* changed: fade-in animation keyframes */}
+                    <style>
+                        {`
+                        @keyframes fadeInNotif {
+                            from { opacity: 0; transform: translateY(-10px);}
+                            to { opacity: 1; transform: translateY(0);}
+                        }
+                        `}
+                    </style>
                     <div style={{
-                        fontWeight: 600,
-                        fontSize: 17,
-                        padding: '0 18px 8px 18px',
+                        fontWeight: 700,
+                        fontSize: 18, // changed: larger title
+                        padding: '0 22px 10px 22px',
                         borderBottom: isDarkMode ? '1px solid #333' : '1px solid #eee',
-                        marginBottom: 8
+                        marginBottom: 10,
+                        letterSpacing: 1
                     }}>
                         Notifications
                     </div>
                     {notifications.length === 0 ? (
-                        <div style={{ padding: '12px 18px', color: isDarkMode ? '#aaa' : '#888', fontSize: 15 }}>
+                        <div style={{
+                            padding: '16px 22px',
+                            color: isDarkMode ? '#aaa' : '#888',
+                            fontSize: 16, // changed: larger font
+                            textAlign: 'center' // changed: center text
+                        }}>
                             No notifications found.
                         </div>
                     ) : (
                         <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
                             {notifications.map((notification, index) => (
                                 <li key={index} style={{
-                                    padding: '10px 18px',
+                                    padding: '12px 22px', // changed: more padding
                                     borderBottom: index !== notifications.length - 1 ? (isDarkMode ? '1px solid #333' : '1px solid #f0f0f0') : 'none',
                                     display: 'flex',
                                     alignItems: 'center',
-                                    fontSize: 15
+                                    fontSize: 16, // changed: larger font
+                                    background: index % 2 === 0 ? (isDarkMode ? '#23272f' : '#f7fafd') : 'transparent', // changed: zebra striping
+                                    transition: 'background 0.2s'
                                 }}>
-                                    <span style={{ marginRight: 10 }}>
+                                    <span style={{
+                                        marginRight: 12,
+                                        fontSize: 20, // changed: larger icon
+                                        filter: notification.type === 'warning' ? 'drop-shadow(0 0 2px #d32f2f)' : undefined // changed: warning icon glow
+                                    }}>
                                         {notification.type === 'expiry' ? '⏰'
                                             : notification.type === 'warning' ? '⚠️' : '🔔'}
                                     </span>

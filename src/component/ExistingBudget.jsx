@@ -93,6 +93,7 @@ export default function ExistingBudget() {
             }
         };
 
+        // --- UI IMPROVEMENTS START HERE ---
         return (
             <div
                 key={budget._id || idx}
@@ -215,6 +216,7 @@ export default function ExistingBudget() {
                 )}
             </div>
         );
+        // --- UI IMPROVEMENTS END HERE ---
     };
 
     return (
