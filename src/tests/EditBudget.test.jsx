@@ -41,14 +41,14 @@ describe('EditBudget', () => {
 
     await waitFor(() => {
       expect(axios.put).toHaveBeenCalledWith(
-        'http://localhost:8080/budget/update',
+        '/api/budget/update',
         expect.objectContaining({
           id: 'moushamisbudget',
           currency: 'SGD',
           amountAllocated: 120, // updated = 100 + 20
-          amount: 100 
+          amount: 100
         }),
-        expect.objectContaining({ 
+        expect.objectContaining({
           headers: expect.objectContaining({
             Authorization: 'Bearer testing_token'
           })
@@ -76,7 +76,7 @@ describe('EditBudget', () => {
       );
       // call axios.put with converted values
       expect(axios.put).toHaveBeenCalledWith(
-        'http://localhost:8080/budget/update',
+        '/api/budget/update',
         expect.objectContaining({
           id: 'moushamisbudget',
           currency: 'USD',

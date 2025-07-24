@@ -3,22 +3,58 @@ import AddBudgetForm from "../component/AddBudgetForm";
 import { useEffect, useState } from "react";
 import { jwtDecode } from 'jwt-decode';
 import ExistingBudget from "../component/ExistingBudget";
-import Notifications from "../component/Notifications";
+import BudgetBannerManager from "../component/BudgetBannerManager";
+import NotificationBell from "../component/NotificationBell";
 import axios from "axios";
 import React from "react";
-
 export default function Dashboard() {
     const location = useLocation();
     const navigate = useNavigate();
     const [username, setUserName] = useState(false);
     const [email, setEmail] = useState('');
     const [darkMode, setDarkMode] = useState(() => localStorage.getItem('darkMode') === 'true');
+    const [banner, setBanner] = useState([]);
+    const [bannerIdx, setBannerIdx] = useState(0);
+    const [bannerDismissed, setBannerDismissed] = useState(
+        sessionStorage.getItem('bannerDismissed') === 'true'
+    );
+
+    // Use state for theme colors so they update instantly
+    const [themeColors, setThemeColors] = useState({
+        cardBg: darkMode ? '#2e3a59' : '#fff',
+        textColor: darkMode ? '#e3f2fd' : '#222',
+        primary: darkMode ? '#90caf9' : '#1976d2',
+        fontColor: darkMode ? '#e3f2fd' : '#222'
+    });
 
     useEffect(() => {
+        // Apply dark mode theme to body and set CSS variables for theme
         if (darkMode) {
             document.body.classList.add('dark-mode');
+            document.body.style.background = 'linear-gradient(135deg,#263859 0%,#1e2746 100%)';
+            document.body.style.setProperty('--card-bg', '#2e3a59');
+            document.body.style.setProperty('--text-color', '#e3f2fd');
+            document.body.style.setProperty('--primary', '#90caf9');
+            document.body.style.setProperty('--font-color', '#e3f2fd');
+            setThemeColors({
+                cardBg: '#2e3a59',
+                textColor: '#e3f2fd',
+                primary: '#90caf9',
+                fontColor: '#e3f2fd'
+            });
         } else {
             document.body.classList.remove('dark-mode');
+            document.body.style.background = 'linear-gradient(135deg,#e3f2fd 0%,#90caf9 100%)';
+            document.body.style.setProperty('--card-bg', '#fff');
+            document.body.style.setProperty('--text-color', '#222');
+            document.body.style.setProperty('--primary', '#1976d2');
+            document.body.style.setProperty('--font-color', '#222');
+            setThemeColors({
+                cardBg: '#fff',
+                textColor: '#222',
+                primary: '#1976d2',
+                fontColor: '#222'
+            });
         }
         localStorage.setItem('darkMode', darkMode);
     }, [darkMode]);
@@ -30,6 +66,7 @@ export default function Dashboard() {
         localStorage.removeItem('username')
         localStorage.removeItem('email')
         localStorage.removeItem('lastReadNotifHash');
+        sessionStorage.removeItem('bannerDismissed');
         navigate('/'); // Redirect to the home page
     }
 
@@ -41,7 +78,7 @@ export default function Dashboard() {
         else {
             const decoded = jwtDecode(token);
             setUserName(decoded.sub); // Extract username from token
-            axios.get(`http://localhost:8080/signup/get`, {
+            axios.get(`/api/signup/get`, {
                 headers: { Authorization: `Bearer ${token}` }
             })
                 .then(response => {
@@ -60,68 +97,92 @@ export default function Dashboard() {
         }
     }, [navigate]);
 
+    // Use themeColors from state instead of getComputedStyle
+    const { cardBg, textColor, primary, fontColor } = themeColors;
+
     return (
         <>
             <nav style={{
                 marginBottom: '24px',
                 display: 'flex',
                 gap: '16px',
-                background: 'var(--card)',
-                color: 'var(--text)',
-                padding: '12px 24px',
-                borderRadius: 'var(--round-md)',
-                boxShadow: '0 2px 8px rgba(25, 118, 210, 0.04)'
+                background: darkMode
+                    ? 'linear-gradient(90deg,#263859 0%,#1e2746 100%)'
+                    : 'linear-gradient(90deg,#1976d2 0%,#42a5f5 100%)',
+                color: fontColor,
+                padding: '14px 28px',
+                borderRadius: '18px',
+                boxShadow: '0 4px 24px rgba(25, 118, 210, 0.10)',
+                alignItems: 'center'
             }}>
-                <Link to="/dashboard" style={{ color: 'var(--primary)' }}>Dashboard</Link>
-                <Link to="/exchange" style={{ color: 'var(--primary)' }}>Exchange</Link>
-                <Link to="/expenses" style={{ color: 'var(--primary)' }}>Expenses</Link>
-                <Link to="/visualisation" style={{ color: 'var(--primary)' }}>Visualisation</Link>
-                <Link to="/shared-budget" style={{ color: 'var(--primary)' }}>Shared Budget</Link>
-                <Link to="/profile" style={{ color: 'var(--primary)' }}>Profile</Link>
-                <Notifications />
+                {/* changed: darker blue font for nav links in light mode */}
+                <Link to="/dashboard" style={{ color: darkMode ? primary : '#115293', fontWeight: 600 }}>Dashboard</Link>
+                <Link to="/exchange" style={{ color: darkMode ? primary : '#115293', fontWeight: 600 }}>Exchange</Link>
+                <Link to="/expenses" style={{ color: darkMode ? primary : '#115293', fontWeight: 600 }}>Expenses</Link>
+                <Link to="/visualisation" style={{ color: darkMode ? primary : '#115293', fontWeight: 600 }}>Visualisation</Link>
+                <Link to="/shared-budget" style={{ color: darkMode ? primary : '#115293', fontWeight: 600 }}>Shared Budget</Link>
+                <Link to="/profile" style={{ color: darkMode ? primary : '#115293', fontWeight: 600 }}>Profile</Link>
+                <BudgetBannerManager banner={banner} setBanner={setBanner} bannerDismissed={bannerDismissed} setBannerDismissed={setBannerDismissed} />
                 <button
                     onClick={handleLogout}
                     style={{
                         marginLeft: 'auto',
-                        background: 'var(--primary)',
-                        color: 'var(--card)',
+                        background: primary,
+                        color: darkMode ? '#263859' : '#fff',
                         border: 'none',
-                        borderRadius: 'var(--round-sm)',
-                        padding: '6px 16px',
-                        fontWeight: 500,
-                        cursor: 'pointer'
+                        borderRadius: '8px',
+                        padding: '8px 20px',
+                        fontWeight: 600,
+                        fontSize: 16,
+                        cursor: 'pointer',
+                        boxShadow: '0 2px 8px rgba(25, 118, 210, 0.10)',
+                        transition: 'background 0.2s'
                     }}
+                    onMouseOver={e => e.currentTarget.style.background = darkMode ? '#1e2746' : '#115293'}
+                    onMouseOut={e => e.currentTarget.style.background = primary}
                 >
                     Logout
                 </button>
+
             </nav>
             <div style={{
-                padding: '20px',
-                fontFamily: 'Arial, sans-serif',
-                background: 'var(--bg)',
-                color: 'var(--text)',
+                padding: '32px',
+                fontFamily: 'Inter, Arial, sans-serif',
+                background: 'none',
+                color: fontColor,
                 minHeight: '100vh'
             }}>
-                <h1>Welcome, {username} </h1>
-                <p>Welcome to your dashboard! Here you can set your budget!!</p>
-                <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+                <h1 style={{
+                    fontWeight: 800,
+                    fontSize: 36,
+                    marginBottom: 8,
+                    color: primary
+                }}>Welcome, {username} </h1>
+                <p style={{
+                    fontSize: 18,
+                    color: fontColor,
+                    marginBottom: 32
+                }}>Welcome to your dashboard! Here you can set your budget!!</p>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 40 }}>
                     <div style={{
-                        marginRight: '40px',
                         width: '500px',
-                        background: 'var(--card)',
-                        borderRadius: 'var(--round-md)',
-                        boxShadow: '0 2px 8px rgba(25, 118, 210, 0.04)',
-                        padding: '24px'
+                        background: cardBg,
+                        borderRadius: '18px',
+                        boxShadow: '0 4px 24px rgba(25, 118, 210, 0.10)',
+                        padding: '32px',
+                        color: fontColor
                     }}>
                         <AddBudgetForm />
                     </div>
                     <div style={{
                         flex: 1,
-                        background: 'var(--card)',
-                        borderRadius: 'var(--round-md)',
-                        boxShadow: '0 2px 8px rgba(25, 118, 210, 0.04)',
-                        padding: '24px'
+                        background: cardBg,
+                        borderRadius: '18px',
+                        boxShadow: '0 4px 24px rgba(25, 118, 210, 0.10)',
+                        padding: '32px',
+                        color: fontColor
                     }}>
+                        <h2 style={{ marginBottom: '20px', color: primary, fontWeight: 800, fontSize: 24, letterSpacing: 1 }}>Active Budgets (Set in home currency)</h2>
                         <ExistingBudget />
                     </div>
                 </div>
@@ -129,19 +190,22 @@ export default function Dashboard() {
                     onClick={() => setDarkMode(dm => !dm)}
                     style={{
                         position: 'fixed',
-                        bottom: 24,
-                        right: 24,
-                        background: 'var(--primary)',
-                        color: 'var(--card)',
+                        bottom: 32,
+                        right: 32,
+                        background: primary,
+                        color: darkMode ? '#263859' : '#fff',
                         border: 'none',
                         borderRadius: 24,
-                        padding: '12px 28px',
-                        fontWeight: 600,
-                        fontSize: 16,
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                        padding: '14px 32px',
+                        fontWeight: 700,
+                        fontSize: 18,
+                        boxShadow: '0 4px 24px rgba(25, 118, 210, 0.10)',
                         cursor: 'pointer',
-                        zIndex: 1000
+                        zIndex: 1000,
+                        transition: 'background 0.2s'
                     }}
+                    onMouseOver={e => e.currentTarget.style.background = darkMode ? '#1e2746' : '#115293'}
+                    onMouseOut={e => e.currentTarget.style.background = primary}
                 >
                     {darkMode ? '🌙 Dark Mode' : '☀️ Light Mode'}
                 </button>

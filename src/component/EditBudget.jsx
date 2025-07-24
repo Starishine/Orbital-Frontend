@@ -53,7 +53,7 @@ export default function EditBudget({ budget, onSave, onCancel }) {
         }
 
 
-        axios.put('http://localhost:8080/budget/update', {
+        axios.put('/api/budget/update', {
             id: budget.id,
             currency: currency,
             amountAllocated: newAmountAllocated,
@@ -68,26 +68,59 @@ export default function EditBudget({ budget, onSave, onCancel }) {
     };
 
     return (
-        <>
-            <div>
-                <p style={{
-                    display: 'inline-block',
-                    marginRight: '8px',
-                }} >Top up Amount: </p>
+        <div
+            style={{
+                background: '#fff',
+                borderRadius: 18,
+                boxShadow: '0 4px 24px rgba(25, 118, 210, 0.10)',
+                padding: '28px 24px',
+                maxWidth: 380,
+                margin: '18px auto',
+                border: '1px solid #e3f2fd',
+                fontFamily: 'Inter, Arial, sans-serif',
+                color: '#263859',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 18
+            }}
+        >
+            <h3 style={{
+                fontWeight: 800,
+                fontSize: 20,
+                color: '#1976d2',
+                marginBottom: 8,
+                textAlign: 'center'
+            }}>
+                Edit Budget
+            </h3>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <label style={{ fontWeight: 600, minWidth: 90 }}>Top up Amount:</label>
                 <input
                     type="number"
                     value={amount}
                     onChange={e => setAmount(e.target.value)}
-                    style={{ width: '80px', marginRight: '8px' }}
+                    style={{
+                        width: 90,
+                        padding: '6px 10px',
+                        borderRadius: 6,
+                        border: '1px solid #1976d2',
+                        fontSize: 15,
+                        marginRight: 8
+                    }}
                 />
-                <CurrencyDropdown currency={currency} setCurrency={setCurrency}></CurrencyDropdown>
+                <CurrencyDropdown currency={currency} setCurrency={setCurrency} />
             </div>
-            <div style={{ marginBottom: 8 }}>
-                <label style={{ marginRight: 8 }}>Adjust Interval:</label>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <label style={{ fontWeight: 600, minWidth: 90 }}>Interval:</label>
                 <select
                     value={interval}
                     onChange={e => setInterval(e.target.value)}
-                    style={{ padding: 4, borderRadius: 4, border: '1px solid var(--primary)' }}
+                    style={{
+                        padding: '6px 10px',
+                        borderRadius: 6,
+                        border: '1px solid #1976d2',
+                        fontSize: 15
+                    }}
                 >
                     <option value="Weekly">Weekly</option>
                     <option value="Monthly">Monthly</option>
@@ -96,38 +129,57 @@ export default function EditBudget({ budget, onSave, onCancel }) {
                 </select>
             </div>
             {interval === "Custom" && (
-                <div style={{ marginBottom: 8 }}>
-                    <label style={{ marginRight: 8 }}>Custom End Date:</label>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <label style={{ fontWeight: 600, minWidth: 90 }}>End Date:</label>
                     <input
                         type="date"
                         value={customEnd}
                         onChange={e => setCustomEnd(e.target.value)}
-                        style={{ padding: 4, borderRadius: 4, border: '1px solid var(--primary)' }}
+                        style={{
+                            padding: '6px 10px',
+                            borderRadius: 6,
+                            border: '1px solid #1976d2',
+                            fontSize: 15
+                        }}
                     />
                 </div>
             )}
-            <button onClick={handleSave}
-                style={{
-                    backgroundColor: '#1976d2',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    padding: '6px 16px',
-                    fontWeight: 500,
-                    cursor: 'pointer',
-                    marginLeft: '8px'
-                }}>Save</button>
-            <button onClick={onCancel} style={{
-                backgroundColor: '#1976d2',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                padding: '6px 16px',
-                fontWeight: 500,
-                cursor: 'pointer',
-                marginLeft: '8px'
-            }}>Cancel</button>
-        </>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12, marginTop: 10 }}>
+                <button
+                    onClick={handleSave}
+                    style={{
+                        backgroundColor: '#1976d2',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: 8,
+                        padding: '10px 24px',
+                        fontWeight: 700,
+                        fontSize: 16,
+                        cursor: 'pointer',
+                        boxShadow: '0 2px 8px rgba(25, 118, 210, 0.10)',
+                        transition: 'background 0.2s'
+                    }}
+                >
+                    Save
+                </button>
+                <button
+                    onClick={onCancel}
+                    style={{
+                        backgroundColor: '#d32f2f',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: 8,
+                        padding: '10px 24px',
+                        fontWeight: 700,
+                        fontSize: 16,
+                        cursor: 'pointer',
+                        boxShadow: '0 2px 8px rgba(25, 118, 210, 0.10)',
+                        transition: 'background 0.2s'
+                    }}
+                >
+                    Cancel
+                </button>
+            </div>
+        </div>
     );
-
 }

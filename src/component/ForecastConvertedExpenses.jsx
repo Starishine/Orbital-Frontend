@@ -17,7 +17,7 @@ export default function ForecastConvertedExpenses({ converted }) {
             setLoading(false);
             return;
         }
-        axios.get('http://localhost:8080/budget/get', {
+        axios.get('/api/budget/get', {
             headers: { Authorization: `Bearer ${token}` }
         })
             .then(res => {
@@ -159,7 +159,7 @@ export default function ForecastConvertedExpenses({ converted }) {
 
     useEffect(() => {
         if (mlBudgets.length > 0) {
-            axios.post('http://localhost:8000/insights', mlBudgets)
+            axios.post('/ml/insights', mlBudgets)
                 .then(res => {
                     // Transform insights to cardSuggestions format
                     const insights = (res.data.insights || []).map(insight => ({

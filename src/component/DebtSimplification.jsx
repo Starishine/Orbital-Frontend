@@ -12,6 +12,7 @@ export default function DebtSimplification({ expenses, members }) {
     // Calculate fair share per user
     const total = expenses.reduce((sum, exp) => sum + Number(exp.amount), 0);
     const share = total / members.length;
+    const currency = localStorage.getItem('homeCurrency') || 'SGD';
 
     // Calculate net balance per user
     const net = members.map(m => ({
@@ -45,7 +46,6 @@ export default function DebtSimplification({ expenses, members }) {
     return (
         <div style={{
             marginTop: 32,
-            background: 'var(--card)',
             borderRadius: 12,
             boxShadow: '0 2px 8px rgba(25, 118, 210, 0.08)',
             padding: '24px',
@@ -53,18 +53,27 @@ export default function DebtSimplification({ expenses, members }) {
             marginLeft: 'auto',
             marginRight: 'auto'
         }}>
-            <h2 style={{ textAlign: 'center', color: '#1976d2' }}>Settlement Summary</h2>
+            <h2 style={{
+                color: '#1976d2',
+                fontWeight: 800,
+                fontSize: 24,
+                marginBottom: 18,
+                textAlign: 'center'
+            }}>
+                Settlement Summary
+            </h2>
             {transactions.length === 0 ? (
                 <div style={{ color: '#388e3c', textAlign: 'center' }}>All settled up!</div>
             ) : (
                 <ul style={{ listStyle: 'none', padding: 0 }}>
                     {transactions.map((t, idx) => (
                         <li key={idx} style={{ marginBottom: 8, fontWeight: 500 }}>
-                            <span style={{ color: '#d32f2f' }}>{t.from}</span> owes <span style={{ color: '#388e3c' }}>{t.to}</span> <b>${t.amount}</b>
+                            <span style={{ color: '#d32f2f' }}>{t.from}</span> <b style={{ color: '#1976d2' }}>owes</b> <span style={{ color: '#388e3c' }}>{t.to}</span> <b style={{ color: '#1976d2' }}>{currency} {t.amount}</b>
                         </li>
                     ))}
                 </ul>
-            )}
-        </div>
+            )
+            }
+        </div >
     );
 }

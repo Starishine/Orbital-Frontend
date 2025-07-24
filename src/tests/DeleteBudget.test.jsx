@@ -27,7 +27,7 @@ describe('DeleteBudget', () => {
 
     await waitFor(() => {
       expect(axios.delete).toHaveBeenCalledWith(
-        `http://localhost:8080/budget/delete/${budgetId}`,
+        `/api/budget/delete/${budgetId}`,
         expect.objectContaining({
           headers: expect.objectContaining({
             Authorization: 'Bearer test_token'
@@ -49,7 +49,7 @@ describe('DeleteBudget', () => {
   it('handles any error that arises if the delete request to the backend server fails', async () => {
     vi.spyOn(window, 'confirm').mockReturnValue(true);
     axios.delete.mockRejectedValueOnce(new Error('API error'));
-    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => { });
     render(<DeleteBudget budgetId={budgetId} onDeleteSuccess={onDeleteSuccess} />);
     fireEvent.click(screen.getByRole('button', { name: /delete budget/i }));
 

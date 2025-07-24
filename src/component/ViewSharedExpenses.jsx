@@ -14,7 +14,7 @@ export default function ViewSharedExpenses({ budgetId, inviter, invitees }) {
 
     useEffect(() => {
         if (!budgetId) return;
-        axios.get(`http://localhost:8080/shared-expense/get-by-budget?budgetId=${budgetId}`, {
+        axios.get(`/api/shared-expense/get-by-budget?budgetId=${budgetId}`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         })
             .then(response => {
@@ -84,13 +84,20 @@ export default function ViewSharedExpenses({ budgetId, inviter, invitees }) {
         <div style={{
             maxWidth: 540,
             width: '100%',
-            background: 'var(--card)',
             borderRadius: 16,
             boxShadow: '0 4px 16px rgba(25, 118, 210, 0.10)',
             padding: '36px 28px',
             margin: '0 auto'
         }}>
-            <h2 style={{ textAlign: 'center', color: '#1976d2', marginBottom: 28, letterSpacing: 1 }}>Your Shared Expenses</h2>
+            <h2 style={{
+                color: '#1976d2',
+                fontWeight: 800,
+                fontSize: 24,
+                marginBottom: 18,
+                textAlign: 'center'
+            }}>
+                Your Shared Expenses
+            </h2>
             <button
                 style={{
                     marginBottom: 18,
@@ -144,7 +151,7 @@ export default function ViewSharedExpenses({ budgetId, inviter, invitees }) {
                                     fontWeight: 500,
                                     boxShadow: '0 1px 4px rgba(25, 118, 210, 0.06)'
                                 }}>
-                                    <span style={{ color: 'black' }}>{expense.description}</span>
+                                    <span style={{ color: 'black' }}>{expense.name}</span>
                                     <span style={{ float: 'right', color: '#1976d2' }}>
                                         {displayAmount(expense)}
                                     </span>
@@ -181,7 +188,7 @@ export default function ViewSharedExpenses({ budgetId, inviter, invitees }) {
                                     boxShadow: '0 1px 4px rgba(25, 118, 210, 0.06)'
                                 }}>
                                     <b style={{ color: 'black' }}>{expense.username} : </b>
-                                    <span style={{ color: 'black' }}>{expense.description}</span>
+                                    <span style={{ color: 'black' }}>{expense.name}</span>
                                     <span style={{ float: 'right', color: '#d32f2f' }}>
                                         {displayAmount(expense)}
                                     </span>
