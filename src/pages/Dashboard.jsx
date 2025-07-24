@@ -175,7 +175,7 @@ export default function Dashboard() {
                         padding: '32px',
                         color: fontColor
                     }}>
-                        <h2 style={{ marginBottom: '16px', color: primary, fontWeight: 700 }}>Active Budgets (Set in home currency)</h2>
+                        <h2 style={{ marginBottom: '20px', color: primary, fontWeight: 800, fontSize: 24, letterSpacing: 1 }}>Active Budgets (Set in home currency)</h2>
                         <ExistingBudget />
                     </div>
                 </div>

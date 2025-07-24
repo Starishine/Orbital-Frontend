@@ -49,7 +49,7 @@ export default function ExistingBudget() {
     const activeBudgets = budgets.filter(b => b.expiryDate == "" || b.expiryDate >= today);
     const expiredBudgets = budgets.filter(b => b.expiryDate && b.expiryDate < today);
 
-    // Theme to match AddSharedExpenseForm
+    // Theme to match AddBudgetForm
     const theme = {
         primary: '#1976d2',
         accent: '#90caf9',
@@ -251,7 +251,7 @@ export default function ExistingBudget() {
                         color: theme.card,
                         border: 'none',
                         borderRadius: 8,
-                        padding: '12px 24px',
+                        padding: '10px 24px',
                         fontWeight: 700,
                         fontSize: 16,
                         cursor: 'pointer',
@@ -264,8 +264,14 @@ export default function ExistingBudget() {
                     🕒 View Expired Budgets
                 </button>
             </div>
-        
-            
+            {/* <h3 style={{
+                marginBottom: '20px',
+                fontWeight: 800,
+                fontSize: 24,
+                letterSpacing: 1,
+                color: theme.primary,
+            }}> */}
+            {/* </h3> */}
             {activeBudgets.length === 0 ? (
                 <p>No active budgets.</p>
             ) : (
@@ -297,7 +303,7 @@ export default function ExistingBudget() {
                                 color: theme.card,
                                 border: 'none',
                                 borderRadius: 8,
-                                padding: '12px 24px',
+                                padding: '10px 24px',
                                 fontWeight: 700,
                                 fontSize: 16,
                                 cursor: 'pointer',
