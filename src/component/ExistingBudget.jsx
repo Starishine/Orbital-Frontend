@@ -15,7 +15,6 @@ export default function ExistingBudget() {
     const [showExpired, setShowExpired] = useState(false);
 
     useEffect(() => {
-        // Fetch budgets for the logged-in user
         const token = localStorage.getItem('token');
         if (!token) {
             setError('User not logged in.');
@@ -39,7 +38,6 @@ export default function ExistingBudget() {
     if (error) return <div style={{ color: 'red' }}>{error}</div>;
 
     const refreshBudgets = () => {
-        // Refresh budgets after edit/delete
         axios.get(`/api/budget/get`,
             { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
         )
@@ -48,30 +46,22 @@ export default function ExistingBudget() {
     };
 
     const today = new Date().toISOString().split('T')[0];
-    // Split budgets into active and expired
     const activeBudgets = budgets.filter(b => b.expiryDate == "" || b.expiryDate >= today);
     const expiredBudgets = budgets.filter(b => b.expiryDate && b.expiryDate < today);
 
-    // Detect dark mode from localStorage
-    const darkMode = localStorage.getItem('darkMode') === 'true';
-
-    // Theme colors to match AddBudgetForm
+    // Theme to match AddSharedExpenseForm
     const theme = {
-        cardBg: '#fff',
-        textColor: darkMode ? '#263859' : '#222',
-        labelColor: darkMode ? '#1976d2' : '#1976d2',
-        primary: darkMode ? '#90caf9' : '#1976d2',
-        buttonHover: darkMode ? '#42a5f5' : '#115293',
+        primary: '#1976d2',
+        accent: '#90caf9',
+        card: '#fff',
+        dark: '#263859',
         border: '#e3f2fd',
         shadow: '0 4px 24px rgba(25, 118, 210, 0.10)',
-        inputBg: darkMode ? '#e3f2fd' : '#f5f5f5'
+        inputBg: '#f5f5f5'
     };
 
-    // Render a single budget card with chart and actions
     const renderBudgetCard = (budget, idx) => {
-        // Calculate spent and remaining amounts
         const spent = budget.amountAllocated - budget.amount;
-        // Chart.js data structure for horizontal bar
         const data = {
             labels: [''],
             datasets: [
@@ -87,7 +77,6 @@ export default function ExistingBudget() {
                 },
             ],
         };
-        // Chart.js options for horizontal stacked bar
         const options = {
             indexAxis: 'y',
             responsive: true,
@@ -113,17 +102,20 @@ export default function ExistingBudget() {
                 key={budget._id || idx}
                 style={{
                     width: '100%',
-                    maxWidth: 440,
+                    maxWidth: 420,
                     margin: '28px auto',
-                    background: theme.cardBg,
-                    color: theme.textColor,
+                    background: theme.card,
+                    color: theme.dark,
                     padding: '32px',
-                    borderRadius: '20px',
+                    borderRadius: 18,
                     border: `1px solid ${theme.border}`,
                     boxShadow: theme.shadow,
                     position: 'relative',
                     transition: 'box-shadow 0.2s',
-                    fontFamily: 'Inter, Arial, sans-serif'
+                    fontFamily: 'Inter, Arial, sans-serif',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center'
                 }}
             >
                 <div style={{
@@ -136,14 +128,32 @@ export default function ExistingBudget() {
                 }}>
                     💸
                 </div>
-                <div style={{ fontWeight: 800, fontSize: '1.2em', marginBottom: 8, letterSpacing: 1, color: theme.primary }}>
+                <div style={{
+                    fontWeight: 800,
+                    fontSize: 22,
+                    marginBottom: 8,
+                    letterSpacing: 1,
+                    color: theme.primary,
+                    textAlign: 'center'
+                }}>
                     {budget.category}
                 </div>
-                <div style={{ color: theme.labelColor, fontSize: 15, marginBottom: 8 }}>
+                <div style={{
+                    color: theme.dark,
+                    fontSize: 15,
+                    marginBottom: 8,
+                    textAlign: 'center'
+                }}>
                     <span role="img" aria-label="calendar" style={{ marginRight: 6 }}>📅</span>
                     Expiry: {budget.expiryDate || 'N/A'}
                 </div>
-                <div style={{ margin: '18px 0 10px 0', background: theme.inputBg, borderRadius: 8, padding: 8 }}>
+                <div style={{
+                    margin: '18px 0 10px 0',
+                    background: theme.inputBg,
+                    borderRadius: 10,
+                    padding: 12,
+                    boxShadow: '0 2px 8px rgba(25, 118, 210, 0.08)'
+                }}>
                     <Bar
                         data={data}
                         options={{
@@ -162,9 +172,10 @@ export default function ExistingBudget() {
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     marginTop: 8,
-                    color: theme.textColor,
+                    color: theme.dark,
                     fontSize: 15,
-                    fontWeight: 600
+                    fontWeight: 600,
+                    width: '100%'
                 }}>
                     <span>
                         <span role="img" aria-label="money" style={{ marginRight: 4 }}>💰</span>
@@ -186,7 +197,8 @@ export default function ExistingBudget() {
                         display: 'flex',
                         justifyContent: 'flex-end',
                         gap: 12,
-                        marginTop: 18
+                        marginTop: 18,
+                        width: '100%'
                     }}>
                         <button
                             style={{
@@ -194,14 +206,14 @@ export default function ExistingBudget() {
                                 borderRadius: 8,
                                 padding: '10px 24px',
                                 background: theme.primary,
-                                color: theme.cardBg,
+                                color: theme.card,
                                 fontWeight: 700,
                                 fontSize: 16,
                                 cursor: 'pointer',
                                 boxShadow: theme.shadow,
                                 transition: 'background 0.2s'
                             }}
-                            onMouseOver={e => e.currentTarget.style.background = theme.buttonHover}
+                            onMouseOver={e => e.currentTarget.style.background = theme.dark}
                             onMouseOut={e => e.currentTarget.style.background = theme.primary}
                             onClick={() => setEditIdx(idx)}
                         >
@@ -215,7 +227,7 @@ export default function ExistingBudget() {
                                 borderRadius: 8,
                                 padding: '10px 24px',
                                 background: '#d32f2f',
-                                color: theme.cardBg,
+                                color: theme.card,
                                 fontWeight: 700,
                                 fontSize: 16,
                                 cursor: 'pointer',
@@ -236,23 +248,24 @@ export default function ExistingBudget() {
                     onClick={() => setShowExpired(true)}
                     style={{
                         background: theme.primary,
-                        color: theme.cardBg,
+                        color: theme.card,
                         border: 'none',
                         borderRadius: 8,
-                        padding: '10px 24px',
+                        padding: '12px 24px',
                         fontWeight: 700,
                         fontSize: 16,
                         cursor: 'pointer',
                         boxShadow: theme.shadow,
                         transition: 'background 0.2s'
                     }}
-                    onMouseOver={e => e.currentTarget.style.background = theme.buttonHover}
+                    onMouseOver={e => e.currentTarget.style.background = theme.dark}
                     onMouseOut={e => e.currentTarget.style.background = theme.primary}
                 >
                     🕒 View Expired Budgets
                 </button>
             </div>
-            <h3 style={{ marginBottom: '20px', fontWeight: 700, fontSize: 22, letterSpacing: 1 }}>Active Budgets (Set in home currency)</h3>
+        
+            
             {activeBudgets.length === 0 ? (
                 <p>No active budgets.</p>
             ) : (
@@ -281,10 +294,10 @@ export default function ExistingBudget() {
                             onClick={() => setShowExpired(false)}
                             style={{
                                 background: theme.primary,
-                                color: theme.cardBg,
+                                color: theme.card,
                                 border: 'none',
                                 borderRadius: 8,
-                                padding: '10px 24px',
+                                padding: '12px 24px',
                                 fontWeight: 700,
                                 fontSize: 16,
                                 cursor: 'pointer',
@@ -292,15 +305,24 @@ export default function ExistingBudget() {
                                 boxShadow: theme.shadow,
                                 transition: 'background 0.2s'
                             }}
-                            onMouseOver={e => e.currentTarget.style.background = theme.buttonHover}
+                            onMouseOver={e => e.currentTarget.style.background = theme.dark}
                             onMouseOut={e => e.currentTarget.style.background = theme.primary}
                         >
                             Close
                         </button>
                     </div>
-                    <h3 style={{ color: theme.cardBg, marginBottom: 20, fontWeight: 700, fontSize: 22, letterSpacing: 1 }}>Expired Budgets (History)</h3>
+                    <h3 style={{
+                        color: theme.card,
+                        marginBottom: 20,
+                        fontWeight: 800,
+                        fontSize: 24,
+                        letterSpacing: 1,
+                        textAlign: 'center'
+                    }}>
+                        Expired Budgets (History)
+                    </h3>
                     {expiredBudgets.length === 0 ? (
-                        <p style={{ color: theme.cardBg }}>No expired budgets.</p>
+                        <p style={{ color: theme.card }}>No expired budgets.</p>
                     ) : (
                         expiredBudgets.map(renderBudgetCard)
                     )}

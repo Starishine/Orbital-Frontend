@@ -30,15 +30,12 @@ export default function AddBudgetForm() {
     // Detect dark mode from localStorage
     const darkMode = localStorage.getItem('darkMode') === 'true';
 
-    // Theme colors to fit the Exchange/Dashboard theme
+    // Theme to match AddSharedExpenseForm
     const theme = {
-        cardBg: '#fff',
-        textColor: darkMode ? '#263859' : '#222',
-        labelColor: darkMode ? '#1976d2' : '#1976d2',
-        inputBg: darkMode ? '#e3f2fd' : '#f5f5f5',
-        inputBorder: darkMode ? '#90caf9' : '#bdbdbd',
-        primary: darkMode ? '#90caf9' : '#1976d2',
-        buttonHover: darkMode ? '#42a5f5' : '#115293',
+        primary: '#1976d2',
+        accent: '#90caf9',
+        card: '#fff',
+        dark: '#263859',
         border: '#e3f2fd',
         shadow: '0 4px 24px rgba(25, 118, 210, 0.10)'
     };
@@ -94,43 +91,39 @@ export default function AddBudgetForm() {
 
     return (
         <div
-            className="budget-form-card"
             style={{
+                background: theme.card,
+                borderRadius: 18,
                 boxShadow: theme.shadow,
-                borderRadius: 20,
-                padding: '36px 32px',
-                background: theme.cardBg,
-                color: theme.textColor,
-                maxWidth: 440,
+                padding: '32px',
+                maxWidth: 420,
                 margin: '0 auto',
                 fontFamily: 'Inter, Arial, sans-serif',
                 border: `1px solid ${theme.border}`,
-                position: 'relative',
-                transition: 'box-shadow 0.2s',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center'
             }}
         >
             <h2 style={{
-                textAlign: 'center',
-                marginBottom: 28,
+                color: theme.primary,
                 fontWeight: 800,
-                fontSize: 26,
-                letterSpacing: 1,
-                color: darkMode ? '#263859' : '#1976d2' // darker title for both modes
+                fontSize: 24,
+                marginBottom: 18,
+                textAlign: 'center'
             }}>
                 <span role="img" aria-label="budget">💰</span> Create Budget
             </h2>
-            <form onSubmit={handleSubmit}>
+            <form style={{ width: '100%' }} onSubmit={handleSubmit}>
                 {/* Category Section */}
-                <div style={{ marginBottom: '22px' }}>
+                <div style={{ marginBottom: '18px' }}>
                     <label htmlFor="category" style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        marginBottom: 8,
+                        display: 'block',
+                        marginBottom: '8px',
                         fontWeight: 600,
-                        color: theme.labelColor,
-                        fontSize: 16
+                        color: theme.dark
                     }}>
-                        <span role="img" aria-label="category" style={{ marginRight: 8 }}>📂</span> Category
+                        Category
                     </label>
                     <select
                         id="category"
@@ -138,11 +131,9 @@ export default function AddBudgetForm() {
                         onChange={handleCategoryChange}
                         style={{
                             width: '100%',
-                            padding: '12px 14px',
-                            borderRadius: 10,
-                            border: `1.5px solid ${theme.inputBorder}`,
-                            background: theme.inputBg,
-                            color: theme.textColor,
+                            padding: '10px 14px',
+                            borderRadius: 8,
+                            border: `1px solid ${theme.border}`,
                             fontSize: 16,
                             outline: 'none'
                         }}
@@ -155,16 +146,14 @@ export default function AddBudgetForm() {
                     </select>
                 </div>
                 {category === "Others" && (
-                    <div style={{ marginBottom: '22px' }}>
+                    <div style={{ marginBottom: '18px' }}>
                         <label htmlFor="customCategory" style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            marginBottom: 8,
+                            display: 'block',
+                            marginBottom: '8px',
                             fontWeight: 600,
-                            color: theme.labelColor,
-                            fontSize: 16
+                            color: theme.dark
                         }}>
-                            <span role="img" aria-label="custom">📝</span> Enter Category
+                            Enter Category
                         </label>
                         <input
                             id="customCategory"
@@ -175,11 +164,9 @@ export default function AddBudgetForm() {
                             onChange={e => setCustomCategory(e.target.value)}
                             style={{
                                 width: '100%',
-                                padding: '12px 14px',
-                                borderRadius: 10,
-                                border: `1.5px solid ${theme.primary}`,
-                                background: theme.inputBg,
-                                color: theme.textColor,
+                                padding: '10px 14px',
+                                borderRadius: 8,
+                                border: `1px solid ${theme.primary}`,
                                 fontSize: 16,
                                 outline: 'none'
                             }}
@@ -188,30 +175,26 @@ export default function AddBudgetForm() {
                     </div>
                 )}
                 {/* Currency Section */}
-                <div style={{ marginBottom: '22px' }}>
+                <div style={{ marginBottom: '18px' }}>
                     <label style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        marginBottom: 8,
+                        display: 'block',
+                        marginBottom: '8px',
                         fontWeight: 600,
-                        color: theme.labelColor,
-                        fontSize: 16
+                        color: theme.dark
                     }}>
-                        <span role="img" aria-label="currency" style={{ marginRight: 8 }}>💱</span> Currency
+                        Currency
                     </label>
                     <CurrencyDropdown currency={currency} setCurrency={setCurrency} />
                 </div>
                 {/* Amount Section */}
-                <div style={{ marginBottom: '22px' }}>
+                <div style={{ marginBottom: '18px' }}>
                     <label htmlFor="amount" style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        marginBottom: 8,
+                        display: 'block',
+                        marginBottom: '8px',
                         fontWeight: 600,
-                        color: theme.labelColor,
-                        fontSize: 16
+                        color: theme.dark
                     }}>
-                        <span role="img" aria-label="amount" style={{ marginRight: 8 }}>💵</span> Budget Amount
+                        Budget Amount
                     </label>
                     <input
                         id="amount"
@@ -224,11 +207,9 @@ export default function AddBudgetForm() {
                         onChange={e => setAmount(e.target.value)}
                         style={{
                             width: '100%',
-                            padding: '12px 14px',
-                            borderRadius: 10,
-                            border: `1.5px solid ${theme.primary}`,
-                            background: theme.inputBg,
-                            color: theme.textColor,
+                            padding: '10px 14px',
+                            borderRadius: 8,
+                            border: `1px solid ${theme.primary}`,
                             fontSize: 16,
                             outline: 'none'
                         }}
@@ -236,16 +217,14 @@ export default function AddBudgetForm() {
                     />
                 </div>
                 {/* Interval Section */}
-                <div style={{ marginBottom: '22px' }}>
+                <div style={{ marginBottom: '18px' }}>
                     <label htmlFor="interval" style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        marginBottom: 8,
+                        display: 'block',
+                        marginBottom: '8px',
                         fontWeight: 600,
-                        color: theme.labelColor,
-                        fontSize: 16
+                        color: theme.dark
                     }}>
-                        <span role="img" aria-label="interval" style={{ marginRight: 8 }}>⏰</span> Budget Interval
+                        Budget Interval
                     </label>
                     <select
                         id="interval"
@@ -253,11 +232,9 @@ export default function AddBudgetForm() {
                         onChange={e => setInterval(e.target.value)}
                         style={{
                             width: '100%',
-                            padding: '12px 14px',
-                            borderRadius: 10,
-                            border: `1.5px solid ${theme.inputBorder}`,
-                            background: theme.inputBg,
-                            color: theme.textColor,
+                            padding: '10px 14px',
+                            borderRadius: 8,
+                            border: `1px solid ${theme.border}`,
                             fontSize: 16,
                             outline: 'none'
                         }}
@@ -271,14 +248,12 @@ export default function AddBudgetForm() {
                     {interval === 'Custom' && (
                         <div style={{ marginTop: '12px' }}>
                             <label htmlFor="customEnd" style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                marginBottom: 8,
+                                display: 'block',
+                                marginBottom: '8px',
                                 fontWeight: 600,
-                                color: theme.labelColor,
-                                fontSize: 16
+                                color: theme.dark
                             }}>
-                                <span role="img" aria-label="date" style={{ marginRight: 8 }}>📅</span> Custom End Date
+                                Custom End Date
                             </label>
                             <input
                                 id="customEnd"
@@ -287,11 +262,9 @@ export default function AddBudgetForm() {
                                 onChange={e => setCustomEnd(e.target.value)}
                                 style={{
                                     width: '100%',
-                                    padding: '12px 14px',
-                                    borderRadius: 10,
-                                    border: `1.5px solid ${theme.primary}`,
-                                    background: theme.inputBg,
-                                    color: theme.textColor,
+                                    padding: '10px 14px',
+                                    borderRadius: 8,
+                                    border: `1px solid ${theme.primary}`,
                                     fontSize: 16,
                                     outline: 'none'
                                 }}
@@ -306,20 +279,20 @@ export default function AddBudgetForm() {
                 <button
                     type="submit"
                     style={{
-                        width: '100%',
-                        padding: '14px',
-                        background: theme.primary,
-                        color: theme.cardBg,
+                        backgroundColor: theme.primary,
+                        color: 'white',
                         border: 'none',
-                        borderRadius: 10,
+                        borderRadius: 8,
+                        padding: '12px 24px',
                         fontWeight: 700,
-                        fontSize: 18,
+                        fontSize: 16,
                         cursor: 'pointer',
                         boxShadow: theme.shadow,
                         transition: 'background 0.2s',
+                        width: '100%',
                         marginTop: 8
                     }}
-                    onMouseOver={e => e.currentTarget.style.background = theme.buttonHover}
+                    onMouseOver={e => e.currentTarget.style.background = theme.dark}
                     onMouseOut={e => e.currentTarget.style.background = theme.primary}
                 >
                     ➕ Add Budget
