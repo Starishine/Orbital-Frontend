@@ -56,50 +56,131 @@ export default function EditSharedBudget({ budget, onSave, onCancel }) {
     };
 
     return (
-        <div style={{ margin: '16px 0', padding: 16, background: 'var(--card)', borderRadius: 8 }}>
-            <h4>Edit Shared Budget</h4>
-            <div>
-                <label>Budget Name:</label>
-                <input
-                    type="text"
-                    value={budgetName}
-                    onChange={e => setBudgetName(e.target.value)}
-                    style={{ marginLeft: 8, marginBottom: 8 }}
-                />
-            </div>
-            <div>
-                <label>Top up Amount:</label>
-                <input
-                    type="number"
-                    value={amount}
-                    onChange={e => setAmount(e.target.value)}
-                    style={{ marginLeft: 8, marginBottom: 8 }}
-                />
-            </div>
-            <div>
-                <CurrencyDropdown currency={currency} setCurrency={setCurrency} />
-            </div>
-            <button onClick={handleSave}
-                style={{
-                    backgroundColor: '#1976d2',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    padding: '6px 16px',
-                    fontWeight: 500,
-                    cursor: 'pointer',
-                    marginRight: '8px'
-                }}>Save</button>
-            <button onClick={onCancel}
-                style={{
-                    backgroundColor: '#888',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    padding: '6px 16px',
-                    fontWeight: 500,
-                    cursor: 'pointer'
-                }}>Cancel</button>
+        <div
+            style={{
+                border: '1px solid #e3f2fd',
+                borderRadius: 14,
+                padding: 24,
+                marginBottom: 32,
+                background: '#f8fafd',
+                boxShadow: '0 2px 8px rgba(25, 118, 210, 0.06)',
+                width: '100%',
+                maxWidth: 500,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                fontFamily: 'Inter, Arial, sans-serif'
+            }}
+        >
+            <h2 style={{
+                color: '#1976d2',
+                fontWeight: 700,
+                fontSize: 20,
+                marginBottom: 8,
+                textAlign: 'center'
+            }}>Edit Shared Budget</h2>
+            <form style={{ width: '100%' }} onSubmit={e => { e.preventDefault(); handleSave(); }}>
+                <div style={{ marginBottom: '18px' }}>
+                    <label style={{
+                        display: 'block',
+                        marginBottom: '8px',
+                        fontWeight: 600,
+                        color: '#263859'
+                    }}>
+                        Budget Name
+                    </label>
+                    <input
+                        type="text"
+                        value={budgetName}
+                        onChange={e => setBudgetName(e.target.value)}
+                        style={{
+                            width: '100%',
+                            padding: '10px 14px',
+                            borderRadius: 8,
+                            border: '1px solid #e3f2fd',
+                            fontSize: 16,
+                            outline: 'none'
+                        }}
+                    />
+                </div>
+                <div style={{ marginBottom: '18px' }}>
+                    <label style={{
+                        display: 'block',
+                        marginBottom: '8px',
+                        fontWeight: 600,
+                        color: '#263859'
+                    }}>
+                        Top up Amount
+                    </label>
+                    <input
+                        type="number"
+                        value={amount}
+                        onChange={e => setAmount(e.target.value)}
+                        style={{
+                            width: '100%',
+                            padding: '10px 14px',
+                            borderRadius: 8,
+                            border: '1px solid #1976d2',
+                            fontSize: 16,
+                            outline: 'none'
+                        }}
+                    />
+                </div>
+                <div style={{ marginBottom: '18px' }}>
+                    <label style={{
+                        display: 'block',
+                        marginBottom: '8px',
+                        fontWeight: 600,
+                        color: '#263859'
+                    }}>
+                        Currency
+                    </label>
+                    <CurrencyDropdown currency={currency} setCurrency={setCurrency} />
+                </div>
+                <div style={{ display: 'flex', gap: 12, marginTop: 10 }}>
+                    <button
+                        type="submit"
+                        style={{
+                            flex: 1,
+                            backgroundColor: '#1976d2',
+                            color: '#fff',
+                            border: 'none',
+                            borderRadius: 8,
+                            padding: '12px 24px',
+                            fontWeight: 700,
+                            fontSize: 16,
+                            cursor: 'pointer',
+                            boxShadow: '0 2px 8px rgba(25, 118, 210, 0.10)',
+                            transition: 'background 0.2s'
+                        }}
+                        onMouseOver={e => e.currentTarget.style.background = '#263859'}
+                        onMouseOut={e => e.currentTarget.style.background = '#1976d2'}
+                    >
+                        Save
+                    </button>
+                    <button
+                        type="button"
+                        onClick={onCancel}
+                        style={{
+                            flex: 1,
+                            backgroundColor: '#d32f2f',
+                            color: '#fff',
+                            border: 'none',
+                            borderRadius: 8,
+                            padding: '12px 24px',
+                            fontWeight: 700,
+                            fontSize: 16,
+                            cursor: 'pointer',
+                            boxShadow: '0 2px 8px rgba(25, 118, 210, 0.10)',
+                            transition: 'background 0.2s'
+                        }}
+                        onMouseOver={e => e.currentTarget.style.background = '#263859'}
+                        onMouseOut={e => e.currentTarget.style.background = '#d32f2f'}
+                    >
+                        Cancel
+                    </button>
+                </div>
+            </form>
         </div>
     );
 }

@@ -44,8 +44,8 @@ export default function InviteMembersForm({ invites, setInvites }) {
     };
 
     return (
-        <div style={{ margin: '0', width: '100%' }}>
-            <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
+        <div style={{ width: '100%' }}>
+            <div style={{ display: 'flex', gap: 12, marginBottom: 10 }}>
                 <input
                     type="text"
                     placeholder="Username"
@@ -53,11 +53,13 @@ export default function InviteMembersForm({ invites, setInvites }) {
                     onChange={(e) => setUsername(e.target.value)}
                     style={{
                         flex: 1,
-                        padding: 8,
-                        borderRadius: 4,
-                        border: '1px solid #ccc',
-                        background: 'var(--bg)',
-                        color: 'var(--text)'
+                        padding: '10px 14px',
+                        borderRadius: 8,
+                        border: '1px solid #e3f2fd',
+                        background: '#f5f5f5',
+                        color: '#263859',
+                        fontSize: 16,
+                        outline: 'none'
                     }}
                 />
                 <input
@@ -67,11 +69,13 @@ export default function InviteMembersForm({ invites, setInvites }) {
                     onChange={(e) => setEmail(e.target.value)}
                     style={{
                         flex: 2,
-                        padding: 8,
-                        borderRadius: 4,
-                        border: '1px solid #ccc',
-                        background: 'var(--bg)',
-                        color: 'var(--text)'
+                        padding: '10px 14px',
+                        borderRadius: 8,
+                        border: '1px solid #e3f2fd',
+                        background: '#f5f5f5',
+                        color: '#263859',
+                        fontSize: 16,
+                        outline: 'none'
                     }}
                 />
             </div>
@@ -79,34 +83,38 @@ export default function InviteMembersForm({ invites, setInvites }) {
                 type="button"
                 onClick={handleAddInvite}
                 style={{
-                    padding: '8px 14px',
-                    background: 'var(--primary)',
-                    color: 'var(--card)',
+                    width: '100%',
+                    padding: '10px 0',
+                    background: '#1976d2',
+                    color: '#fff',
                     border: 'none',
-                    borderRadius: 4,
-                    fontWeight: 600,
+                    borderRadius: 8,
+                    fontWeight: 700,
+                    fontSize: 16,
                     cursor: 'pointer',
-                    whiteSpace: 'nowrap'
+                    boxShadow: '0 2px 8px rgba(25, 118, 210, 0.10)',
+                    transition: 'background 0.2s',
+                    marginBottom: 8
                 }}
+                onMouseOver={e => e.currentTarget.style.background = '#263859'}
+                onMouseOut={e => e.currentTarget.style.background = '#1976d2'}
             >
                 Add Invite
             </button>
-            <div style={{ marginBottom: 10 }}>
-                {error && <div style={{ color: 'red', marginBottom: 8 }}>{error}</div>}
-                {invites.length > 0 && (
-                    <ul style={{ paddingLeft: 18, marginTop: 8, color: 'var(--text)' }}>
-                        {invites.map((invite, index) => (
-                            <li key={index} style={{
-                                marginBottom: 4,
-                                color: 'var(--text)',
-                                fontSize: 15
-                            }}>
-                                {invite.username} <span style={{ color: '#888' }}>({invite.email})</span>
-                            </li>
-                        ))}
-                    </ul>
-                )}
-            </div>
+            {error && <div style={{ color: '#d32f2f', marginBottom: 8, fontWeight: 600 }}>{error}</div>}
+            {invites.length > 0 && (
+                <ul style={{ paddingLeft: 18, marginTop: 8, color: '#263859', fontSize: 15 }}>
+                    {invites.map((invite, index) => (
+                        <li key={index} style={{
+                            marginBottom: 4,
+                            color: '#263859',
+                            fontSize: 15
+                        }}>
+                            {invite.username} <span style={{ color: '#888' }}>({invite.email})</span>
+                        </li>
+                    ))}
+                </ul>
+            )}
         </div>
     );
 }

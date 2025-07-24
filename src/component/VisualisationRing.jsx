@@ -26,8 +26,16 @@ export default function VisualisationRing({ expenses, members }) {
     };
 
     return (
-        <div style={{ maxWidth: 320, margin: "0 auto", background: "var(--card)", borderRadius: 16, padding: 24 }}>
-            <h3 style={{ textAlign: "center", color: "var(--primary, #1976d2)", marginBottom: 16 }}>Spending by Member</h3>
+        <div style={{ maxWidth: 320, margin: "0 auto", borderRadius: 16, padding: 24 }}>
+            <h2 style={{
+                color: '#1976d2',
+                fontWeight: 800,
+                fontSize: 24,
+                marginBottom: 18,
+                textAlign: 'center'
+            }}>
+                Your Shared Budgets
+            </h2>
             <Doughnut
                 data={data}
                 options={{

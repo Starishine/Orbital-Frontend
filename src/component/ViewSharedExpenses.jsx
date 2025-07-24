@@ -84,13 +84,20 @@ export default function ViewSharedExpenses({ budgetId, inviter, invitees }) {
         <div style={{
             maxWidth: 540,
             width: '100%',
-            background: 'var(--card)',
             borderRadius: 16,
             boxShadow: '0 4px 16px rgba(25, 118, 210, 0.10)',
             padding: '36px 28px',
             margin: '0 auto'
         }}>
-            <h2 style={{ textAlign: 'center', color: '#1976d2', marginBottom: 28, letterSpacing: 1 }}>Your Shared Expenses</h2>
+            <h2 style={{
+                color: '#1976d2',
+                fontWeight: 800,
+                fontSize: 24,
+                marginBottom: 18,
+                textAlign: 'center'
+            }}>
+                Your Shared Expenses
+            </h2>
             <button
                 style={{
                     marginBottom: 18,

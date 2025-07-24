@@ -22,7 +22,7 @@ export default function NotificationBell({ banners, isDarkMode }) {
                     border: "none",
                     cursor: "pointer",
                     fontSize: 24,
-                    color: "#1976d2",
+                    color: "#fafafaff",
                     position: "relative",
                     marginTop: "-10px"
                 }}

@@ -89,11 +89,35 @@ export default function BudgetForecast() {
         };
     });
 
+    // Theme to match AddExpenseForm
+    const theme = {
+        primary: '#1976d2',
+        accent: '#90caf9',
+        card: '#fff',
+        dark: '#263859',
+        border: '#e3f2fd',
+        shadow: '0 4px 24px rgba(25, 118, 210, 0.10)'
+    };
+
     return (
         <div style={{ maxWidth: 700, margin: '0 auto', padding: 24 }}>
-            <h2>Expense Distribution by Category ({homeCurrency})</h2>
+            <h2 style={{
+                color: theme.primary,
+                fontWeight: 800,
+                fontSize: 24,
+                marginBottom: 18,
+                textAlign: 'center'
+            }}>
+                Expense Distribution by Category ({homeCurrency})
+            </h2>
             <div style={{ maxWidth: 400, margin: '32px auto' }}>
-                <h3>Spent by Category</h3>
+                <h3 style={{
+                    color: theme.primary,
+                    fontWeight: 700,
+                    fontSize: 18,
+                    marginBottom: 16,
+                    textAlign: 'center'
+                }}>Spent by Category</h3>
                 <Pie
                     key={pieLabels.join('-') + pieDataValues.join('-')}
                     data={pieData}

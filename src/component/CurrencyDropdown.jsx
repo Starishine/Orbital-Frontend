@@ -23,29 +23,30 @@ export default function CurrencyDropdown({ currency, setCurrency }) {
     }, []);
 
     return (
-        <div>
-            <label style={{
-                display: 'block', marginBottom: 6, fontWeight: 500,
-                color: 'var(--text)', fontSize: '16px', marginTop: '10px'
-            }}>
-                Select Currency:
-                <select
-                    value={currency}
-                    onChange={e => {
-                        setCurrency(e.target.value);
-                        localStorage.setItem('currency', e.target.value);
-                    }}
-                    style={{ marginLeft: '10px', marginRight: '20px' }}
-                >
-                    {Object.keys(rates).map((currency) => (
-                        <option key={currency} value={currency}>
-                            {currency}
-                        </option>
-                    ))}
-                </select>
-            </label>
-
-        </div>
-    )
+        <select
+            value={currency}
+            onChange={e => {
+                setCurrency(e.target.value);
+                localStorage.setItem('currency', e.target.value);
+            }}
+            style={{
+                padding: '6px 10px',
+                borderRadius: 6,
+                border: '1px solid #1976d2',
+                fontSize: 15,
+                background: '#f5f5f5',
+                color: '#263859',
+                minWidth: 80,
+                marginLeft: 0,
+                marginRight: 0
+            }}
+        >
+            {Object.keys(rates).map((currency) => (
+                <option key={currency} value={currency}>
+                    {currency}
+                </option>
+            ))}
+        </select>
+    );
 
 }
