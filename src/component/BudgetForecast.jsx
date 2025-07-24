@@ -40,7 +40,6 @@ export default function BudgetForecast() {
     if (loading) return <div>Loading forecast...</div>;
     if (error) return <div style={{ color: 'red' }}>{error}</div>;
 
-
     // Pie chart : sum of converted expenses by category for visualisation 
     const categoryTotals = {};
     converted.forEach(item => {
@@ -70,7 +69,6 @@ export default function BudgetForecast() {
     const today = new Date();
     const forecastInfo = budgets.map(budget => {
         const spent = Number(budget.amountAllocated) - Number(budget.amount);
-        // Use budget.createdAt if available, else fallback to 1 day
         const createdAt = budget.createdAt ? new Date(budget.createdAt) : today;
         const daysElapsed = Math.max(1, Math.ceil((today - createdAt) / (1000 * 60 * 60 * 24)));
         const dailyRate = spent / daysElapsed;
@@ -89,18 +87,72 @@ export default function BudgetForecast() {
         };
     });
 
+    // Theme to match AddExpenseForm
+    const theme = {
+        primary: '#1976d2',
+        accent: '#90caf9',
+        card: '#fff',
+        dark: '#263859',
+        border: '#e3f2fd',
+        shadow: '0 4px 24px rgba(25, 118, 210, 0.10)'
+    };
+
     return (
-        <div style={{ maxWidth: 700, margin: '0 auto', padding: 24 }}>
-            <h2>Expense Distribution by Category ({homeCurrency})</h2>
-            <div style={{ maxWidth: 400, margin: '32px auto' }}>
-                <h3>Spent by Category</h3>
+        <div
+            style={{
+                background: theme.card,
+                borderRadius: 18,
+                boxShadow: theme.shadow,
+                padding: '32px',
+                maxWidth: 700,
+                margin: '0 auto',
+                fontFamily: 'Inter, Arial, sans-serif',
+                border: `1px solid ${theme.border}`,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center'
+            }}
+        >
+            <h2 style={{
+                color: theme.primary,
+                fontWeight: 800,
+                fontSize: 24,
+                marginBottom: 18,
+                textAlign: 'center'
+            }}>
+                Expense Distribution by Category ({homeCurrency})
+            </h2>
+            <div style={{
+                maxWidth: 400,
+                width: '100%',
+                margin: '32px auto',
+                background: '#f5f5f5',
+                borderRadius: 12,
+                padding: 24,
+                boxShadow: '0 2px 8px rgba(25, 118, 210, 0.08)'
+            }}>
+                <h3 style={{
+                    color: theme.dark,
+                    fontWeight: 700,
+                    fontSize: 18,
+                    marginBottom: 16,
+                    textAlign: 'center'
+                }}>Spent by Category</h3>
                 <Pie
                     key={pieLabels.join('-') + pieDataValues.join('-')}
                     data={pieData}
                 />
             </div>
-            <div style={{ marginTop: 32 }}>
-                <div style={{ maxWidth: 700, margin: '0 auto', padding: 24 }}>
+            <div style={{
+                marginTop: 32,
+                width: '100%'
+            }}>
+                <div style={{
+                    background: '#f5f5f5',
+                    borderRadius: 12,
+                    padding: 24,
+                    boxShadow: '0 2px 8px rgba(25, 118, 210, 0.08)'
+                }}>
                     <ForecastConvertedExpenses converted={converted} />
                 </div>
             </div>
