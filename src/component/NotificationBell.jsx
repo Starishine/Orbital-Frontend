@@ -23,7 +23,8 @@ export default function NotificationBell({ banners, isDarkMode }) {
                     cursor: "pointer",
                     fontSize: 24,
                     color: "#1976d2",
-                    position: "relative"
+                    position: "relative",
+                    marginTop: "-10px"
                 }}
                 aria-label="Notifications"
             >

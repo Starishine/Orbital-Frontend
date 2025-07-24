@@ -4,7 +4,7 @@ import axios from "axios";
 import BudgetBannerNotification from "./BudgetBannerNotifications";
 import NotificationBell from "./NotificationBell";
 
-export default function BudgetBannerManager({ banner, setBanner }) {
+export default function BudgetBannerManager({ banner, setBanner, bannerDismissed, setBannerDismissed }) {
     const [bannerIdx, setBannerIdx] = useState(0);
 
     useEffect(() => {
@@ -88,12 +88,8 @@ export default function BudgetBannerManager({ banner, setBanner }) {
                     });
                 }
 
-                // Dismiss logic
-                if (sessionStorage.getItem('bannerDismissed') === 'true') {
-                    setBanner([]);
-                } else {
-                    setBanner(banners);
-                }
+                setBanner(banners);
+
             } catch (e) {
                 // Optionally show error banner
                 // setBanner(['Could not fetch budgets.']);
@@ -106,26 +102,28 @@ export default function BudgetBannerManager({ banner, setBanner }) {
 
         return () => clearInterval(intervalId);
 
-        if (!banner.length) return null;
     }, []);
 
 
     return (
         <>
-            <BudgetBannerNotification
-                message={banner[bannerIdx]}
-                onClose={() => {
-                    sessionStorage.setItem('bannerDismissed', 'true');
-                    setBanner([]);
-                    setBannerIdx(0);
-                }}
-                onNext={() => setBannerIdx(idx => (idx + 1) % banner.length)}
-                onPrev={() => setBannerIdx(idx => (idx - 1 + banner.length) % banner.length)}
-                showPrev={banner.length > 1}
-                showNext={banner.length > 1}
-                idx={bannerIdx}
-                total={banner.length}
-            />
+            {!bannerDismissed && banner.length > 0 && (
+                <BudgetBannerNotification
+                    message={banner[bannerIdx]}
+                    onClose={() => {
+                        sessionStorage.setItem('bannerDismissed', 'true');
+                        setBannerDismissed(true);
+                        setBannerIdx(0);
+                    }}
+                    onNext={() => setBannerIdx(idx => (idx + 1) % banner.length)}
+                    onPrev={() => setBannerIdx(idx => (idx - 1 + banner.length) % banner.length)}
+                    showPrev={banner.length > 1}
+                    showNext={banner.length > 1}
+                    idx={bannerIdx}
+                    total={banner.length}
+                />
+            )}
+            <NotificationBell banners={banner} />
         </>
     );
 }

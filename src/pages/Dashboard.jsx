@@ -15,6 +15,9 @@ export default function Dashboard() {
     const [darkMode, setDarkMode] = useState(() => localStorage.getItem('darkMode') === 'true');
     const [banner, setBanner] = useState([]);
     const [bannerIdx, setBannerIdx] = useState(0);
+    const [bannerDismissed, setBannerDismissed] = useState(
+        sessionStorage.getItem('bannerDismissed') === 'true'
+    );
 
     useEffect(() => {
         if (darkMode) {
@@ -66,7 +69,6 @@ export default function Dashboard() {
 
     return (
         <>
-            <BudgetBannerManager banner={banner} setBanner={setBanner} />
             <nav style={{
                 marginBottom: '24px',
                 display: 'flex',
@@ -83,7 +85,7 @@ export default function Dashboard() {
                 <Link to="/visualisation" style={{ color: 'var(--primary)' }}>Visualisation</Link>
                 <Link to="/shared-budget" style={{ color: 'var(--primary)' }}>Shared Budget</Link>
                 <Link to="/profile" style={{ color: 'var(--primary)' }}>Profile</Link>
-                <NotificationBell banners={banner} isDarkMode={darkMode} />
+                <BudgetBannerManager banner={banner} setBanner={setBanner} bannerDismissed={bannerDismissed} setBannerDismissed={setBannerDismissed} />
                 <button
                     onClick={handleLogout}
                     style={{
@@ -99,6 +101,7 @@ export default function Dashboard() {
                 >
                     Logout
                 </button>
+
             </nav>
             <div style={{
                 padding: '20px',
