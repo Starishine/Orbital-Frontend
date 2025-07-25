@@ -4,9 +4,11 @@ import { useEffect, useState } from "react";
 import { jwtDecode } from 'jwt-decode';
 import ExistingBudget from "../component/ExistingBudget";
 import BudgetBannerManager from "../component/BudgetBannerManager";
-import NotificationBell from "../component/NotificationBell";
 import axios from "axios";
 import React from "react";
+import EmailInvite from "../component/EmailInvite";
+
+
 export default function Dashboard() {
     const location = useLocation();
     const navigate = useNavigate();
@@ -124,6 +126,7 @@ export default function Dashboard() {
                 <Link to="/shared-budget" style={{ color: darkMode ? primary : '#115293', fontWeight: 600 }}>Shared Budget</Link>
                 <Link to="/profile" style={{ color: darkMode ? primary : '#115293', fontWeight: 600 }}>Profile</Link>
                 <BudgetBannerManager banner={banner} setBanner={setBanner} bannerDismissed={bannerDismissed} setBannerDismissed={setBannerDismissed} />
+                <EmailInvite />
                 <button
                     onClick={handleLogout}
                     style={{
@@ -144,7 +147,6 @@ export default function Dashboard() {
                 >
                     Logout
                 </button>
-
             </nav>
             <div style={{
                 padding: '32px',
