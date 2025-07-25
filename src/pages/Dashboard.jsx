@@ -68,6 +68,7 @@ export default function Dashboard() {
         localStorage.removeItem('lastReadNotifHash');
         sessionStorage.removeItem('bannerDismissed');
         navigate('/'); // Redirect to the home page
+        window.location.reload();
     }
 
     useEffect(() => {

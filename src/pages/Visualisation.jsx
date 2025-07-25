@@ -67,6 +67,7 @@ export default function Visualisation() {
         localStorage.removeItem('email')
         localStorage.removeItem('lastReadNotifHash')
         navigate('/'); // Redirect to the home page
+        window.location.reload();
     }
 
     const { cardBg, textColor, primary, fontColor } = themeColors;

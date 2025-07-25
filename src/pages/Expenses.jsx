@@ -15,6 +15,7 @@ export default function Expenses() {
         localStorage.removeItem('email')
         localStorage.removeItem('lastReadNotifHash')
         navigate('/');
+        window.location.reload();
     }
 
     const navigate = useNavigate();

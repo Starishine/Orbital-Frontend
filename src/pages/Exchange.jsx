@@ -68,6 +68,7 @@ export default function Exchange() {
     localStorage.removeItem('email');
     localStorage.removeItem('lastReadNotifHash');
     navigate('/');
+    window.location.reload();
   };
 
   const { cardBg, textColor, primary, fontColor } = themeColors;

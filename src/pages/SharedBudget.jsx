@@ -24,6 +24,7 @@ export default function SharedBudget() {
         localStorage.removeItem('email');
         localStorage.removeItem('lastReadNotifHash');
         navigate('/');
+        window.location.reload();
     };
 
     useEffect(() => {
