@@ -15,7 +15,7 @@ export default function CategoryFeedback({
 
     const handleCorrectionSubmit = () => {
         // Send feedback to backend
-        axios.post('http://localhost:8000/feedback', {
+        axios.post('/ml/feedback', {
             description: description,
             correct_category: correctCategory === "__custom__" ? customCategory : correctCategory
         });
