@@ -18,6 +18,12 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/ml/, ''),
       },
+
+      '/mail': {
+        target: 'http://localhost:9080',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/mail/, ''),
+      },
     },
-  },
-});
+  }
+})

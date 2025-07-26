@@ -47,7 +47,7 @@ export default function EmailInvite() {
     };
 
     const handleViewInvite = () => {
-        window.location.href = 'http://ec2-13-214-147-199.ap-southeast-1.compute.amazonaws.com:9080';
+        window.location.href = '/mail';
     };
 
     return (
