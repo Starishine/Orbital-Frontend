@@ -4,6 +4,7 @@ import ConvertExpensesToHomeCurrency from './ConvertExpensesToHomeCurrency';
 import CurrencyDropdown from './CurrencyDropdown';
 import React from 'react';
 
+// ExistingExpenses: Displays all user expenses with filtering and currency conversion
 export default function ExistingExpenses() {
     const [expenses, setExpenses] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -18,6 +19,7 @@ export default function ExistingExpenses() {
         endDate: ''
     });
 
+    // Theme for consistent styling
     const darkMode = localStorage.getItem('darkMode') === 'true';
     const theme = {
         primary: '#1976d2',
@@ -30,7 +32,7 @@ export default function ExistingExpenses() {
         inputBg: '#f5f5f5'
     };
 
-
+    // Fetch expenses on mount
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -54,6 +56,7 @@ export default function ExistingExpenses() {
     if (loading) return <div>Loading Expenses...</div>;
     if (error) return <div style={{ color: 'red' }}>{error}</div>;
 
+    // Refresh expenses after edit/delete
     const refreshExpenses = () => {
         axios.get(`/api/expense/get`,
             { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
@@ -63,7 +66,7 @@ export default function ExistingExpenses() {
         setEditIdx(null);
     };
 
-    // Filtering logic
+    // Filtering logic for table
     const filteredExpenses = expenses.filter(expense => {
         const categoryMatch = filters.category.length === 0 || filters.category.includes(expense.category);
         const nameMatch = filters.name === '' || (expense.name || '').toLowerCase().includes(filters.name.toLowerCase());
@@ -77,10 +80,12 @@ export default function ExistingExpenses() {
         return categoryMatch && nameMatch && amountMatch && dateMatch;
     });
 
+    // Get unique categories for filter dropdown
     const uniqueCategories = Array.from(new Set(expenses.map(expense => expense.category)));
 
     return (
         <>
+            {/* expenses table and filters */}
             <div
                 style={{
                     background: theme.card,
@@ -104,6 +109,7 @@ export default function ExistingExpenses() {
                 }}>
                     Existing Expenses
                 </h3>
+                {/* show messages if no expenses */}
                 {expenses.length === 0 ? (
                     <p style={{ color: theme.text }}>No Expenses found.</p>
                 ) : (
@@ -121,6 +127,7 @@ export default function ExistingExpenses() {
                     >
                         <thead>
                             <tr>
+                                {/* Category filter */}
                                 <th style={{
                                     border: `1px solid ${theme.primary}`,
                                     padding: '8px',
@@ -146,6 +153,7 @@ export default function ExistingExpenses() {
                                         ))}
                                     </select>
                                 </th>
+                                {/* Name filter */}
                                 <th style={{
                                     border: `1px solid ${theme.primary}`,
                                     padding: '8px',
@@ -168,6 +176,7 @@ export default function ExistingExpenses() {
                                         placeholder="Filter"
                                     />
                                 </th>
+                                {/* Amount filter */}
                                 <th style={{
                                     border: `1px solid ${theme.primary}`,
                                     padding: '8px',
@@ -190,6 +199,7 @@ export default function ExistingExpenses() {
                                         placeholder="Filter"
                                     />
                                 </th>
+                                {/* Date filter */}
                                 <th style={{
                                     border: `1px solid ${theme.primary}`,
                                     padding: '8px',
@@ -231,6 +241,7 @@ export default function ExistingExpenses() {
                             </tr>
                         </thead>
                         <tbody>
+                            {/* Render filtered expenses */}
                             {filteredExpenses.map((expense, idx) => (
                                 <tr key={expense._id || idx}>
                                     <td style={{
@@ -259,6 +270,7 @@ export default function ExistingExpenses() {
                     </table>
                 )}
             </div>
+            {/* Currency conversion section */}
             <div style={{
                 marginTop: '32px',
             }}>

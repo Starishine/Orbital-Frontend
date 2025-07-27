@@ -4,10 +4,13 @@ import axios from "axios";
 import logo from "../assets/money-tree-logo.jpg";
 import { useSearchParams } from "react-router-dom";
 
+// WelcomeInvite: Page shown after a user accepts a shared budget invitation via email link
 export default function WelcomeInvite() {
+    // Get token from URL query params
     const [searchParams] = useSearchParams();
     const token = searchParams.get('token');
 
+    // On mount, call backend to accept the invite using the token
     useEffect(() => {
         axios.get(`/api/shared-budget/accept?token=${token}`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
@@ -29,6 +32,7 @@ export default function WelcomeInvite() {
             color: 'var(--text)',
             fontFamily: 'Arial, sans-serif'
         }}>
+            {/* Card with logo and success message */}
             <div style={{
                 background: 'var(--card)',
                 borderRadius: 12,
@@ -52,6 +56,7 @@ export default function WelcomeInvite() {
                     You can now view and track your expenses with your group.
                     Head over to your <b>Shared Budgets</b> tab to get started.
                 </p>
+                {/* Button to go to shared budgets page */}
                 <a
                     href="/shared-budget"
                     style={{

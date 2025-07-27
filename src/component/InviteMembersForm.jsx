@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
 
+// InviteMembersForm: Lets user invite members by username and email, checks for duplicates and self-invite
 export default function InviteMembersForm({ invites, setInvites }) {
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [error, setError] = useState('');
 
+    // Add invite to the list 
     const handleAddInvite = () => {
         if (!email || !username) {
             setError('Please enter both username and email address');
@@ -45,6 +47,7 @@ export default function InviteMembersForm({ invites, setInvites }) {
 
     return (
         <div style={{ width: '100%' }}>
+            {/* Input fields for username and email */}
             <div style={{ display: 'flex', gap: 12, marginBottom: 10 }}>
                 <input
                     type="text"
@@ -79,6 +82,7 @@ export default function InviteMembersForm({ invites, setInvites }) {
                     }}
                 />
             </div>
+            {/* Add Invite button */}
             <button
                 type="button"
                 onClick={handleAddInvite}
@@ -101,7 +105,9 @@ export default function InviteMembersForm({ invites, setInvites }) {
             >
                 Add Invite
             </button>
+            {/* Error message */}
             {error && <div style={{ color: '#d32f2f', marginBottom: 8, fontWeight: 600 }}>{error}</div>}
+            {/* List of invited members */}
             {invites.length > 0 && (
                 <ul style={{ paddingLeft: 18, marginTop: 8, color: '#263859', fontSize: 15 }}>
                     {invites.map((invite, index) => (

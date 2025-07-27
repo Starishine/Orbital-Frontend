@@ -4,6 +4,7 @@ import React from "react";
 import DebtSimplification from "./DebtSimplification";
 import VisualisationRing from "./VisualisationRing";
 
+// ViewSharedExpenses: Shows all shared expenses for a budget, with currency conversion and debt simplification
 export default function ViewSharedExpenses({ budgetId, inviter, invitees }) {
     const [sharedExpenses, setSharedExpenses] = useState([]);
     const [showHomeCurrency, setShowHomeCurrency] = useState(false);
@@ -12,6 +13,7 @@ export default function ViewSharedExpenses({ budgetId, inviter, invitees }) {
     const username = localStorage.getItem('username');
     const homeCurrency = localStorage.getItem('homeCurrency') || 'SGD';
 
+    // Fetch shared expenses for the selected budget
     useEffect(() => {
         if (!budgetId) return;
         axios.get(`/api/shared-expense/get-by-budget?budgetId=${budgetId}`, {
@@ -34,29 +36,30 @@ export default function ViewSharedExpenses({ budgetId, inviter, invitees }) {
 
         Promise.all(
             currencies.map(async cur => {
-                // Use exchangerate-api.com for each currency
+                // Use exchange api for each currency
                 const rateRes = await fetch(`https://api.exchangerate-api.com/v4/latest/${cur}`);
                 const rateData = await rateRes.json();
                 const rate = rateData.rates ? rateData.rates[homeCurrency] : null;
                 return { [cur]: rate };
             })
         ).then(results => {
-            // Merge all rates into one object
+            // merge all rates into one object
             const rates = results.reduce((acc, obj) => ({ ...acc, ...obj }), {});
             setConversionRates(rates);
             setLoadingRates(false);
         });
     }, [showHomeCurrency, sharedExpenses, homeCurrency]);
 
+    // Split expenses by user
     const yourContributions = sharedExpenses.filter(exp => exp.username === username);
     const othersContributions = sharedExpenses.filter(exp => exp.username !== username);
 
-    // Collect all members: inviter + invitees (accepted only)
+    // Collect all members: inviter + accepted invitees
     const members = inviter
         ? [inviter, ...(invitees ? invitees.filter(i => i.status === "accepted").map(i => i.username) : [])]
         : [];
 
-    // Helper to display amount
+    // Helper to display amount in correct currency
     function displayAmount(expense) {
         if (!showHomeCurrency || expense.currency === homeCurrency) {
             return `${expense.currency} ${Number(expense.amount).toFixed(2)}`;
@@ -67,6 +70,8 @@ export default function ViewSharedExpenses({ budgetId, inviter, invitees }) {
         }
         return `${expense.currency} ${Number(expense.amount).toFixed(2)} (No rate)`;
     }
+
+    // Helper to get all expenses converted to home currency
     function getConvertedExpenses() {
         return sharedExpenses.map(exp => {
             if (!showHomeCurrency || exp.currency === homeCurrency) {
@@ -80,6 +85,7 @@ export default function ViewSharedExpenses({ budgetId, inviter, invitees }) {
             return { ...exp, amount: Number(exp.amount) };
         });
     }
+
     return (
         <div style={{
             maxWidth: 540,
@@ -89,6 +95,7 @@ export default function ViewSharedExpenses({ budgetId, inviter, invitees }) {
             padding: '36px 28px',
             margin: '0 auto'
         }}>
+            {/* Title */}
             <h2 style={{
                 color: '#1976d2',
                 fontWeight: 800,
@@ -98,6 +105,7 @@ export default function ViewSharedExpenses({ budgetId, inviter, invitees }) {
             }}>
                 Your Shared Expenses
             </h2>
+            {/* Toggle currency button */}
             <button
                 style={{
                     marginBottom: 18,
@@ -116,6 +124,7 @@ export default function ViewSharedExpenses({ budgetId, inviter, invitees }) {
                     ? `Show in Original Currency`
                     : `Show in Home Currency ${homeCurrency}`}
             </button>
+            {/* Loading message for conversion rates */}
             {showHomeCurrency && loadingRates && (
                 <div style={{ color: 'var(--primary)', marginBottom: 12 }}>Loading conversion rates...</div>
             )}
@@ -127,7 +136,7 @@ export default function ViewSharedExpenses({ budgetId, inviter, invitees }) {
                 marginBottom: 24,
                 alignItems: 'stretch'
             }}>
-                {/* Your Contributions */}
+                {/* your Contributions */}
                 <div style={{
                     flex: 1,
                     minWidth: 220,
@@ -201,6 +210,7 @@ export default function ViewSharedExpenses({ budgetId, inviter, invitees }) {
                     )}
                 </div>
             </div>
+            {/* Debt simplification and visualisation */}
             <DebtSimplification
                 expenses={showHomeCurrency ? getConvertedExpenses() : sharedExpenses}
                 members={members}

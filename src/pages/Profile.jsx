@@ -76,6 +76,7 @@ export default function Profile() {
             {/* Navigation bar - matches Dashboard/Expenses/Exchange */}
             <nav style={{
                 marginBottom: '24px',
+                zoom: '80%',
                 display: 'flex',
                 gap: '24px',
                 background: darkMode
@@ -124,6 +125,7 @@ export default function Profile() {
             <div style={{
                 minHeight: '100vh',
                 display: 'flex',
+                zoom: '80%',
                 alignItems: 'center',
                 justifyContent: 'center',
                 background: 'none',

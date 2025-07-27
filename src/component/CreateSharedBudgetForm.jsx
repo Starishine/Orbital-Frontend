@@ -4,6 +4,7 @@ import InviteMembersForm from "./InviteMembersForm";
 import { useState } from "react";
 import React from "react";
 
+// CreateSharedBudgetForm: Form to create a new shared budget with invites and currency selection
 export default function CreateSharedBudgetForm() {
     const [category, setCategory] = useState('');
     const [amount, setAmount] = useState('');
@@ -22,6 +23,7 @@ export default function CreateSharedBudgetForm() {
         shadow: '0 4px 24px rgba(25, 118, 210, 0.10)'
     };
 
+    // Handle form submission to create a shared budget
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!category || !amount) {
@@ -42,6 +44,7 @@ export default function CreateSharedBudgetForm() {
                 if (data.status === "SUCCESS" && data.code === 200) {
                     console.log('Shared budget created:', data.data);
                     alert('Shared budget created successfully!');
+                    // Reset form fields
                     setCategory('');
                     setAmount('');
                     setCurrency('SGD');
@@ -76,6 +79,7 @@ export default function CreateSharedBudgetForm() {
                 alignItems: 'center'
             }}
         >
+            {/* Form title */}
             <h2 style={{
                 color: theme.primary,
                 fontWeight: 800,
@@ -84,8 +88,11 @@ export default function CreateSharedBudgetForm() {
                 textAlign: 'center'
             }}>Create Shared Budget</h2>
 
+            {/* Shared budget creation form */}
             <form style={{ width: '100%' }} onSubmit={handleSubmit}>
+                {/* Error message */}
                 {error && <div style={{ color: 'red', marginBottom: 12 }}>{error}</div>}
+                {/* Budget name input */}
                 <div style={{ marginBottom: '18px' }}>
                     <label htmlFor="category" style={{
                         display: 'block',
@@ -112,6 +119,7 @@ export default function CreateSharedBudgetForm() {
                         required
                     />
                 </div>
+                {/* Invite members section */}
                 <div style={{ marginBottom: '18px' }}>
                     <label style={{
                         display: 'block',
@@ -123,6 +131,7 @@ export default function CreateSharedBudgetForm() {
                     </label>
                     <InviteMembersForm invites={invites} setInvites={setInvites} />
                 </div>
+                {/* Currency dropdown */}
                 <div style={{ marginBottom: '18px' }}>
                     <label style={{
                         display: 'block',
@@ -134,6 +143,7 @@ export default function CreateSharedBudgetForm() {
                     </label>
                     <CurrencyDropdown currency={currency} setCurrency={setCurrency} />
                 </div>
+                {/* Amount input */}
                 <div style={{ marginBottom: '18px' }}>
                     <label htmlFor="amount" style={{
                         display: 'block',
@@ -160,6 +170,7 @@ export default function CreateSharedBudgetForm() {
                         required
                     />
                 </div>
+                {/* Submit button */}
                 <button
                     type="submit"
                     style={{

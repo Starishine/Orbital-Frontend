@@ -4,6 +4,7 @@ import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
 
 Chart.register(ArcElement, Tooltip, Legend);
 
+// VisualisationRing: Shows a doughnut chart of total spent per member in a shared budget
 export default function VisualisationRing({ expenses, members }) {
     // Calculate total spent per member
     const spent = {};
@@ -12,6 +13,7 @@ export default function VisualisationRing({ expenses, members }) {
         spent[exp.username] = (spent[exp.username] || 0) + Number(exp.amount);
     });
 
+    // Prepare chart data
     const data = {
         labels: members,
         datasets: [
@@ -27,6 +29,7 @@ export default function VisualisationRing({ expenses, members }) {
 
     return (
         <div style={{ maxWidth: 320, margin: "0 auto", borderRadius: 16, padding: 24 }}>
+            {/* cfhart title */}
             <h2 style={{
                 color: '#1976d2',
                 fontWeight: 800,
@@ -36,6 +39,7 @@ export default function VisualisationRing({ expenses, members }) {
             }}>
                 Your Shared Budgets
             </h2>
+            {/* doughnut chart */}
             <Doughnut
                 data={data}
                 options={{

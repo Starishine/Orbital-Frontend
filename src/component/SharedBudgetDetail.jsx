@@ -6,11 +6,14 @@ import EditSharedBudgetForm from './EditSharedBudget';
 import { Chart, CategoryScale, LinearScale, BarElement, Tooltip, Legend } from 'chart.js';
 Chart.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
+// SharedBudgetDetail: Displays details of a selected shared budget 
+// Allows editing of budget name, top-up amount, and currency only for the owner
 export default function SharedBudgetDetail({ selectedBudgetId, setSelectedBudgetId }) {
     const [budgets, setBudgets] = useState([]);
     const [loading, setLoading] = useState(true);
     const [editing, setEditing] = useState(false);
 
+    // Fetch all shared budgets
     useEffect(() => {
         axios.get(`/api/shared-budget/get`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
@@ -29,6 +32,7 @@ export default function SharedBudgetDetail({ selectedBudgetId, setSelectedBudget
             budget.invites.some(invite => invite.username === username && invite.status === "accepted"))
     );
 
+    // If only one visible budget, auto-select it
     useEffect(() => {
         if (visibleBudgets.length === 1) {
             setSelectedBudgetId(visibleBudgets[0].id);
@@ -45,6 +49,7 @@ export default function SharedBudgetDetail({ selectedBudgetId, setSelectedBudget
             ? visibleBudgets[0]
             : visibleBudgets.find(budget => budget.id === selectedBudgetId);
 
+    // Refresh budgets after editing
     const onSave = () => {
         axios.get(`/api/shared-budget/get`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
@@ -70,6 +75,7 @@ export default function SharedBudgetDetail({ selectedBudgetId, setSelectedBudget
                 alignItems: 'center'
             }}
         >
+            {/* Title */}
             <h2 style={{
                 color: '#1976d2',
                 fontWeight: 800,
@@ -79,6 +85,7 @@ export default function SharedBudgetDetail({ selectedBudgetId, setSelectedBudget
             }}>
                 Your Shared Budgets
             </h2>
+            {/* Budget selector if multiple budgets */}
             {visibleBudgets.length > 1 && (
                 <div style={{ marginBottom: '18px', width: '100%' }}>
                     <label htmlFor="budget-select" style={{
@@ -112,6 +119,7 @@ export default function SharedBudgetDetail({ selectedBudgetId, setSelectedBudget
                     </select>
                 </div>
             )}
+            {/* Selected budget details */}
             {selectedBudget && (
                 <>
                     <div
@@ -129,6 +137,7 @@ export default function SharedBudgetDetail({ selectedBudgetId, setSelectedBudget
                             alignItems: 'center'
                         }}
                     >
+                        {/* Budget name */}
                         <h3 style={{
                             color: '#1976d2',
                             fontWeight: 700,
@@ -138,6 +147,7 @@ export default function SharedBudgetDetail({ selectedBudgetId, setSelectedBudget
                         }}>
                             {selectedBudget.category}
                         </h3>
+                        {/* Owner info */}
                         <div style={{
                             color: '#263859',
                             marginBottom: 8,
@@ -147,6 +157,7 @@ export default function SharedBudgetDetail({ selectedBudgetId, setSelectedBudget
                         }}>
                             <b>Owner:</b> {selectedBudget.inviter} ({selectedBudget.inviterEmail})
                         </div>
+                        {/* Budget progress bar */}
                         <div style={{ margin: '16px 0', width: '100%' }}>
                             {/* DO NOT TOUCH BAR */}
                             {/* Bar chart code remains unchanged */}
@@ -205,6 +216,7 @@ export default function SharedBudgetDetail({ selectedBudgetId, setSelectedBudget
                                 <span>Remaining: {selectedBudget.currency} {Number(selectedBudget.amount).toFixed(2)}</span>
                             </div>
                         </div>
+                        {/* Invited members list */}
                         <div style={{ marginTop: 16, width: '100%' }}>
                             <b style={{ color: '#263859', fontWeight: 600 }}>Invited Members</b>
                             <div style={{
@@ -254,6 +266,7 @@ export default function SharedBudgetDetail({ selectedBudgetId, setSelectedBudget
                                 ))}
                             </div>
                         </div>
+                        {/* Edit button for owner */}
                         {username === selectedBudget.inviter && (
                             <button
                                 style={{
@@ -277,6 +290,7 @@ export default function SharedBudgetDetail({ selectedBudgetId, setSelectedBudget
                                 Edit Shared Budget
                             </button>
                         )}
+                        {/* Edit form modal */}
                         {editing && (
                             <EditSharedBudgetForm
                                 budget={selectedBudget}
@@ -285,6 +299,7 @@ export default function SharedBudgetDetail({ selectedBudgetId, setSelectedBudget
                             />
                         )}
                     </div>
+                    {/* Shared expenses section */}
                     <div style={{ display: 'flex', gap: 32, flexWrap: 'wrap', marginTop: 24, width: '100%' }}>
                         <ViewSharedExpenses
                             budgetId={selectedBudget.id}

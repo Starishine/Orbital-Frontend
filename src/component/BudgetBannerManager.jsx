@@ -4,12 +4,13 @@ import axios from "axios";
 import BudgetBannerNotification from "./BudgetBannerNotifications";
 import NotificationBell from "./NotificationBell";
 
+// BudgetBannerManager: Manages budget notifications and displays them in a banner
 export default function BudgetBannerManager({ banner, setBanner, bannerDismissed, setBannerDismissed }) {
     const [bannerIdx, setBannerIdx] = useState(0);
 
     useEffect(() => {
         let intervalId;
-
+        // Fetch budgets and expenses, shared expenses to determine banner notifications
         async function fetchBudgets() {
             try {
                 const token = localStorage.getItem('token');
@@ -57,7 +58,7 @@ export default function BudgetBannerManager({ banner, setBanner, bannerDismissed
                     }
                 });
 
-                // Expense reminders
+                // Expense reminders 
                 if (expenses && expenses.length > 0) {
                     const lastExpenseDate = new Date(expenses.map(exp => new Date(exp.date)).sort((a, b) => b - a)[0]);
                     console.log('Last expense date:', lastExpenseDate);
@@ -79,7 +80,7 @@ export default function BudgetBannerManager({ banner, setBanner, bannerDismissed
                     banners.push('No expenses logged yet.');
                 }
 
-                // Shared budgets
+                // Shared budgets fully spent
                 if (sharedBudgets && sharedBudgets.length > 0) {
                     sharedBudgets.forEach(sharedBudget => {
                         if (sharedBudget.amount <= 0) {

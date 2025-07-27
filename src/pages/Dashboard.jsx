@@ -107,6 +107,7 @@ export default function Dashboard() {
         <>
             <nav style={{
                 marginBottom: '24px',
+                zoom: '80%',
                 display: 'flex',
                 gap: '16px',
                 background: darkMode
@@ -152,6 +153,7 @@ export default function Dashboard() {
                 padding: '32px',
                 fontFamily: 'Inter, Arial, sans-serif',
                 background: 'none',
+                zoom: '80%',
                 color: fontColor,
                 minHeight: '100vh'
             }}>

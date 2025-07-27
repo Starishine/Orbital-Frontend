@@ -30,7 +30,18 @@ export default function MainApp() {
 
   return (
     <>
-      <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: 'var(--bg)', color: 'var(--text)' }}>
+      <div style={{
+        padding: '20px',
+        fontFamily: 'Arial, sans-serif',
+        display: 'flex',
+        flexDirection: 'column',
+        zoom: '80%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '100vh',
+        background: 'var(--bg)',
+        color: 'var(--text)'
+      }}>
         <img src={logo} alt="Money Tree" style={{ maxWidth: '200px', marginBottom: '16px' }} />
         <h1>BudgetBuddy</h1>
         <h2 style={{

@@ -6,6 +6,7 @@ import ForecastConvertedExpenses from './ForecastConvertedExpenses';
 Chart.register(ArcElement, Tooltip, Legend);
 import React from "react";
 
+// BudgetForecast: Visualizes expense distribution and forecasts budget run-out dates
 export default function BudgetForecast() {
     const [budgets, setBudgets] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -55,6 +56,7 @@ export default function BudgetForecast() {
         '#8d6e63', '#00bcd4', '#e91e63', '#ff5722', '#607d8b'
     ];
 
+    // Prepare data for pie chart
     const pieData = {
         labels: pieLabels,
         datasets: [
@@ -101,6 +103,7 @@ export default function BudgetForecast() {
 
     return (
         <div style={{ maxWidth: 700, margin: '0 auto', padding: 24 }}>
+            {/* Pie chart section */}
             <h2 style={{
                 color: theme.primary,
                 fontWeight: 800,
@@ -123,6 +126,7 @@ export default function BudgetForecast() {
                     data={pieData}
                 />
             </div>
+            {/* Forecast table section */}
             <div style={{ marginTop: 32 }}>
                 <div style={{ maxWidth: 700, margin: '0 auto', padding: 24 }}>
                     <ForecastConvertedExpenses converted={converted} />

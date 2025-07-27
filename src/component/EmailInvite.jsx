@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
+// EmailInvite: Shows an email icon if the user is invited to a shared budget and hasn't accepted yet.
+// Clicking the icon shows a message and a button to view the invite.
 export default function EmailInvite() {
     const username = localStorage.getItem('username');
-    const [showNotif, setShowNotif] = useState(false);
-    const [showMessage, setShowMessage] = useState(false);
+    const [showNotif, setShowNotif] = useState(false); // Whether to show the email icon
+    const [showMessage, setShowMessage] = useState(false); // Whether to show the invite message
 
     // Theme sync with Dashboard
     const darkMode = localStorage.getItem('darkMode') === 'true';
@@ -17,6 +19,7 @@ export default function EmailInvite() {
         iconColor: darkMode ? '#90caf9' : '#1976d2'
     };
 
+    // check if the user has any pending invites
     useEffect(() => {
         axios.get('/api/shared-budget/get-by-user', {
             headers: {
@@ -26,6 +29,7 @@ export default function EmailInvite() {
             .then(response => {
                 const data = response.data;
                 let found = false;
+                // Look for an invite for this user with status 'invited'
                 data.forEach(budget => {
                     if (Array.isArray(budget.invites)) {
                         budget.invites.forEach(invite => {
@@ -42,16 +46,19 @@ export default function EmailInvite() {
             });
     }, [username]);
 
+    // Show the invite message when the icon is clicked
     const handleIconClick = () => {
         setShowMessage(true);
     };
 
+    // Handle view invite button click by redirecting to the email invite page
     const handleViewInvite = () => {
         window.location.href = 'http://ec2-18-141-203-5.ap-southeast-1.compute.amazonaws.com:9080';
     };
 
     return (
         <div>
+            {/* Show email icon if user has a pending invite and message is not open */}
             {showNotif && !showMessage && (
                 <span
                     role="button"
@@ -73,6 +80,7 @@ export default function EmailInvite() {
                     📩
                 </span>
             )}
+            {/* Show invite message and actions if message is open */}
             {showNotif && showMessage && (
                 <div
                     style={{
@@ -91,6 +99,7 @@ export default function EmailInvite() {
                         position: 'relative'
                     }}
                 >
+                    {/* Email icon in message */}
                     <span
                         role="img"
                         aria-label="email"
@@ -110,6 +119,7 @@ export default function EmailInvite() {
                     <span style={{ flex: 1 }}>
                         You have <b>an email invite</b>
                     </span>
+                    {/* View Invite button */}
                     <button
                         onClick={handleViewInvite}
                         style={{
@@ -130,6 +140,7 @@ export default function EmailInvite() {
                     >
                         View Invite
                     </button>
+                    {/* closew message button */}
                     <button
                         onClick={() => setShowMessage(false)}
                         style={{

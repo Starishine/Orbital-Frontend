@@ -2,15 +2,16 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import React from "react";
 
+// CurrencyExchange: Component for converting between currencies using live exchange rates
 export default function CurrencyExchange() {
-  const [rates, setRates] = useState({}); // initalize rates as an empty array
-  const [amount, setAmount] = useState(1);
-  const [fromCurrency, setFromCurrency] = useState('SGD');
-  const [toCurrency, setToCurrency] = useState('INR');
-  const [convertedAmount, setConvertedAmount] = useState(null);
+  const [rates, setRates] = useState({}); // Stores fetched exchange rates
+  const [amount, setAmount] = useState(1); // Amount to convert
+  const [fromCurrency, setFromCurrency] = useState('SGD'); // Source currency
+  const [toCurrency, setToCurrency] = useState('INR'); // Target currency
+  const [convertedAmount, setConvertedAmount] = useState(null); // Result
 
   useEffect(() => {
-    // Fetch exchange rates from a public API 
+    // Fetch exchange rates from a public API on mount
     axios
       .get('https://api.exchangerate-api.com/v4/latest/USD') // gets the latest exchange rates
       .then((response) => {
@@ -21,15 +22,16 @@ export default function CurrencyExchange() {
       });
   }, []);
 
+  // Handle conversion when user clicks "Convert"
   const handleConvert = () => {
-    if (rates[fromCurrency] && rates[toCurrency]) { //checks if the selected currencies are available in the rates
+    if (rates[fromCurrency] && rates[toCurrency]) { // Check if both currencies are available
       // Convert the amount using the exchange rate
       const rate = rates[toCurrency] / rates[fromCurrency];
       setConvertedAmount((amount * rate).toFixed(2));
     }
   };
 
-  // changed: use dashboard theme colors
+  // Theme object for consistent styling with dashboard
   const theme = {
     primary: '#1976d2',
     accent: '#90caf9',
@@ -40,9 +42,8 @@ export default function CurrencyExchange() {
   };
 
   return (
-
     <>
-      {/* changed: align with dashboard card style */}
+      {/* Main card container styled to match dashboard */}
       <div
         style={{
           maxWidth: 600,
@@ -57,6 +58,7 @@ export default function CurrencyExchange() {
           alignItems: 'center'
         }}
       >
+        {/* Title */}
         <h1 style={{
           color: theme.primary,
           fontWeight: 800,
@@ -67,6 +69,7 @@ export default function CurrencyExchange() {
         }}>
           Currency Exchange
         </h1>
+        {/* Input fields and selectors */}
         <div style={{
           display: 'flex',
           flexDirection: 'column',
@@ -74,6 +77,7 @@ export default function CurrencyExchange() {
           width: '100%',
           alignItems: 'center'
         }}>
+          {/* Amount input */}
           <label style={{ fontWeight: 600, color: theme.dark, fontSize: 18, width: '100%', textAlign: 'left' }}>
             Amount:
             <input
@@ -92,7 +96,9 @@ export default function CurrencyExchange() {
               }}
             />
           </label>
+          {/* Currency selectors */}
           <div style={{ display: 'flex', gap: 24, width: '100%', justifyContent: 'center' }}>
+            {/* From currency dropdown */}
             <label style={{ fontWeight: 600, color: theme.dark, fontSize: 18 }}>
               From:
               <select
@@ -117,6 +123,7 @@ export default function CurrencyExchange() {
                 ))}
               </select>
             </label>
+            {/* To currency dropdown */}
             <label style={{ fontWeight: 600, color: theme.dark, fontSize: 18 }}>
               To:
               <select
@@ -142,7 +149,7 @@ export default function CurrencyExchange() {
               </select>
             </label>
           </div>
-          {/* changed: styled convert button to match dashboard */}
+          {/* Convert button */}
           <button
             onClick={handleConvert}
             style={{
@@ -164,7 +171,7 @@ export default function CurrencyExchange() {
             Convert
           </button>
         </div>
-        {/* changed: styled result output to match dashboard cards */}
+        {/* Result output */}
         {convertedAmount && (
           <div
             style={{

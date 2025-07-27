@@ -1,6 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 
+// DebtSimplification: Calculates and displays the minimal set of transactions to settle debts among group members
 export default function DebtSimplification({ expenses, members }) {
     // Calculate total spent per user
     const spent = {};
@@ -9,12 +10,12 @@ export default function DebtSimplification({ expenses, members }) {
         spent[exp.username] = (spent[exp.username] || 0) + Number(exp.amount);
     });
 
-    // Calculate fair share per user
+    // Calculate total and fair share per user
     const total = expenses.reduce((sum, exp) => sum + Number(exp.amount), 0);
     const share = total / members.length;
     const currency = localStorage.getItem('homeCurrency') || 'SGD';
 
-    // Calculate net balance per user
+    // Calculate net balance per user (positive: creditor, negative: debtor)
     const net = members.map(m => ({
         username: m,
         balance: +(spent[m] - share).toFixed(2)
@@ -24,6 +25,7 @@ export default function DebtSimplification({ expenses, members }) {
     let debtors = net.filter(n => n.balance < 0).map(n => ({ ...n }));
     let creditors = net.filter(n => n.balance > 0).map(n => ({ ...n }));
 
+    // Greedy algorithm to minimise number of transactions
     const transactions = [];
     let i = 0, j = 0;
     while (i < debtors.length && j < creditors.length) {
@@ -53,6 +55,7 @@ export default function DebtSimplification({ expenses, members }) {
             marginLeft: 'auto',
             marginRight: 'auto'
         }}>
+            {/* Settlement summary title */}
             <h2 style={{
                 color: '#1976d2',
                 fontWeight: 800,
@@ -62,6 +65,7 @@ export default function DebtSimplification({ expenses, members }) {
             }}>
                 Settlement Summary
             </h2>
+            {/* If all settled, show message; else, show transactions */}
             {transactions.length === 0 ? (
                 <div style={{ color: '#388e3c', textAlign: 'center' }}>All settled up!</div>
             ) : (

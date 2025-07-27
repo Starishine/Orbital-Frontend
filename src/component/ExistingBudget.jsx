@@ -7,6 +7,8 @@ import { Bar } from 'react-chartjs-2';
 import { Chart, CategoryScale, LinearScale, BarElement, Tooltip, Legend } from 'chart.js';
 Chart.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
+// ExistingBudget: Displays all user budgets with edit/delete options and visual progress bars
+
 export default function ExistingBudget() {
     const [budgets, setBudgets] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -14,6 +16,7 @@ export default function ExistingBudget() {
     const [editIdx, setEditIdx] = useState(null);
     const [showExpired, setShowExpired] = useState(false);
 
+    // Fetch budgets 
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -36,7 +39,7 @@ export default function ExistingBudget() {
 
     if (loading) return <div>Loading budgets...</div>;
     if (error) return <div style={{ color: 'red' }}>{error}</div>;
-
+    // Refresh budgets after edit/delete
     const refreshBudgets = () => {
         axios.get(`/api/budget/get`,
             { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
@@ -45,6 +48,7 @@ export default function ExistingBudget() {
         setEditIdx(null);
     };
 
+    // Split budgets into active and expired
     const today = new Date().toISOString().split('T')[0];
     const activeBudgets = budgets.filter(b => b.expiryDate == "" || b.expiryDate >= today);
     const expiredBudgets = budgets.filter(b => b.expiryDate && b.expiryDate < today);
@@ -60,6 +64,7 @@ export default function ExistingBudget() {
         inputBg: '#f5f5f5'
     };
 
+    // Render a single budget card with progress bar 
     const renderBudgetCard = (budget, idx) => {
         const spent = budget.amountAllocated - budget.amount;
         const data = {
@@ -118,6 +123,7 @@ export default function ExistingBudget() {
                     alignItems: 'center'
                 }}
             >
+                {/* Budget icon */}
                 <div style={{
                     position: 'absolute',
                     top: 18,
@@ -128,6 +134,7 @@ export default function ExistingBudget() {
                 }}>
                     💸
                 </div>
+                {/* Budget name */}
                 <div style={{
                     fontWeight: 800,
                     fontSize: 22,
@@ -138,6 +145,7 @@ export default function ExistingBudget() {
                 }}>
                     {budget.category}
                 </div>
+                {/* Expiry date */}
                 <div style={{
                     color: theme.dark,
                     fontSize: 15,
@@ -147,6 +155,7 @@ export default function ExistingBudget() {
                     <span role="img" aria-label="calendar" style={{ marginRight: 6 }}>📅</span>
                     Expiry: {budget.expiryDate || 'N/A'}
                 </div>
+                {/* Progress bar */}
                 <div style={{
                     margin: '18px 0 10px 0',
                     background: theme.inputBg,
@@ -169,6 +178,7 @@ export default function ExistingBudget() {
                         height={70}
                     />
                 </div>
+                {/* Allocated and remaining amounts */}
                 <div style={{
                     display: 'flex',
                     justifyContent: 'space-between',
@@ -188,6 +198,7 @@ export default function ExistingBudget() {
                         Remaining: {budget.currency} {Number(budget.amount).toFixed(2)}
                     </span>
                 </div>
+                {/* show EditBudget form, else show Edit/Delete buttons */}
                 {editIdx === idx ? (
                     <EditBudget
                         budget={budget}
@@ -202,6 +213,7 @@ export default function ExistingBudget() {
                         marginTop: 18,
                         width: '100%'
                     }}>
+                        {/* Edit button */}
                         <button
                             style={{
                                 border: 'none',
@@ -221,6 +233,7 @@ export default function ExistingBudget() {
                         >
                             ✏️ Edit
                         </button>
+                        {/* Delete button */}
                         <DeleteBudget
                             budgetId={budget.id}
                             onDeleteSuccess={refreshBudgets}
@@ -245,6 +258,7 @@ export default function ExistingBudget() {
 
     return (
         <div>
+            {/* Button to view expired budgets */}
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}>
                 <button
                     onClick={() => setShowExpired(true)}
@@ -274,12 +288,14 @@ export default function ExistingBudget() {
                 color: theme.primary,
             }}> */}
             {/* </h3> */}
+            {/* List of active budgets */}
             {activeBudgets.length === 0 ? (
                 <p>No active budgets.</p>
             ) : (
                 activeBudgets.map(renderBudgetCard)
             )}
 
+            {/* Expired budgets */}
             {showExpired && (
                 <div
                     style={{
@@ -297,6 +313,7 @@ export default function ExistingBudget() {
                         paddingTop: 40
                     }}
                 >
+                    {/* Close button for expired budgets modal */}
                     <div style={{ width: '100%', maxWidth: 500, marginBottom: 24, textAlign: 'right' }}>
                         <button
                             onClick={() => setShowExpired(false)}
@@ -319,6 +336,7 @@ export default function ExistingBudget() {
                             Close
                         </button>
                     </div>
+                    {/* Expired budgets title */}
                     <h3 style={{
                         color: theme.card,
                         marginBottom: 20,
@@ -329,6 +347,7 @@ export default function ExistingBudget() {
                     }}>
                         Expired Budgets (History)
                     </h3>
+                    {/* List of expired budgets */}
                     {expiredBudgets.length === 0 ? (
                         <p style={{ color: theme.card }}>No expired budgets.</p>
                     ) : (
