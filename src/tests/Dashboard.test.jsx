@@ -6,12 +6,18 @@ import { createMemoryHistory } from 'history';
 import * as jwt from 'jwt-decode';
 import '@testing-library/jest-dom';
 
-
+// Mock child components
 vi.mock('../component/AddBudgetForm', () => ({
     default: () => <div>AddBudgetFormMock</div>
 }));
 vi.mock('../component/ExistingBudget', () => ({
     default: () => <div>ExistingBudgetMock</div>
+}));
+vi.mock('../component/BudgetBannerManager', () => ({
+    default: () => <div>BudgetBannerManagerMock</div>
+}));
+vi.mock('../component/EmailInvite', () => ({
+    default: () => <div>EmailInviteMock</div>
 }));
 
 // mock jwtDecode
@@ -24,7 +30,7 @@ const mockNavigate = vi.fn();
 vi.mock('react-router-dom', async (importOriginal) => {
     const actual = await importOriginal();
     return {
-        ...actual, // retain all original exports
+        ...actual,
         useNavigate: () => mockNavigate,
     };
 });
@@ -32,6 +38,7 @@ vi.mock('react-router-dom', async (importOriginal) => {
 describe('Dashboard', () => {
     beforeEach(() => {
         localStorage.clear();
+        sessionStorage.clear();
         mockNavigate.mockClear();
         jwt.jwtDecode.mockClear();
     });
@@ -120,7 +127,7 @@ describe('Dashboard', () => {
         expect(history.location.pathname).toBe('/visualisation');
     });
 
-    it('logs out and navigates to home', () => {
+    it('logs out and navigates to home', async () => {
         localStorage.setItem('token', 'fake-token');
         jwt.jwtDecode.mockReturnValue({ sub: 'sania' });
 
@@ -131,7 +138,9 @@ describe('Dashboard', () => {
         );
 
         fireEvent.click(screen.getByText(/Logout/i));
-        expect(localStorage.getItem('token')).toBeNull();
-        expect(mockNavigate).toHaveBeenCalledWith('/');
+        await waitFor(() => {
+            expect(localStorage.getItem('token')).toBeNull();
+            expect(mockNavigate).toHaveBeenCalledWith('/');
+        });
     });
 });

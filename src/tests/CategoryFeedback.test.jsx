@@ -59,7 +59,7 @@ describe('CategoryFeedback', () => {
     fireEvent.change(screen.getByRole('combobox'), { target: { value: 'transport' } });
     fireEvent.click(screen.getByRole('button', { name: /submit correction/i }));
     expect(axios.post).toHaveBeenCalledWith(
-      'http://localhost:8000/feedback',
+      '/ml/feedback',
       { description, correct_category: 'transport' }
     );
     expect(onCorrection).toHaveBeenCalledWith('transport');
@@ -80,7 +80,7 @@ describe('CategoryFeedback', () => {
     fireEvent.change(screen.getByPlaceholderText(/enter custom category/i), { target: { value: 'Bills' } });
     fireEvent.click(screen.getByRole('button', { name: /submit correction/i }));
     expect(axios.post).toHaveBeenCalledWith(
-      'http://localhost:8000/feedback',
+      '/ml/feedback',
       { description, correct_category: 'Bills' }
     );
     expect(onCorrection).toHaveBeenCalledWith('Bills');
