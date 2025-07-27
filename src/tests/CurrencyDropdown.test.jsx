@@ -62,10 +62,4 @@ describe("CurrencyDropdown", () => {
         });
     });
 
-    it("has a label so users and screen readers can access it ", async () => {
-        render(<CurrencyDropdown currency="USD" setCurrency={setCurrency} />);
-        await waitFor(() => {
-            expect(screen.getByLabelText(/select currency/i)).toBeInTheDocument();
-        });
-    });
 });

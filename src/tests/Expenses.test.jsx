@@ -44,22 +44,22 @@ describe("Expenses Page", () => {
         expect(mockNavigate).toHaveBeenCalledWith("/");
     });
 
-    it(" gets username from token and shows final page", async () => {
-        localStorage.setItem("token1", "faketoken");
-        jwt.jwtDecode.mockReturnValue({ sub: "mousania" });
+   it("gets username from token and shows final page", async () => {
+    localStorage.setItem("token", "faketoken");
+    jwt.jwtDecode.mockReturnValue({ sub: "mousania" });
 
-        render(
-            <MemoryRouter>
-                <Expenses />
-            </MemoryRouter>
-        );
+    render(
+        <MemoryRouter>
+            <Expenses />
+        </MemoryRouter>
+    );
 
-        expect(await screen.findByText(/set your expenses/i)).toBeInTheDocument();
-        expect(screen.getByText(/addexpenseformmock/i)).toBeInTheDocument();
-        expect(screen.getByText(/existingexpensesmock/i)).toBeInTheDocument();
+    // The heading is "Expenses for {username}" in the latest code
+    expect(await screen.findByText(/expenses for mousania/i)).toBeInTheDocument();
+    expect(screen.getByText(/addexpenseformmock/i)).toBeInTheDocument();
+    expect(screen.getByText(/existingexpensesmock/i)).toBeInTheDocument();
     });
-
-    it("renders navigation links", () => {
+   it("renders navigation links", () => {
         localStorage.setItem("token1", "faketoken");
         jwt.jwtDecode.mockReturnValue({ sub: "mousania" });
 
