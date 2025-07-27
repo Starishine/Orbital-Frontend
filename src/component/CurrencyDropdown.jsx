@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import React from "react";
 
+// CurrencyDropdown: Dropdown component for selecting a currency
+// Fetches currency rates from a public API and lists all available currencies
 export default function CurrencyDropdown({ currency, setCurrency }) {
     const [rates, setRates] = useState({});
 
@@ -23,6 +25,7 @@ export default function CurrencyDropdown({ currency, setCurrency }) {
     }, []);
 
     return (
+        // Currency select dropdown
         <select
             value={currency}
             onChange={e => {
@@ -41,6 +44,7 @@ export default function CurrencyDropdown({ currency, setCurrency }) {
                 marginRight: 0
             }}
         >
+            {/* Render all available currencies as options */}
             {Object.keys(rates).map((currency) => (
                 <option key={currency} value={currency}>
                     {currency}

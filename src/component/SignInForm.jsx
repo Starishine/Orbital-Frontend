@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import React from 'react';
 
+// SignInForm: Handles user login with username and password, supports dark mode toggle
 export default function SignInForm({ onSuccess, onSwitchToSignUp }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [darkMode, setDarkMode] = useState(() => localStorage.getItem('darkMode') === 'true');
 
+    // Sync dark mode with body class and localStorage
     useEffect(() => {
         if (darkMode) {
             document.body.classList.add('dark-mode');
@@ -17,17 +19,20 @@ export default function SignInForm({ onSuccess, onSwitchToSignUp }) {
         localStorage.setItem('darkMode', darkMode);
     }, [darkMode]);
 
+    // Handle sign in form submission
     const handleSignIn = () => {
         setError('');
         if (!username) return setError('Please enter your username');
         if (!password) return setError('Please enter your password');
 
+        // Send login request to backend
         axios.post('/api/signup/login', {
             username: username,
             password: password
         }, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
             .then(res => {
                 const data = res.data;
+                // If login successful, call onSuccess callback
                 if (data.status === "SUCCESS" && data.code === 200) {
                     onSuccess(data.data, data.token);
                 } else {
@@ -35,6 +40,7 @@ export default function SignInForm({ onSuccess, onSwitchToSignUp }) {
                 }
             })
             .catch((error) => {
+                // Show error message from backend or generic error
                 if (error.response && error.response.data) {
                     setError(error.response.data);
                 } else {
@@ -45,6 +51,7 @@ export default function SignInForm({ onSuccess, onSwitchToSignUp }) {
 
     return (
         <>
+            {/* Login form */}
             <form
                 onSubmit={e => { e.preventDefault(); handleSignIn(); }}
                 style={{
@@ -58,6 +65,7 @@ export default function SignInForm({ onSuccess, onSwitchToSignUp }) {
                     color: 'var(--text)'
                 }}
             >
+                {/* Username input */}
                 <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center' }}>
                     <label htmlFor="username" style={{ flex: '0 0 130px', marginRight: '10px', fontWeight: 500, color: 'var(--text)' }}>Username</label>
                     <input
@@ -76,6 +84,7 @@ export default function SignInForm({ onSuccess, onSwitchToSignUp }) {
                         autoComplete="username"
                     />
                 </div>
+                {/* Password input */}
                 <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center' }}>
                     <label htmlFor="password" style={{ flex: '0 0 130px', marginRight: '10px', fontWeight: 500, color: 'var(--text)' }}>Password</label>
                     <input
@@ -94,6 +103,7 @@ export default function SignInForm({ onSuccess, onSwitchToSignUp }) {
                         autoComplete="current-password"
                     />
                 </div>
+                {/* Sign in button */}
                 <button type="submit"
                     style={{
                         width: '100%',
@@ -108,7 +118,9 @@ export default function SignInForm({ onSuccess, onSwitchToSignUp }) {
                     }}>
                     Sign In
                 </button>
+                {/* error message */}
                 {error && <p style={{ color: 'var(--danger)', marginTop: '16px', textAlign: 'center' }}>{error}</p>}
+                {/* swwitch to sign up */}
                 <p style={{ marginTop: '16px', textAlign: 'center', color: 'var(--text)' }}>
                     Don't have an account?{' '}
                     <span
@@ -119,6 +131,7 @@ export default function SignInForm({ onSuccess, onSwitchToSignUp }) {
                     </span>
                 </p>
             </form>
+            {/* dark mode toggle button */}
             <button
                 onClick={() => setDarkMode(dm => !dm)}
                 style={{

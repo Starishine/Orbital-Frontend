@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 
+// NotificationBell: Displays a bell icon with a badge for unread notifications.
+// Clicking the bell toggles a dropdown showing all notification banners.
 export default function NotificationBell({ banners, isDarkMode }) {
     const [open, setOpen] = useState(false);
 
-    // Bell icon SVG
+    // Bell icon SVG, color changes with dark mode
     const BellIcon = (
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none"
             stroke={isDarkMode ? "#eee" : "currentColor"} strokeWidth="2"
@@ -15,6 +17,7 @@ export default function NotificationBell({ banners, isDarkMode }) {
 
     return (
         <div style={{ position: "relative", display: "inline-block" }}>
+            {/* bell button */}
             <button
                 onClick={() => setOpen(o => !o)}
                 style={{
@@ -29,6 +32,7 @@ export default function NotificationBell({ banners, isDarkMode }) {
                 aria-label="Notifications"
             >
                 {BellIcon}
+                {/* red badge with count if there are notifications */}
                 {banners.length > 0 && (
                     <span style={{
                         position: "absolute",
@@ -45,6 +49,7 @@ export default function NotificationBell({ banners, isDarkMode }) {
                     </span>
                 )}
             </button>
+            {/* Dropdown with notification messages */}
             {open && (
                 <div style={{
                     position: "absolute",

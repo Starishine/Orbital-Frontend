@@ -4,6 +4,7 @@ import CurrencyDropdown from "./CurrencyDropdown";
 import CategoryFeedback from "./CategoryFeedback";
 import React from "react";
 
+// AddExpenseForm: Form to add a new expense
 export default function AddExpenseForm() {
     const [budget, setBudget] = useState([]);
     const [categories, setCategories] = useState([]);
@@ -17,6 +18,7 @@ export default function AddExpenseForm() {
         return today.toISOString().split('T')[0]; // YYYY-MM-DD
     });
 
+    // Fetch categories from the backend
     useEffect(() => {
         axios.get(`/api/shared-budget/get`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
@@ -45,6 +47,7 @@ export default function AddExpenseForm() {
             });
     }, []);
 
+    // Handle form submission to add a shared expense
     const handleSubmit = (e) => {
         console.log(description, category, currency, date);
         e.preventDefault();
@@ -109,6 +112,7 @@ export default function AddExpenseForm() {
                 alignItems: 'center'
             }}
         >
+            {/* This is the form for adding a shared expense */}
             <h2 style={{
                 color: theme.primary,
                 fontWeight: 800,
@@ -139,6 +143,7 @@ export default function AddExpenseForm() {
                         }}
                     />
                 </div>
+                {/* Category (budget) dropdown */}
                 <div style={{ marginBottom: '18px' }}>
                     <label htmlFor="category" style={{ display: 'block', marginBottom: '8px', fontWeight: 600, color: theme.dark }}>Budget</label>
                     <select
@@ -204,6 +209,7 @@ export default function AddExpenseForm() {
                         }}
                     />
                 </div>
+                {/* Submit button */}
                 <button
                     type="submit"
                     style={{

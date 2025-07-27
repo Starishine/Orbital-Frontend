@@ -3,6 +3,7 @@ import axios from "axios";
 import CurrencyDropdown from "./CurrencyDropdown";
 import React from "react";
 
+// EditSharedBudget: Form to edit a shared budget's name, top-up amount, and currency
 export default function EditSharedBudget({ budget, onSave, onCancel }) {
     const [budgetName, setBudgetName] = useState(budget.category);
     const [amount, setAmount] = useState(0.00);
@@ -19,9 +20,8 @@ export default function EditSharedBudget({ budget, onSave, onCancel }) {
         return amount * rate;
     }
 
-
+    // Handle save: update shared budget with new values and currency conversion if needed
     const handleSave = async () => {
-
         let topUpAmount = parseFloat(amount);
         let newAmountAllocated = budget.amountAllocated;
         let newAmount = budget.amount;
@@ -37,10 +37,12 @@ export default function EditSharedBudget({ budget, onSave, onCancel }) {
             }
         }
 
+        // Add top-up to both allocated and available amounts
         newAmountAllocated += topUpAmount;
         newAmount += topUpAmount;
 
         try {
+            // Send update request to backend
             await axios.put('/api/shared-budget/update', {
                 id: budget.id,
                 category: budgetName,
@@ -72,6 +74,7 @@ export default function EditSharedBudget({ budget, onSave, onCancel }) {
                 fontFamily: 'Inter, Arial, sans-serif'
             }}
         >
+            {/* Title */}
             <h2 style={{
                 color: '#1976d2',
                 fontWeight: 700,
@@ -79,7 +82,9 @@ export default function EditSharedBudget({ budget, onSave, onCancel }) {
                 marginBottom: 8,
                 textAlign: 'center'
             }}>Edit Shared Budget</h2>
+            {/* Edit form */}
             <form style={{ width: '100%' }} onSubmit={e => { e.preventDefault(); handleSave(); }}>
+                {/* Budget name input */}
                 <div style={{ marginBottom: '18px' }}>
                     <label style={{
                         display: 'block',
@@ -103,6 +108,7 @@ export default function EditSharedBudget({ budget, onSave, onCancel }) {
                         }}
                     />
                 </div>
+                {/* Top up amount input */}
                 <div style={{ marginBottom: '18px' }}>
                     <label style={{
                         display: 'block',
@@ -126,6 +132,7 @@ export default function EditSharedBudget({ budget, onSave, onCancel }) {
                         }}
                     />
                 </div>
+                {/* Currency dropdown */}
                 <div style={{ marginBottom: '18px' }}>
                     <label style={{
                         display: 'block',
@@ -137,6 +144,7 @@ export default function EditSharedBudget({ budget, onSave, onCancel }) {
                     </label>
                     <CurrencyDropdown currency={currency} setCurrency={setCurrency} />
                 </div>
+                {/* save and cancel buttons */}
                 <div style={{ display: 'flex', gap: 12, marginTop: 10 }}>
                     <button
                         type="submit"

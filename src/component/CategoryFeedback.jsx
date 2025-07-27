@@ -2,23 +2,27 @@ import axios from "axios";
 import { useState } from "react";
 import React from "react";
 
+// CategoryFeedback: Component to handle feedback on suggested categories
+// Allows users to accept or correct the suggested category for an expense description
 export default function CategoryFeedback({
-    description,
-    suggestedCategory,
-    categories,
-    onAccept,
-    onCorrection
+    description,         // Expense description
+    suggestedCategory,   // Category suggested by ML
+    categories,          // List of available categories
+    onAccept,            // Callback when user accepts suggestion
+    onCorrection         // Callback when user submits correction
 }) {
     const [showCorrection, setShowCorrection] = useState(false);
     const [correctCategory, setCorrectCategory] = useState('');
     const [customCategory, setCustomCategory] = useState('');
 
+    // Handle correction submission: send feedback to backend and notify parent
     const handleCorrectionSubmit = () => {
         // Send feedback to backend
         axios.post('/ml/feedback', {
             description: description,
             correct_category: correctCategory === "__custom__" ? customCategory : correctCategory
         });
+        // Notify parent component
         onCorrection(correctCategory === "__custom__" ? customCategory : correctCategory);
         setShowCorrection(false);
     };
@@ -38,10 +42,12 @@ export default function CategoryFeedback({
                 fontFamily: 'Inter, Arial, sans-serif'
             }}
         >
+            {/* Prompt user to confirm suggested category */}
             <span style={{ fontWeight: 600, color: '#263859', marginBottom: 6 }}>
                 Is "{suggestedCategory}" the correct category?
             </span>
             <div style={{ display: 'flex', gap: 12 }}>
+                {/* Accept button */}
                 <button
                     type="button"
                     onClick={onAccept}
@@ -62,6 +68,7 @@ export default function CategoryFeedback({
                 >
                     Yes
                 </button>
+                {/* Correction button */}
                 <button
                     type="button"
                     onClick={() => setShowCorrection(true)}
@@ -83,8 +90,10 @@ export default function CategoryFeedback({
                     No
                 </button>
             </div>
+            {/* Correction UI: select or enter correct category */}
             {showCorrection && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 8 }}>
+                    {/* Dropdown for categories */}
                     <select
                         value={correctCategory}
                         onChange={e => setCorrectCategory(e.target.value)}
@@ -104,6 +113,7 @@ export default function CategoryFeedback({
                         ))}
                         <option value="__custom__">Other (type below)</option>
                     </select>
+                    {/* Custom category input if "Other" selected */}
                     {correctCategory === "__custom__" && (
                         <input
                             type="text"
@@ -121,6 +131,7 @@ export default function CategoryFeedback({
                             }}
                         />
                     )}
+                    {/* Submit correction button */}
                     <button
                         type="button"
                         onClick={handleCorrectionSubmit}

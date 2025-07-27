@@ -1,16 +1,17 @@
 import React from 'react';
 
+// BudgetBannerNotification: Displays a fixed notification banner with navigations
 export default function BudgetBannerNotification({
-    message,
-    onClose,
-    onNext,
-    onPrev,
-    showPrev,
-    showNext,
-    idx,
-    total
+    message,      // The notification message to display
+    onClose,      // Function to call when close button is clicked
+    onNext,       // Function to call when next button is clicked
+    onPrev,       // Function to call when previous button is clicked
+    showPrev,     // Boolean: show previous button
+    showNext,     // Boolean: show next button
+    idx,          // Current index (for multi-banner navigation)
+    total         // Total number of banners
 }) {
-    if (!message) return null;
+    if (!message) return null; // Don't render if no message
     return (
         <div style={{
             position: 'fixed',
@@ -28,6 +29,7 @@ export default function BudgetBannerNotification({
             alignItems: 'center',
             justifyContent: 'center'
         }}>
+            {/* Previous button */}
             {showPrev && (
                 <button onClick={onPrev} style={{
                     background: 'transparent',
@@ -38,6 +40,7 @@ export default function BudgetBannerNotification({
                     marginRight: 16
                 }} aria-label="Previous">&#8592;</button>
             )}
+            {/* Message and index */}
             <span>
                 {message}
                 {typeof idx === 'number' && typeof total === 'number' && total > 1 && (
@@ -46,6 +49,7 @@ export default function BudgetBannerNotification({
                     </span>
                 )}
             </span>
+            {/* Next button */}
             {showNext && (
                 <button onClick={onNext} style={{
                     background: 'transparent',
@@ -56,6 +60,7 @@ export default function BudgetBannerNotification({
                     marginLeft: 16
                 }} aria-label="Next">&#8594;</button>
             )}
+            {/* Close button */}
             <button onClick={onClose} style={{
                 marginLeft: 24,
                 background: 'transparent',

@@ -77,6 +77,7 @@ export default function Visualisation() {
             {/* Navigation bar - styled to match Exchange page */}
             <nav style={{
                 marginBottom: '24px',
+                zoom: '80%',
                 display: 'flex',
                 gap: '24px',
                 background: darkMode
@@ -125,6 +126,7 @@ export default function Visualisation() {
                 padding: '32px',
                 fontFamily: 'Inter, Arial, sans-serif',
                 background: 'none',
+                zoom: '80%',
                 color: fontColor,
                 minHeight: '100vh',
                 maxWidth: '1400px',

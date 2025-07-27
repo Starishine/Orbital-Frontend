@@ -80,6 +80,7 @@ export default function Expenses() {
             {/* Navigation bar matches Exchange and Dashboard */}
             <nav style={{
                 marginBottom: '24px',
+                zoom: '80%',
                 display: 'flex',
                 gap: '24px',
                 background: darkMode
@@ -131,6 +132,7 @@ export default function Expenses() {
                 background: 'none',
                 color: fontColor,
                 minHeight: '100vh',
+                zoom: '80%',
                 maxWidth: '1400px',
                 margin: '0 auto'
             }}>

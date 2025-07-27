@@ -4,6 +4,7 @@ import CurrencyDropdown from "./CurrencyDropdown";
 import CategoryFeedback from "./CategoryFeedback";
 import React from "react";
 
+// AddExpenseForm: Form to add a new expense
 export default function AddExpenseForm() {
     const [categories, setCategories] = useState([]);
     const [currency, setCurrency] = useState(localStorage.getItem('currency'));
@@ -17,7 +18,7 @@ export default function AddExpenseForm() {
         return today.toISOString().split('T')[0]; // YYYY-MM-DD
     });
 
-
+    //  Fetch categories from the backend
     useEffect(() => {
         axios.get(`/api/budget/get`,
             { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
@@ -62,7 +63,7 @@ export default function AddExpenseForm() {
                 alert('An error occurred while adding the expense. Please try again.');
             });
     }
-
+    // Handle description change and categorize using ML model
     const handleDescriptionChange = (e) => {
         const description = e.target.value;
         setDescription(description);
@@ -114,6 +115,7 @@ export default function AddExpenseForm() {
                 alignItems: 'center'
             }}
         >
+            {/* This is the form for adding an expense */}
             <h2 style={{
                 color: theme.primary,
                 fontWeight: 800,
@@ -165,6 +167,8 @@ export default function AddExpenseForm() {
                             <option key={index} value={category}>{category}</option>
                         ))}
                     </select>
+
+                    {/* Show feedback if the description was categorized and the category is not in the list */}
                     {showFeedback && category && (
                         <CategoryFeedback
                             description={description}
@@ -185,6 +189,7 @@ export default function AddExpenseForm() {
                     )}
                 </div>
                 <div style={{ marginBottom: '18px' }}>
+                    {/* Currency selection dropdown */}
                     <label htmlFor="currency" style={{ display: 'block', marginBottom: '8px', fontWeight: 600, color: theme.dark }}>Currency</label>
                     <CurrencyDropdown currency={currency} setCurrency={setCurrency} />
                 </div>

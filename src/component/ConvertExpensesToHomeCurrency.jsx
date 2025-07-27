@@ -2,11 +2,13 @@ import { useState } from 'react';
 import axios from 'axios';
 import React from "react";
 
+// Component to convert all expenses to the user's home currency
 export default function ConvertExpensesToHomeCurrency({ homeCurrency }) {
     const [loading, setLoading] = useState(false);
     const [converted, setConverted] = useState([]);
     const [error, setError] = useState('');
 
+    // Theme for consistent styling
     const theme = {
         primary: '#1976d2',
         accent: '#90caf9',
@@ -32,7 +34,7 @@ export default function ConvertExpensesToHomeCurrency({ homeCurrency }) {
             // Convert each expense to home currency
             const conversions = await Promise.all(expenses.map(async (exp) => {
                 if (exp.currency === homeCurrency) return { ...exp, convertedAmount: exp.amount };
-                // Call a currency conversion API (replace with your own or a backend endpoint)
+                // Call a currency conversion API 
                 const rateRes = await fetch(`https://api.exchangerate-api.com/v4/latest/${exp.currency}`);
                 const rateData = await rateRes.json();
                 const rate = rateData.rates[homeCurrency];
@@ -41,6 +43,7 @@ export default function ConvertExpensesToHomeCurrency({ homeCurrency }) {
             }));
 
             setConverted(conversions);
+            // Save converted expenses to state and localStorage
             localStorage.setItem('convertedExpenses', JSON.stringify(conversions));
             localStorage.setItem('homeCurrency', homeCurrency);
         } catch (err) {
@@ -63,6 +66,7 @@ export default function ConvertExpensesToHomeCurrency({ homeCurrency }) {
                 color: theme.text
             }}
         >
+            {/* Convert button */}
             <button
                 onClick={handleConvert}
                 disabled={loading}
@@ -82,7 +86,9 @@ export default function ConvertExpensesToHomeCurrency({ homeCurrency }) {
             >
                 {loading ? 'Converting...' : 'Convert All Expenses to Home Currency'}
             </button>
+            {/* Error message */}
             {error && <div style={{ color: '#d32f2f', marginBottom: 12 }}>{error}</div>}
+            {/* Converted expenses table */}
             {converted.length > 0 && (
                 <table
                     style={{

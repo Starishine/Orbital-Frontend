@@ -4,6 +4,7 @@ import CurrencyDropdown from './CurrencyDropdown';
 import axios from 'axios';
 import React from "react";
 
+// List of predefined categories
 const categories = [
     "Food",
     "Transport",
@@ -15,6 +16,7 @@ const categories = [
     "Others"
 ];
 
+// AddBudgetForm: Form to create a new budget
 export default function AddBudgetForm() {
     const [category, setCategory] = useState('');
     const [customCategory, setCustomCategory] = useState('');
@@ -63,6 +65,7 @@ export default function AddBudgetForm() {
             calculatedExpiryDate = customEnd;
         }
 
+        // Post request to create budget
         axios.post('/api/budget/create', {
             category: finalCategory,
             currency: currency,

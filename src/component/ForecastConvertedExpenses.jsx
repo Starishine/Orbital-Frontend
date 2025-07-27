@@ -2,6 +2,8 @@ import { use, useEffect, useState } from 'react';
 import axios from 'axios';
 import React from 'react';
 
+// ForecastConvertedExpenses: Shows budget forecasts and ML insights for each category using converted expenses
+
 export default function ForecastConvertedExpenses({ converted }) {
     const [budgets, setBudgets] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -207,6 +209,7 @@ export default function ForecastConvertedExpenses({ converted }) {
                 justifyContent: 'center',
                 alignItems: 'stretch'
             }}>
+                {/* Render forecast card for each budget category */}
                 {forecastInfo.map(info => {
                     // Filter ML suggestions for this category
                     const cardSuggestions = mlSuggestions.filter(
@@ -231,6 +234,7 @@ export default function ForecastConvertedExpenses({ converted }) {
                                 height: '100%'
                             }}
                         >
+                            {/* Card header: category and insights button */}
                             <div style={{ display: 'flex', alignItems: 'center', marginBottom: 10 }}>
                                 <div style={{ fontWeight: 700, fontSize: 20, color: '#222', textAlign: 'left', flex: 1 }}>
                                     {info.category}
@@ -261,6 +265,7 @@ export default function ForecastConvertedExpenses({ converted }) {
                                     </button>
                                 )}
                             </div>
+                            {/* Budget stats */}
                             <div style={{ marginBottom: 14, fontSize: 15 }}>
                                 <span style={{ color: '#1976d2', fontWeight: 500 }}>Allocated:</span>
                                 <span style={{ marginLeft: 6 }}>{homeCurrency} {info.allocated.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span><br />
@@ -269,6 +274,7 @@ export default function ForecastConvertedExpenses({ converted }) {
                                 <span style={{ color: '#388e3c', fontWeight: 500 }}>Remaining:</span>
                                 <span style={{ marginLeft: 6 }}>{homeCurrency} {info.remaining.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                             </div>
+                            {/* Progress bar */}
                             <div style={{ margin: '12px 0 18px 0', height: 12, background: '#eee', borderRadius: 6, overflow: 'true' }}>
                                 <div
                                     style={{
@@ -279,6 +285,7 @@ export default function ForecastConvertedExpenses({ converted }) {
                                     }}
                                 />
                             </div>
+                            {/* Forecast message */}
                             {info.avgPerInterval > 0 && info.remaining > 0 ? (
                                 <div style={{ color: '#333', fontSize: 15, textAlign: 'left' }}>
                                     <span role="img" aria-label="forecast">⏳</span> Based on your <b>{info.intervalLabel}</b> spending pattern,

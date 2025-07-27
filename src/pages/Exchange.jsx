@@ -78,22 +78,24 @@ export default function Exchange() {
       {/* Navigation bar - full width, same height and padding as dashboard */}
       <nav style={{
         marginBottom: '24px',
+        zoom: '80%',
         display: 'flex',
-        gap: '24px', // increased gap for dashboard look
+        gap: '24px',
         background: darkMode
           ? 'linear-gradient(90deg,#263859 0%,#1e2746 100%)'
           : 'linear-gradient(90deg,#1976d2 0%,#42a5f5 100%)',
         color: fontColor,
-        padding: '14px 40px', // increased padding for dashboard feel
+        padding: '14px 40px',
         borderRadius: '18px',
         boxShadow: '0 4px 24px rgba(25, 118, 210, 0.10)',
         alignItems: 'center',
         minWidth: 0,
-        width: 'calc(100% - 80px)', // matches dashboard nav width
+        width: 'calc(100% - 80px)',
         maxWidth: '1400px',
         marginLeft: 'auto',
         marginRight: 'auto'
       }}>
+
         <Link to="/dashboard" style={{ color: darkMode ? primary : '#115293', fontWeight: 600, fontSize: 18 }}>Dashboard</Link>
         <Link to="/exchange" style={{ color: darkMode ? primary : '#115293', fontWeight: 600, fontSize: 18 }}>Exchange</Link>
         <Link to="/expenses" style={{ color: darkMode ? primary : '#115293', fontWeight: 600, fontSize: 18 }}>Expenses</Link>
@@ -128,6 +130,7 @@ export default function Exchange() {
         fontFamily: 'Inter, Arial, sans-serif',
         background: 'none',
         color: fontColor,
+        zoom: '80%',
         minHeight: '100vh',
         maxWidth: '1400px',
         marginLeft: 'auto',

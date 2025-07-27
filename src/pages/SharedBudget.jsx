@@ -74,6 +74,7 @@ export default function SharedBudget() {
             {/* Navigation bar - matches Dashboard/Exchange/Expenses */}
             <nav style={{
                 marginBottom: '24px',
+                zoom: '80%',
                 display: 'flex',
                 gap: '24px',
                 background: darkMode
@@ -124,6 +125,7 @@ export default function SharedBudget() {
                 padding: '32px',
                 fontFamily: 'Inter, Arial, sans-serif',
                 background: 'none',
+                zoom: '80%',
                 color: fontColor,
                 minHeight: '100vh',
                 maxWidth: '1400px',

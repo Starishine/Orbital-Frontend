@@ -3,6 +3,7 @@ import axios from "axios";
 import CurrencyDropdown from "./CurrencyDropdown";
 import React from "react";
 
+// EditBudget: Form to edit an existing budget's amount, currency, interval, and expiry date
 export default function EditBudget({ budget, onSave, onCancel }) {
     const [amount, setAmount] = useState(0.00);
     const [currency, setCurrency] = useState(budget.currency);
@@ -20,6 +21,7 @@ export default function EditBudget({ budget, onSave, onCancel }) {
         return amount * rate;
     }
 
+    // Handle save - update budget with new values and currency conversion if needed
     const handleSave = async () => {
         let topUpAmount = parseFloat(amount);
         let newAmountAllocated = budget.amountAllocated;
@@ -36,6 +38,7 @@ export default function EditBudget({ budget, onSave, onCancel }) {
             }
         }
 
+        // Add topup to both allocated and available amounts
         newAmountAllocated += topUpAmount;
         newAmount += topUpAmount;
 
@@ -52,7 +55,7 @@ export default function EditBudget({ budget, onSave, onCancel }) {
             newExpiryDate = customEnd;
         }
 
-
+        // Send update request to backend
         axios.put('/api/budget/update', {
             id: budget.id,
             currency: currency,
@@ -84,6 +87,7 @@ export default function EditBudget({ budget, onSave, onCancel }) {
                 gap: 18
             }}
         >
+            {/* Title */}
             <h3 style={{
                 fontWeight: 800,
                 fontSize: 20,
@@ -93,6 +97,7 @@ export default function EditBudget({ budget, onSave, onCancel }) {
             }}>
                 Edit Budget
             </h3>
+            {/* Top up amount and currency */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <label style={{ fontWeight: 600, minWidth: 90 }}>Top up Amount:</label>
                 <input
@@ -110,6 +115,7 @@ export default function EditBudget({ budget, onSave, onCancel }) {
                 />
                 <CurrencyDropdown currency={currency} setCurrency={setCurrency} />
             </div>
+            {/* Interval selection */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <label style={{ fontWeight: 600, minWidth: 90 }}>Interval:</label>
                 <select
@@ -128,6 +134,7 @@ export default function EditBudget({ budget, onSave, onCancel }) {
                     <option value="Custom">Custom</option>
                 </select>
             </div>
+            {/* Custom end date input if interval is Custom */}
             {interval === "Custom" && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                     <label style={{ fontWeight: 600, minWidth: 90 }}>End Date:</label>
@@ -144,6 +151,7 @@ export default function EditBudget({ budget, onSave, onCancel }) {
                     />
                 </div>
             )}
+            {/* save and cancel buttons */}
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12, marginTop: 10 }}>
                 <button
                     onClick={handleSave}
