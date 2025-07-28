@@ -7,6 +7,8 @@
 ## About
 A web application to manage your university finances.
 
+Website: http://ec2-18-141-203-5.ap-southeast-1.compute.amazonaws.com
+
 ---
 
 ## Details
